@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getDate } from '../api/getDate';
+import '../styles/Home.css'
 
 const Home: React.FC = () => {
   const [date, setDate] = useState<any>(null); // 날짜 데이터를 저장할 상태
@@ -35,7 +36,7 @@ const Home: React.FC = () => {
   // 로딩이 끝난 후 데이터가 있을 때
   return (
     <div>
-      <h1>Now, {date}</h1>
+      <h1>Now, {date.year}.{date.month}.{date.day} {date.hour}:{date.minute}:{date.second}</h1>
     </div>
   );
 };
