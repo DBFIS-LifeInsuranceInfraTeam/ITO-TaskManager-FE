@@ -1,0 +1,59 @@
+*{
+    font-family: "Freesentation";
+    font-weight: 600;
+    font-size: 30pt;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    height: 100%;
+}
+
+
+@font-face{
+    font-family: "Freesentation";
+    font-weight: 100;
+    src: url("./font/Freesentation-1Thin.ttf");
+}
+@font-face{
+    font-family: "Freesentation";
+    font-weight: 200;
+    src: url("./font/Freesentation-2ExtraLight.ttf");
+}
+@font-face{
+    font-family: "Freesentation";
+    font-weight: 300;
+    src: url("./font/Freesentation-3Light.ttf");
+}
+@font-face{
+    font-family: "Freesentation";
+    font-weight: 400;
+    src: url("./font/Freesentation-4Regular.ttf");
+}
+@font-face{
+    font-family: "Freesentation";
+    font-weight: 500;
+    src: url("./font/Freesentation-5Medium.ttf");
+}
+@font-face{
+    font-family: "Freesentation";
+    font-weight: 600;
+    src: url("./font/Freesentation-6SemiBold.ttf");
+}
+@font-face{
+    font-family: "Freesentation";
+    font-weight: 700;
+    src: url("./font/Freesentation-7Bold.ttf");
+}
+@font-face{
+    font-family: "Freesentation";
+    font-weight: 800;
+    src: url("./font/Freesentation-8ExtraBold.ttf");
+}
