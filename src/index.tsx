@@ -1,19 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import './styles/global.css';  // 전역 CSS 파일을 import
+import App from './App';  // 루트 컴포넌트 App.tsx import
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+// React 18 버전 이후 createRoot를 사용하여 렌더링
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+
 root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

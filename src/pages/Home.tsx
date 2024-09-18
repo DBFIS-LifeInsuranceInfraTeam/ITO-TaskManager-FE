@@ -36,7 +36,7 @@ const Home: React.FC = () => {
   // 로딩이 끝난 후 데이터가 있을 때
   return (
     <div>
-      <h1>Now, {date.year}.{date.month}.{date.day} {date.hour}:{date.minute}:{date.second}</h1>
+      <h1>{date.year}.{date.month}.{date.day} {date.hour}:{date.minute}:{date.second}</h1>
     </div>
   );
 };
