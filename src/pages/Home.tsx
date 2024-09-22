@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getDate } from '../api/getDate';
-import '../styles/Home.css'
+import styles from '../styles/Home.module.css';
 
 const Home: React.FC = () => {
   const [date, setDate] = useState<any>(null); // 날짜 데이터를 저장할 상태
@@ -25,17 +25,17 @@ const Home: React.FC = () => {
 
   // 로딩 중일 때
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className={styles.home}>Loading...</div>;
   }
 
   // 에러가 발생한 경우
   if (error) {
-    return <div>{error}</div>;
+    return <div className={styles.home}>{error}</div>;
   }
 
   // 로딩이 끝난 후 데이터가 있을 때
   return (
-    <div>
+    <div className={styles.home}>
       <h1>{date.year}.{date.month}.{date.day} {date.hour}:{date.minute}:{date.second}</h1>
     </div>
   );
