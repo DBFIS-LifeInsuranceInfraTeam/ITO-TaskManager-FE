@@ -1,0 +1,10 @@
+/* App.module.css */
+.container {
+    display: flex;
+  }
+  
+  .content {
+    width: 100%;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+  }
