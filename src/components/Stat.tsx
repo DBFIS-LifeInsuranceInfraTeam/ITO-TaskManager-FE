@@ -48,8 +48,8 @@ const Stat: React.FC = () => {
           {
             
             data: [26, 54, 20],
-            backgroundColor: ['#FF2727', '#006AFF', '#52C93F'],
-            borderColor: ['#FF2727', '#006AFF', '#52C93F'],
+            backgroundColor: ['#DB4A26', '#0887C9', '#86C440'],
+            borderColor: ['#DB4A26', '#0887C9', '#86C440'],
             borderWidth: 1,
             cutout: '75%',
           },

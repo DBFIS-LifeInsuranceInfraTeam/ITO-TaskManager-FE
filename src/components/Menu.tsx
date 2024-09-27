@@ -17,6 +17,7 @@ const Menu: React.FC = () => {
     return (
         <div className={styles.menu}>
             <Logo/>
+            
             <ul>
                 <li className={isActive('/dashboard') ? styles.active : ''}>
                     <div className={isActive('/dashboard') ? styles.active : styles.inactive}/>

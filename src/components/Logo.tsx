@@ -1,10 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styles from '../styles/Logo.module.css';
-import logo from '../styles/image/logo192.png';
+import logo from '../styles/image/dblogo192.png';
 
 const Logo: React.FC = () => {
 
     return (
+        <Link to="/" className={styles.link}>
             <div className={styles.logo}>
                 <img src={logo} alt="logo"></img>
                 <div>
@@ -12,6 +14,7 @@ const Logo: React.FC = () => {
                     <p>TaskManager</p>
                 </div>
             </div>
+        </Link>
     );
 }
 
