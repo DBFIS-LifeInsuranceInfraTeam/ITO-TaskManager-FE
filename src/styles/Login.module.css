@@ -1,0 +1,32 @@
+.loginBtn{
+    display: flex;
+    padding: 0.7em 2.1em;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    border-radius: 0.3em;
+    background: #8AC53F;
+    color: #FFF;
+    font-family: Pretendard;
+    font-size: 1.2em;
+    font-weight: 500;
+    line-height: 1.4em;
+    text-decoration: none;
+    margin-top: auto;
+  }
+
+  .signupBtn{
+    display: flex;
+    padding: 0.7em 2.1em;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    border-radius: 0.3em;
+    color: #00844A;
+    font-family: Pretendard;
+    font-size: 1.2em;
+    font-weight: 500;
+    line-height: 1.4em;
+    text-decoration: underline;
+    margin-top: auto;
+  }

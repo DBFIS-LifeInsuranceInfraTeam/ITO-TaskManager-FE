@@ -1,0 +1,83 @@
+.list{
+    padding: 1em;
+    flex-direction: column;
+    align-items: flex-start;
+    
+    align-self: stretch;
+    display: inline-flex; 
+    border-radius: 0.4em;
+    background: #FFF;
+
+    /* Drop Shadow */
+    box-shadow: 0px 8px 24px 0px rgba(69, 69, 80, 0.10);
+}
+
+.list p{
+  color: #1A1919;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px; /* 120% */
+  margin: 0;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    text-align: center; /* 모든 셀의 텍스트를 가운데 정렬 */
+    border: none; /* 테이블 및 셀 테두리 모두 제거 */
+    border-bottom: 1px solid rgba(163, 163, 163, 0.25);
+  }
+
+  .table thead{
+    color: #656575;
+    background-color: #ffffff;
+}
+  
+  .table th,
+  .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    justify-content: center;
+    border: none; /* 테이블 및 셀 테두리 모두 제거 */
+    border-bottom: 1px solid rgba(163, 163, 163, 0.25);
+
+  }
+
+  tbody td {
+    color: #656575;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 400;
+  }
+  
+  tbody p {
+    display: flex;
+    padding: 4px 21px 4px 22px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    background: rgba(153, 153, 153, 0.10);
+  }
+ 
+  tbody div {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1em;
+  }
+
+  
+  .table button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .table button:hover {
+    background-color: #45a049;
+  }
+  

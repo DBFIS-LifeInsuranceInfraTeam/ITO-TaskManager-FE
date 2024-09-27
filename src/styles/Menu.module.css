@@ -56,7 +56,8 @@
 
   /* 활성화된 메뉴 항목에 적용될 스타일 */
 .active {
-  background: #5E38FF; /* 선택된 메뉴의 배경색 */
+  /* background: #5E38FF; 선택된 메뉴의 배경색 */
+  background: #86C440;
   border-radius: 0.3em;  /* 선택된 항목에 둥근 모서리 */
   display: inline-flex; 
   align-items: center; 

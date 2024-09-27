@@ -1,3 +1,7 @@
+.link {
+  text-decoration: none;
+}
+
 .logo {
     display: flex;
     gap: 0.6em;
