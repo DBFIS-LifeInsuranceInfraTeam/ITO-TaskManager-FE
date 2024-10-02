@@ -1,32 +1,52 @@
-.loginBtn{
-    display: flex;
-    padding: 0.7em 2.1em;
-    justify-content: center;
-    align-items: center;
-    gap: 1em;
-    border-radius: 0.3em;
-    background: #8AC53F;
-    color: #FFF;
-    font-family: Pretendard;
-    font-size: 1.2em;
-    font-weight: 500;
-    line-height: 1.4em;
-    text-decoration: none;
-    margin-top: auto;
-  }
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-  .signupBtn{
-    display: flex;
-    padding: 0.7em 2.1em;
-    justify-content: center;
-    align-items: center;
-    gap: 1em;
-    border-radius: 0.3em;
-    color: #00844A;
-    font-family: Pretendard;
-    font-size: 1.2em;
-    font-weight: 500;
-    line-height: 1.4em;
-    text-decoration: underline;
-    margin-top: auto;
-  }
+img{
+  align-self: flex-start; /* 이미지 왼쪽 정렬 */
+}
+
+.inputGroup {
+  margin-bottom: 15px;
+  width: 300px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 2em;
+  background-color: #C5C5C5;
+  color: white;
+  font-size: 1em;
+}
+
+button:hover {
+  background-color: #89C53F;
+}
+
+.signuplink {
+  text-align: center; /* 텍스트 가운데 정렬 */
+  margin-top: 20px; /* 위쪽 여백 추가 */
+  width: 100%; /* 전체 너비 사용 */
+}
+
+.signuplink a {
+  text-decoration: none;
+  color: #89C53F;
+}
+
+.signuplink a:hover {
+  text-decoration: underline;
+}
