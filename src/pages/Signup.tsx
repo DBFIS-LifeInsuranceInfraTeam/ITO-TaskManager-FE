@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/Login.module.css'; // Import the CSS file for styling
-import { login } from '../api/login';
+import { signup } from '../api/signup';
 import logo from '../styles/image/logo-black.png';
 
 const Signup:React.FC = () => {
@@ -12,23 +12,31 @@ const Signup:React.FC = () => {
     const [phoneNumber, setPhoneNumber] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = async (e: FormEvent) => {
+    // 버튼이 활성화되었는지 여부를 계산하는 함수
+  const isButtonEnabled = id.trim() !== '' && password.trim() !== '' && 
+  passwordCheck.trim() !== '' && name.trim() !== '' && 
+  phoneNumber.trim() !== '';
+    
+  const handleSignup = async (e: FormEvent) => {
       e.preventDefault();
       setError(null);
 
       try {
-          const response = await login(id, password);
-          console.log("Login successful:", response);
+          const response = await signup(id, password);
+          console.log("Signup successful:", response);
           // Redirect or update state after successful login here
       } catch (error) {
-          setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요."); // Error message in Korean
+          setError("이미 가입된 사용자입니다.");
       }
   };
 
     return (
-        <div className={styles.container}>
-            <img src={logo} alt=""/>
-            <form onSubmit={handleLogin}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <img src={logo} alt=""/>
+        </div>
+        <div className={styles.formContainer}>
+            <form onSubmit={handleSignup}>
                 <div className={styles.inputGroup}>
                     <label htmlFor="id">아이디</label>
                     <input 
@@ -84,9 +92,49 @@ const Signup:React.FC = () => {
                         required 
                     />
                 </div>
-                <button type="submit">가입하기</button>
+                <div className={styles.inputGroup}>
+                    <label htmlFor="phoneNumber">팀</label>
+                    <input 
+                        type="string" 
+                        id="phoneNumber" 
+                        value={phoneNumber} 
+                        onChange={(e) => setPhoneNumber(e.target.value)} 
+                        placeholder="팀 입력하세요." 
+                        required 
+                    />
+                </div>
+                <div className={styles.inputGroup}>
+                    <label htmlFor="phoneNumber">유닛</label>
+                    <input 
+                        type="string" 
+                        id="phoneNumber" 
+                        value={phoneNumber} 
+                        onChange={(e) => setPhoneNumber(e.target.value)} 
+                        placeholder="유닛을 입력하세요." 
+                        required 
+                    />
+                </div>
+                <div className={styles.inputGroup}>
+                    <label htmlFor="phoneNumber">직급</label>
+                    <input 
+                        type="string" 
+                        id="phoneNumber" 
+                        value={phoneNumber} 
+                        onChange={(e) => setPhoneNumber(e.target.value)} 
+                        placeholder="직급을 입력하세요." 
+                        required 
+                    />
+                </div>
+                <button 
+                    type="submit"
+                    disabled={!isButtonEnabled} // 비활성화 상태 설정
+                >
+                    가입하기
+                </button>
             </form>
-            <div className={styles.signuplink}>
+            
+        </div>
+        <div className={styles.signuplink}>
               이미 계정이 있으신가요?<Link to="/login">로그인하기</Link>
             </div>
         </div>
