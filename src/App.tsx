@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Menu from './components/Menu';
 import styles from './styles/App.module.css';
 import Dashboard from './pages/Dashboard';
+import Detail from './pages/Detail';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
@@ -36,6 +37,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<MainLayout><Home /></MainLayout>} />
         <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
+        <Route path="/detail" element={<MainLayout><Detail /></MainLayout>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
