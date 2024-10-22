@@ -1,0 +1,19 @@
+.container{
+    min-height: 100vh;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container img{
+    height: 4em;
+    width: 4em;
+    align-self: center;
+}
+
+.container span{
+    font-size: 3em;
+    font-weight: 500;
+}

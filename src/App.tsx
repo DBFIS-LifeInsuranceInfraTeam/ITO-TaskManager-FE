@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Detail from './pages/Detail';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Loading from './pages/Loading';
 
 // const App: React.FC = () => {
   
@@ -37,6 +38,9 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<MainLayout><Home /></MainLayout>} />
         <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
+        <Route path="/list" element={<MainLayout><Loading/></MainLayout>} />
+        <Route path="/alarm" element={<MainLayout><Loading/></MainLayout>} />
+        <Route path="/setting" element={<MainLayout><Loading/></MainLayout>} />
         <Route path="/detail" element={<MainLayout><Detail /></MainLayout>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

@@ -6,11 +6,10 @@
     gap: 3em;
     background: #F8F7F1;
     align-self: stretch;
-    
 }
 
 .stat div{
-  /* width: max-content; */
+  width: max-content;
 
 }
 

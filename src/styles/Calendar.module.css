@@ -1,26 +1,56 @@
-.list{
-    padding: 1em;
-    flex-direction: column;
-    align-items: flex-start;
+
+.calendarcontainer{
     
-    align-self: stretch;
-    display: inline-flex; 
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    padding: 1em;
+  
+  
     border-radius: 0.6em;
     background: #FFF;
-
+  
     /* Drop Shadow */
     box-shadow: 0px 8px 24px 0px rgba(69, 69, 80, 0.10);
-}
+  }
+  
+  .calendar{
+    border-radius: 4px;
+    
+    flex-direction: column;
+    width: 100%; /* 부모의 너비를 100%로 설정 */
+    display: flex;
+    height: 100%;
+  }
+  
+  .calendarlist{
+    border-radius: 4px;
+    
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
 
-.list p{
-  color: #1A1919;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 24px; /* 120% */
-  margin: 0;
-}
+  .day-cell {
+    position: relative;
+    text-align: center;
+  }
 
-.table {
+  .event-count {
+    display: inline-block;
+    background-color: #ff5722;
+    color: white;
+    border-radius: 50%;
+    padding: 5px;
+    font-size: 12px;
+    margin-left: 5px;
+  }
+
+
+
+  .table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
@@ -68,16 +98,3 @@
   .status img {
     vertical-align: middle;
   }
-
-  .table button{
-    border-radius: 4px;
-    background: #006AFF;
-    color: #FFF;
-    width: fit-content;
-    
-
-    display: inline-flex;
-    align-items: center; /* 수직 정렬 */
-    justify-content: center; /* 수평 중앙 정렬 */
-    line-height: 1;
-}
