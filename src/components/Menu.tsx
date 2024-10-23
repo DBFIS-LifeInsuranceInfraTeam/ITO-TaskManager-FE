@@ -19,9 +19,9 @@ const Menu: React.FC = () => {
             <Logo/>
             
             <ul>
-                <li className={isActive('/dashboard') ? styles.active : ''}>
-                    <div className={isActive('/dashboard') ? styles.active : styles.inactive}/>
-                    <Link to="/dashboard">
+                <li className={isActive('/') ? styles.active : ''}>
+                    <div className={isActive('/') ? styles.active : styles.inactive}/>
+                    <Link to="/">
                         <img src={dashboardicon} alt=''></img>
                         대시보드
                     </Link>
@@ -53,6 +53,7 @@ const Menu: React.FC = () => {
                 <img src={logouticon} alt=''></img>
                 로그아웃
             </Link>
+            
         </div>
     );
 }

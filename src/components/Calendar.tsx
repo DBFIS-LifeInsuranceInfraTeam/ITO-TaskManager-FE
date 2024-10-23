@@ -106,27 +106,29 @@ const formatToMMDD = (date: string) => {
 
         <li className={styles.calendarcontainer}>
                             <div className={styles.calendar}>
-                            <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]} // interactionPlugin을 추가해야 dateClick이 작동함
-        initialView="dayGridMonth"
-        weekends={true}
-        events={events}
-        dateClick={handleDateClick} // 날짜 클릭 핸들러
-        headerToolbar={{ // layout header
-          left: 'prev', 
-          center: 'title',
-          right: 'next'
-        }}
-        titleFormat={{ 
-          month: '2-digit'  // 월을 숫자로 표시 (2자리 숫자)
-        }}
-        height='auto'
-        eventContent={renderEventContent} // 기본 이벤트 렌더링 비활성화
-        dayCellContent={renderDayCellContent} // 날짜 셀에 이벤트 개수 표시
-      />
+                              <FullCalendar
+                                plugins={[dayGridPlugin, interactionPlugin]} // interactionPlugin을 추가해야 dateClick이 작동함
+                                initialView="dayGridMonth"
+                                weekends={true}
+                                events={events}
+                                dateClick={handleDateClick} // 날짜 클릭 핸들러
+                                headerToolbar={{ // layout header
+                                  left: 'prev', 
+                                  center: 'title',
+                                  right: 'next'
+                                }}
+                                titleFormat={{ 
+                                  month: '2-digit'  // 월을 숫자로 표시 (2자리 숫자)
+                                }}
+                                eventContent={renderEventContent} // 기본 이벤트 렌더링 비활성화
+                                dayCellContent={renderDayCellContent} // 날짜 셀에 이벤트 개수 표시
+                                height="auto" // 높이를 자동으로 설정
+                                contentHeight="auto" // 콘텐츠 높이를 자동 조정
+                                handleWindowResize={true} // 창 크기에 맞게 자동 조정
+                              />
                             </div>
                             <div className={styles.calendarlist}>
-                                <h2>{formatToMMDD(selectedDate)}</h2>
+                                <p className={styles.calendardate}>{formatToMMDD(selectedDate)}</p>
                                 {selectedDateEvents.length > 0 ? (
                                     // <ul>
                                     //     {selectedDateEvents.map((event, index) => (

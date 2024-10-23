@@ -3,6 +3,7 @@ import styles from '../styles/List.module.css';
 import statusComplete from '../styles/image/list/status-complete.svg';
 import statusProgress from '../styles/image/list/status-progress.svg';
 import statusPending from '../styles/image/list/status-pending.svg';
+import { useNavigate } from 'react-router-dom';
 
 const List:React.FC = () => {
     const data = [
@@ -12,6 +13,13 @@ const List:React.FC = () => {
         { id: "04", name: 'SAS 라이센스 교체', manager: '김소연', status: '지연', deadline: '2024/09/07', statusColor: statusPending },
         { id: "05", name: '주간보고서 작성', manager: '변유석', status: '지연', deadline: '2024/09/07', statusColor: statusPending }
       ];
+
+      const navigate = useNavigate(); // useNavigate 훅 사용
+
+  const handleButtonClick = (id:string) => {
+    navigate(`/detail?id=${id}`); // 버튼 클릭 시 동적으로 URL 이동
+  };
+
 
   return (
     <>
@@ -39,7 +47,7 @@ const List:React.FC = () => {
                                         {item.status}
                                     </td>
                                     <td>{item.deadline}</td>
-                                    <td><button>상세</button></td>
+                                    <td><button onClick={() => handleButtonClick(item.id)}>상세</button></td>
                                 </tr>
                             ))}
                         </tbody>

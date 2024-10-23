@@ -36,8 +36,8 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MainLayout><Home /></MainLayout>} />
-        <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
+        {/* <Route path="/" element={<MainLayout><Home /></MainLayout>} /> */}
+        <Route path="/" element={<MainLayout><Dashboard /></MainLayout>} />
         <Route path="/list" element={<MainLayout><Loading/></MainLayout>} />
         <Route path="/alarm" element={<MainLayout><Loading/></MainLayout>} />
         <Route path="/setting" element={<MainLayout><Loading/></MainLayout>} />

@@ -14,7 +14,7 @@
 
 .list p{
   color: #1A1919;
-  font-size: 20px;
+  font-size:larger;
   font-weight: 600;
   line-height: 24px; /* 120% */
   margin: 0;
@@ -54,10 +54,10 @@
     height: 100%; /* p 높이를 td 높이에 맞춤 */
   margin: 0; /* p의 기본 margin 제거 */
   padding: 0.3em 0; /* p의 기본 padding 제거 */
-  
-  
+  font-weight: 500;
+font-size: medium;
     background-color: #99999930;
-    border-radius: 4px;
+    border-radius: 0.6em;
     height: max-content;
   }
 

@@ -8,6 +8,7 @@
     overflow-y: auto; /* content 내용이 길어지면 스크롤 표시 */
     min-height: 100vh; /* 부모의 최소 높이를 화면 높이로 설정 */
     
+    background-color: #FFF;
     
 }
 

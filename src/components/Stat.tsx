@@ -5,42 +5,56 @@ import progress from '../styles/image/status/progress.svg';
 import pending from '../styles/image/status/pending.svg';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { getDate } from '../api/getDate';
 
 // Chart.js의 기본 요소를 등록합니다.
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 
 const Stat: React.FC = () => {
-    const [dateTime, setDateTime] = useState<string>(getFormattedDateTime());
+    //const [dateTime, setDateTime] = useState<string>(getFormattedDateTime());
+
+    const [date, setDate] = useState<Date>(new Date());
+    const [loading, setLoading] = useState<boolean>(true); // 로딩 상태
+    const [error, setError] = useState<string | null>(null); // 에러 메시지 저장
 
     useEffect(() => {
-      // 매초마다 시간과 날짜를 업데이트하는 타이머 설정
-      const timer = setInterval(() => {
-        setDateTime(getFormattedDateTime());
-      }, 1000);
+      const fetchDate = async () => {
+        try {
+          const data = await getDate(); // 백엔드에서 날짜 데이터를 가져옴
+          setDate(data); // 가져온 데이터를 설정
+        } catch (err) {
+          setError('서버에서 데이터를 가져오지 못했습니다.'); // 에러 메시지 설정
+        } finally {
+          setLoading(false); // 로딩 상태 해제
+        }
+      };
   
-      // 컴포넌트 언마운트 시 타이머 정리
-      return () => clearInterval(timer);
+      fetchDate();
     }, []);
   
-    // 현재 날짜와 시간을 포맷하는 함수
-    function getFormattedDateTime() {
-      const now = new Date();
-      const dayNames = ['일', '월', '화', '수', '목', '금', '토']; // 요일 한글 배열
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-      const date = String(now.getDate()).padStart(2, '0');
-      const day = dayNames[now.getDay()]; // 한글 요일
+    const formatDate = (date: Date) => {
+      // 날짜 형식: YYYY/MM/DD (요일)
+      const dateString = date
+        .toLocaleDateString('ko-KR', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          weekday: 'short', // 요일
+        })
+        .replace(/\./g, '/'); // '.' 대신 '/'로 변경
   
-      // 시간 포맷: HH:MM (AM/PM)
-      const time = now.toLocaleTimeString('en-US',{
-        hour: '2-digit',
+      // 시간 형식: 12시간제 (AM/PM)
+      const timeString = date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
         minute: '2-digit',
-        hour12: true
+        hour12: true,
       });
   
-      return `${year}/${month}/${date} (${day}) ${time}`;
-    }
+      return `${dateString} ${timeString}`;
+    };
+  
+
   
     const data = {
         labels: ['지연', '진행 중', '완료'],
@@ -67,9 +81,13 @@ const Stat: React.FC = () => {
   return (
     
         <div className={styles.stat}>
-            <div>
-                <p>오늘의 통계</p>
-                <span>{dateTime}</span> 
+            <div className={styles.title}>
+                <p className={styles.subtitle}>오늘의 통계</p>
+                {error ? (
+                  <p className={styles.timeerror}>{'⚠ '+formatDate(date)}</p>
+                ) : (
+                  <p className={styles.time}>{'  '+formatDate(date)}</p>
+                )}
             </div>
             
             <div className={styles.chart}>
