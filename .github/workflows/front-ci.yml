@@ -24,6 +24,41 @@ jobs:
         run: |
           TAG_VERSION="${{ steps.tag_version.outputs.new_tag }}"
           CLEAN_TAG=$(echo $TAG_VERSION | sed 's/refs-tags-//g')
-          echo "TAG_VERSION: $TAG_VERSION"
-          echo "CLEAN_TAG: $CLEAN_TAG"
+          echo "NEW_TAG=$CLEAN_TAG" >> $GITHUB_ENV
+
+      - name: Create a GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        with:
+          tag_name: ${{ env.NEW_TAG }}
+          release_name: Release ${{ env.NEW_TAG }}
+          body: ${{ env.CHANGELOG }}
+
+      - name: Docker meta
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v1
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/itopw-front
+          tag-semver: |
+            {{version}}
+            {{major}}.{{minor}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/itopw-front:${{ env.NEW_TAG }}
 
