@@ -1,0 +1,23 @@
+name: itopw-front
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.PAT }}
+
+      - name: Set new tag and changelog as environment variables
+        run: |
+          TAG_VERSION="${{ steps.tag_version.outputs.new_tag }}"
+          CLEAN_TAG=$(echo $TAG_VERSION | sed 's/refs-tags-//g')
+          echo $(TAG_VERSION: $TAG_VERSION)
+          echo $(CLEAN_TAG: $CLEAN_TAG)
