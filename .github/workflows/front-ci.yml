@@ -19,5 +19,5 @@ jobs:
         run: |
           TAG_VERSION="${{ steps.tag_version.outputs.new_tag }}"
           CLEAN_TAG=$(echo $TAG_VERSION | sed 's/refs-tags-//g')
-          echo $(TAG_VERSION: $TAG_VERSION)
-          echo $(CLEAN_TAG: $CLEAN_TAG)
+          echo "TAG_VERSION: $TAG_VERSION"
+          echo "CLEAN_TAG: $CLEAN_TAG"
