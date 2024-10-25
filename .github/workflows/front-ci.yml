@@ -17,7 +17,11 @@ jobs:
 
       - name: Set new tag and changelog as environment variables
         run: |
-          echo "NEW_TAG=${{ steps.tag_version.outputs.new_tag }}" >> $GITHUB_ENV
+          # echo "NEW_TAG=${{ steps.tag_version.outputs.new_tag }}" >> $GITHUB_ENV
+          # echo "CHANGELOG=${{ steps.tag_version.outputs.changelog }}" >> $GITHUB_ENV
+          TAG_VERSION="${{ steps.tag_version.outputs.new_tag }}"
+          CLEAN_TAG=$(echo $TAG_VERSION | sed 's/refs-tags-//g') # refs-tags- 제거
+          echo "NEW_TAG=$CLEAN_TAG" >> $GITHUB_ENV
           echo "CHANGELOG=${{ steps.tag_version.outputs.changelog }}" >> $GITHUB_ENV
 
       - name: Create a GitHub release
