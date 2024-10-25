@@ -1,6 +1,13 @@
 name: itopw-front
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '*'
+    paths-ignore:
+      - '.github/workflows/*'
 
 jobs:
   build:
@@ -21,3 +28,4 @@ jobs:
           CLEAN_TAG=$(echo $TAG_VERSION | sed 's/refs-tags-//g')
           echo "TAG_VERSION: $TAG_VERSION"
           echo "CLEAN_TAG: $CLEAN_TAG"
+
