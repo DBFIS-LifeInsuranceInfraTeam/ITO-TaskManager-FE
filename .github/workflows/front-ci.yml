@@ -61,4 +61,27 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/itopw-front:${{ env.NEW_TAG }}
+      
+      - name: Checkout Kustomize repository
+        uses: actions/checkout@v3
+        with:
+          repository: DBFIS-LifeInsuranceInfraTeam/manifest
+          ref: main
+          token: ${{ secrets.PAT }}
+          path: manifest
 
+      - name: Update Kubernetes resources with new image
+        run: |
+          cd manifest/front
+          kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/itopw-front:${{ env.NEW_TAG }}
+          cat kustomization.yaml
+
+      - name: Commit and push manifest changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          cd manifest
+          git config --global user.email "gb.lee@dbfis.co.kr"
+          git config --global user.name "gyubinlee-dbfis"
+          git commit -am "Update image tag to ${{ env.NEW_TAG }}"
+          git push -u origin main
