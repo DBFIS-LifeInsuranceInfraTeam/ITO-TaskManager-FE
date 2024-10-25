@@ -6,24 +6,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Bump version and push tag
         id: tag_version
-        uses: mathieudutour/github-tag-action@v6.0 # auto tagging 프로그램
+        uses: mathieudutour/github-tag-action@v6.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # secrets.GITHUB_TOKEN 는 자동생성됨
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set new tag and changelog as environment variables
+        run: |
+          echo "NEW_TAG=${{ steps.tag_version.outputs.new_tag }}" >> $GITHUB_ENV
+          echo "CHANGELOG=${{ steps.tag_version.outputs.changelog }}" >> $GITHUB_ENV
+
       - name: Create a GitHub release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag }}
-          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
-      -
-        name: Docker meta
+          tag_name: ${{ env.NEW_TAG }}
+          release_name: Release ${{ env.NEW_TAG }}
+          body: ${{ env.CHANGELOG }}
+
+      - name: Docker meta
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
         with:
@@ -31,51 +37,45 @@ jobs:
           tag-semver: |
             {{version}}
             {{major}}.{{minor}}
-      -
-        name: Set up Docker Buildx
+
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      -
-        name: Login to DockerHub
+
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Build and push
+
+      - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/itopw-front:${{ steps.tag_version.outputs.new_tag }}
-      - name: Checkout for Kustomize repository
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/itopw-front:${{ env.NEW_TAG }}
+
+      - name: Checkout Kustomize repository
         uses: actions/checkout@v3
         with:
-          # kubernetes yaml 파일 저장
-          repository: DBFIS-LifeInsuranceInfraTeam/manifest # k8s yaml 파일이 있는 repo
-          ref: main  # branch 이름
-          # 내 repository에 push 하기 위한 Personal Access Token이 필요
-          token: ${{ secrets.PAT }} # Github Action token을 발급받아서 repo secrect에 등록
-          path: manifest # 최상위 경로로 repository와 동일하게 설정
+          repository: DBFIS-LifeInsuranceInfraTeam/manifest
+          ref: main
+          token: ${{ secrets.PAT }}
+          path: manifest
 
-          # 새 이미지 버전으로 파일의 태그값 수정
-          # cd path 수정
-          # kustomize로 image tag 값 변경
-      - name: Update Kubernetes resources
+      - name: Update Kubernetes resources with new image
         run: |
-          pwd
           cd manifest/front
-          kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/itopw-front:${{ steps.tag_version.outputs.new_tag }}
+          kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/itopw-front:${{ env.NEW_TAG }}
           cat kustomization.yaml
-      # 수정된 kustomization.yaml 파일 commit push
-      - name: Commit manifest files
+
+      - name: Commit and push manifest changes
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           cd manifest
           git config --global user.email "gb.lee@dbfis.co.kr"
           git config --global user.name "gyubinlee-dbfis"
-          git config --global github.token ${{ secrets.PAT }}
-          git commit -am "Update image tag ${{ steps.tag_version.outputs.new_tag }}"
+          git commit -am "Update image tag to ${{ env.NEW_TAG }}"
           git push -u origin main
