@@ -3,13 +3,13 @@ import styles from '../styles/DetailPage.module.css';
 
 const Detail: React.FC = () => {
 
-  const data = [
-    { id: '01', name: 'SAS 라이센스 교체', manager: '김소연', status: '완료', deadline: '2024/09/01' },
-    { id: '02', name: '주간보고서 작성', manager: '이규빈', status: '진행 중', deadline: '2024/09/15' },
-    { id: "03", name: 'WAS 버전 업그레이드', manager: '변유석', status: '진행 중', deadline: '2024/09/07' },
-    { id: "04", name: 'SAS 라이센스 교체', manager: '김소연', status: '지연', deadline: '2024/09/07' },
-    { id: "05", name: '주간보고서 작성', manager: '변유석', status: '지연', deadline: '2024/09/07' }
-  ];
+  // const data = [
+  //   { id: '01', name: 'SAS 라이센스 교체', manager: '김소연', status: '완료', deadline: '2024/09/01' },
+  //   { id: '02', name: '주간보고서 작성', manager: '이규빈', status: '진행 중', deadline: '2024/09/15' },
+  //   { id: "03", name: 'WAS 버전 업그레이드', manager: '변유석', status: '진행 중', deadline: '2024/09/07' },
+  //   { id: "04", name: 'SAS 라이센스 교체', manager: '김소연', status: '지연', deadline: '2024/09/07' },
+  //   { id: "05", name: '주간보고서 작성', manager: '변유석', status: '지연', deadline: '2024/09/07' }
+  // ];
 
   return (
     <div className={styles.container}> {/* className을 사용하여 스타일 적용 */}

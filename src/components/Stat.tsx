@@ -22,7 +22,15 @@ const Stat: React.FC = () => {
       const fetchDate = async () => {
         try {
           const data = await getDate(); // 백엔드에서 날짜 데이터를 가져옴
-          setDate(data); // 가져온 데이터를 설정
+          
+          setDate(new Date(
+            data.year,
+            data.month - 1, // 월을 0부터 시작하도록 조정
+            data.day,
+            data.hour,
+            data.minute,
+            data.second
+        )); // 가져온 데이터를 설정
         } catch (err) {
           setError('서버에서 데이터를 가져오지 못했습니다.'); // 에러 메시지 설정
         } finally {

@@ -4,7 +4,6 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction'; // 반드시 추가해야 함
 import '../styles/Calendar.css';
 import styles from '../styles/Calendar.module.css';
-import { EventInput } from '@fullcalendar/core'; // FullCalendar 이벤트 타입
 import eventIcon from '../styles/image/eventIcon.png'
 import statusComplete from '../styles/image/list/status-complete.svg';
 import statusProgress from '../styles/image/list/status-progress.svg';
