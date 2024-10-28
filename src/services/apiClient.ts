@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: '/api', // backend URL
+  baseURL: process.env.REACT_APP_BASE_URL || '/api', // 환경 변수를 사용
   headers: {
     'Content-Type': 'application/json',
   },
