@@ -9,7 +9,11 @@ const Signup:React.FC = () => {
     const [password, setPassword] = useState<string>('');
     const [passwordCheck, setPasswordCheck] = useState<string>('');
     const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
     const [phoneNumber, setPhoneNumber] = useState<string>('');
+    const [project, setProject] = useState<string>('');
+    const [unit, setUnit] = useState<string>('');
+    const [position, setPosition] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
 
     // 버튼이 활성화되었는지 여부를 계산하는 함수
@@ -22,9 +26,21 @@ const Signup:React.FC = () => {
       setError(null);
 
       try {
-          const response = await signup(id, password);
-          console.log("Signup successful:", response);
-          // Redirect or update state after successful login here
+        const userData = {
+            id,
+            name,
+            password,
+            unit,
+            project,
+            email,
+            phoneNumber,
+            photo: null, // or a file/image if provided
+            position
+        };
+
+        const response = await signup(userData);
+        console.log("Signup successful:", response);
+        // Redirect or update state after successful signup here
       } catch (error) {
           setError("이미 가입된 사용자입니다.");
       }
@@ -71,6 +87,17 @@ const Signup:React.FC = () => {
                     />
                 </div>
                 <div className={styles.inputGroup}>
+                    <label htmlFor="email">이메일</label>
+                    <input 
+                        type="text" 
+                        id="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        placeholder="이메일 입력하세요." 
+                        required 
+                    />
+                </div>
+                <div className={styles.inputGroup}>
                     <label htmlFor="name">이름</label>
                     <input 
                         type="text" 
@@ -88,39 +115,39 @@ const Signup:React.FC = () => {
                         id="phoneNumber" 
                         value={phoneNumber} 
                         onChange={(e) => setPhoneNumber(e.target.value)} 
-                        placeholder="비밀번호를 입력하세요." 
+                        placeholder="전화번호를 입력하세요." 
                         required 
                     />
                 </div>
                 <div className={styles.inputGroup}>
-                    <label htmlFor="phoneNumber">팀</label>
+                    <label htmlFor="project">팀</label>
                     <input 
                         type="string" 
-                        id="phoneNumber" 
-                        value={phoneNumber} 
-                        onChange={(e) => setPhoneNumber(e.target.value)} 
-                        placeholder="팀 입력하세요." 
+                        id="project" 
+                        value={project} 
+                        onChange={(e) => setProject(e.target.value)} 
+                        placeholder="팀을 입력하세요." 
                         required 
                     />
                 </div>
                 <div className={styles.inputGroup}>
-                    <label htmlFor="phoneNumber">유닛</label>
+                    <label htmlFor="unit">유닛</label>
                     <input 
                         type="string" 
-                        id="phoneNumber" 
-                        value={phoneNumber} 
-                        onChange={(e) => setPhoneNumber(e.target.value)} 
+                        id="unit" 
+                        value={unit} 
+                        onChange={(e) => setUnit(e.target.value)} 
                         placeholder="유닛을 입력하세요." 
                         required 
                     />
                 </div>
                 <div className={styles.inputGroup}>
-                    <label htmlFor="phoneNumber">직급</label>
+                    <label htmlFor="position">직급</label>
                     <input 
                         type="string" 
-                        id="phoneNumber" 
-                        value={phoneNumber} 
-                        onChange={(e) => setPhoneNumber(e.target.value)} 
+                        id="position" 
+                        value={position} 
+                        onChange={(e) => setPosition(e.target.value)} 
                         placeholder="직급을 입력하세요." 
                         required 
                     />
