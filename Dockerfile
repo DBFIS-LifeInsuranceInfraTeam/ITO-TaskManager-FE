@@ -14,6 +14,10 @@ RUN npm install --loglevel=error
 #Copy remaining files
 COPY . .
 
+# 빌드 시 환경 변수 전달
+ARG REACT_APP_BASE_URL
+ENV REACT_APP_BASE_URL $REACT_APP_BASE_URL
+
 #Build the project for production
 RUN npm run build
 
