@@ -3,8 +3,8 @@
 FROM node:20-slim as builder
 
 # 빌드 시 환경 변수 전달
-ARG REACT_APP_BASE_URL
-ENV REACT_APP_BASE_URL=${REACT_APP_BASE_URL}
+#ARG REACT_APP_BASE_URL
+#ENV REACT_APP_BASE_URL=${REACT_APP_BASE_URL}
 
 #Specify a working directory
 WORKDIR '/app'
