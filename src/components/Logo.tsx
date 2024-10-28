@@ -11,7 +11,7 @@ const Logo: React.FC = () => {
                 <img src={logo} alt="logo"></img>
                 <div>
                     <p>ITO</p>
-                    <p>TaskManager v2</p>
+                    <p>TaskManager</p>
                 </div>
             </div>
         </Link>
