@@ -8,15 +8,23 @@ import eventIcon from '../styles/image/eventIcon.png'
 import statusComplete from '../styles/image/list/status-complete.svg';
 import statusProgress from '../styles/image/list/status-progress.svg';
 import statusPending from '../styles/image/list/status-pending.svg';
+import { getTaskByMonth } from '../api/getTaskByMonth';
 
-interface Event {
-    id: string;
-    name: string;
-    manager: string;
-    status: string;
-    deadline: string; 
-    statusColor: any;
-  }
+interface Task {
+  taskId: number;
+  projectId: number;
+  taskName: string;
+  description: string;
+  assigneeId: string;
+  createdDate: string;
+  startDate: string;
+  dueDate: string;
+  frequencyId: number;
+  commentCount: number;
+  status: number;
+  itoProcessId: number;
+  assigneeConfirmation: string;
+}
 
 
     // 날짜를 'YYYY-MM-DD' 형식으로 변환하는 함수
@@ -26,35 +34,54 @@ const formatDate = (date: Date) => {
 const Calendar = () => {
 
   // useState의 타입을 명시적으로 지정
-  const [selectedDateEvents, setSelectedDateEvents] = useState<Event[]>([]);
+  const [selectedDateEvents, setSelectedDateEvents] = useState<Task[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>(formatDate(new Date()));
+  const [eventList, setEventList] = useState<Task[]>([]);
+  const [currentMonth, setCurrentMonth] = useState('');
 
+  // const handleDatesSet = async (dateInfo: any) => {
+  //   const month = dateInfo.view.currentStart.getMonth() + 1;
+  //   const year = dateInfo.view.currentStart.getFullYear();
+  //   const formattedMonth = `${year}-${month < 10 ? '0' : ''}${month}`;
+  //   setCurrentMonth(formattedMonth);
 
-  const events: Event[] = useMemo(
-    () => [
-        { id: '01', name: 'SAS 라이센스 교체', manager: '김소연', status: '완료', deadline: '2024-10-01', statusColor: statusComplete },
-        { id: '02', name: '주간보고서 작성', manager: '이규빈', status: '진행 중', deadline: '2024-10-20', statusColor: statusProgress },
-        { id: "03", name: 'WAS 버전 업그레이드', manager: '변유석', status: '진행 중', deadline: '2024-10-21', statusColor: statusProgress },
-        { id: "04", name: 'SAS 라이센스 교체', manager: '김소연', status: '지연', deadline: '2024-10-25', statusColor: statusPending },
-        { id: "05", name: '주간보고서 작성', manager: '변유석', status: '지연', deadline: '2024-10-25', statusColor: statusPending }
-    ],
-    [] // 이 배열은 한 번만 생성됨
-  );
+  //   try {
+  //     // `getTaskByMonth` 호출하여 데이터를 가져옴
+  //     const tasksForMonth = await getTaskByMonth(year, month);
+  //     setEventList(tasksForMonth);
+  //   } catch (error) {
+  //     console.error("Error fetching tasks:", error);
+  //   }
+  // };
+
+  const handleDatesSet = async (dateInfo: any) => {
+    const month = dateInfo.view.currentStart.getMonth() + 1;
+    const year = dateInfo.view.currentStart.getFullYear();
+    const formattedMonth = `${year}-${month < 10 ? '0' : ''}${month}`;
+    setCurrentMonth(formattedMonth);
+
+    try {
+      // `getTaskByMonth` 호출하여 데이터를 가져옴
+      const tasksForMonth = await getTaskByMonth(year, month);
+      setEventList(tasksForMonth || []); // tasksForMonth가 undefined면 빈 배열로 설정
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      setEventList([]); // 오류 발생 시 빈 배열로 설정
+    }
+};
 
   useEffect(() => {
-    //console.log(selectedDate); // 최신 selectedDate 값을 출력
-    const eventsForSelectedDate = events.filter(event => event.deadline === selectedDate);
+    const eventsForSelectedDate = eventList.filter(event => event.dueDate === selectedDate);
     setSelectedDateEvents(eventsForSelectedDate);
-   console.log(selectedDateEvents)
-  }, [selectedDate, events]); // selectedDate가 변경될 때 실행
-  
-  
+  }, [selectedDate, eventList]);
+
+    
 
   const handleDateClick = (info: any) => {
     setSelectedDate(info.dateStr);
     //console.log(selectedDate)
     //const selectedDate = info.dateStr; // 클릭한 날짜 (YYYY-MM-DD 형식)
-    const eventsForSelectedDate = events.filter(event => event.deadline === selectedDate);
+    const eventsForSelectedDate = eventList.filter(event => event.dueDate === selectedDate);
     setSelectedDateEvents(eventsForSelectedDate);
   };
 
@@ -76,7 +103,8 @@ const formatToMMDD = (date: string) => {
   // 날짜 셀에 이벤트 개수 표시
   const renderDayCellContent = (cellInfo: any) => {
     const cellDate = formatDate(new Date(cellInfo.date)); // 'YYYY-MM-DD' 형식으로 변환
-    const dateEvents = events.filter(event => formatDate(new Date(event.deadline as string)) === cellDate); // 해당 날짜의 이벤트 필터링
+    const dateEvents = eventList.filter(event => formatDate(new Date(event.dueDate as string)) === cellDate); // 해당 날짜의 이벤트 필터링
+    
     const eventCount = dateEvents.length; // 이벤트 개수
 
     return (
@@ -99,6 +127,12 @@ const formatToMMDD = (date: string) => {
     return null; // 이벤트 제목을 숨기고 커스텀 렌더링 비활성화
   };
 
+  const statusData = [
+    { img: statusProgress, label: '진행 중' },
+    { img: statusComplete, label: '완료' },
+    { img: statusPending, label: '지연' }
+];
+
 
   return (
     
@@ -109,7 +143,7 @@ const formatToMMDD = (date: string) => {
                                 plugins={[dayGridPlugin, interactionPlugin]} // interactionPlugin을 추가해야 dateClick이 작동함
                                 initialView="dayGridMonth"
                                 weekends={true}
-                                events={events}
+                                events={eventList}
                                 dateClick={handleDateClick} // 날짜 클릭 핸들러
                                 headerToolbar={{ // layout header
                                   left: 'prev', 
@@ -124,6 +158,7 @@ const formatToMMDD = (date: string) => {
                                 height="auto" // 높이를 자동으로 설정
                                 contentHeight="auto" // 콘텐츠 높이를 자동 조정
                                 handleWindowResize={true} // 창 크기에 맞게 자동 조정
+                                datesSet={handleDatesSet} // datesSet 핸들러 추가
                               />
                             </div>
                             <div className={styles.calendarlist}>
@@ -145,15 +180,15 @@ const formatToMMDD = (date: string) => {
                                         </thead>
                                         <tbody>
                                             {selectedDateEvents.map((event) => (
-                                                    <tr key={event.id}>
-                                                    <td>{event.id}</td>
-                                                    <td><p>{event.name}</p></td>
+                                                    <tr key={event.taskId}>
+                                                    <td>{event.taskId}</td>
+                                                    <td><p>{event.taskName}</p></td>
                                                     
                                                     <td className={styles.status}>
-                                                        <img src={event.statusColor} alt=""></img>
-                                                        {event.status}
+                                                        <img src={statusData[event.status].img} alt=""></img>
+                                                        {statusData[event.status].label}
                                                     </td>
-                                                    <td>{event.deadline}</td>                                    
+                                                    <td>{event.dueDate}</td>                                    
                                                 </tr>
                                             ))}
                                         </tbody>

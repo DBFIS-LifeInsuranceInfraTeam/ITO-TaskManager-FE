@@ -1,26 +1,60 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from '../styles/List.module.css';
 import statusComplete from '../styles/image/list/status-complete.svg';
 import statusProgress from '../styles/image/list/status-progress.svg';
 import statusPending from '../styles/image/list/status-pending.svg';
 import { useNavigate } from 'react-router-dom';
+import { getAllTask } from '../api/getAllTask';
+
+interface Task {
+    taskId: number;
+    projectId: number;
+    taskName: string;
+    description: string;
+    assigneeId: string;
+    createdDate: string;
+    startDate: string;
+    dueDate: string;
+    frequencyId: number;
+    commentCount: number;
+    status: number;
+    itoProcessId: number;
+    assigneeConfirmation: string;
+}
 
 const List:React.FC = () => {
-    const data = [
-        { id: '01', name: 'SAS 라이센스 교체', manager: '김소연', status: '완료', deadline: '2024/09/01', statusColor: statusComplete },
-        { id: '02', name: '주간보고서 작성', manager: '이규빈', status: '진행 중', deadline: '2024/09/15', statusColor: statusProgress },
-        { id: "03", name: 'WAS 버전 업그레이드', manager: '변유석', status: '진행 중', deadline: '2024/09/07', statusColor: statusProgress },
-        { id: "04", name: 'SAS 라이센스 교체', manager: '김소연', status: '지연', deadline: '2024/09/07', statusColor: statusPending },
-        { id: "05", name: '주간보고서 작성', manager: '변유석', status: '지연', deadline: '2024/09/07', statusColor: statusPending }
-      ];
+    
 
-      const navigate = useNavigate(); // useNavigate 훅 사용
+    const [taskList, setTaskList] = useState<Task[]>([]);
+    const [loading, setLoading] = useState<boolean>(true); // 로딩 상태
 
-  const handleButtonClick = (id:string) => {
-    navigate(`/detail?id=${id}`); // 버튼 클릭 시 동적으로 URL 이동
+    useEffect(() => {
+      const fetchTaskList = async () => {
+        try {
+          const data = await getAllTask(); // 백엔드에서 날짜 데이터를 가져옴
+          
+          setTaskList(data); // 가져온 데이터를 설정
+        } catch (err) {
+          alert('서버에서 데이터를 가져오지 못했습니다.'); // 에러 메시지 설정
+        } finally {
+          setLoading(false); // 로딩 상태 해제
+        }
+      };
+  
+      fetchTaskList();
+    }, []);
+
+    const navigate = useNavigate(); // useNavigate 훅 사용
+    
+    const handleButtonClick = (taskId:number) => {
+    navigate(`/task/detail?taskId=${taskId}`); // 버튼 클릭 시 동적으로 URL 이동
   };
 
-
+  const statusData = [
+    { img: statusProgress, label: '진행 중' },
+    { img: statusComplete, label: '완료' },
+    { img: statusPending, label: '지연' }
+];
   return (
     <>
         <li className={styles.list}>
@@ -37,17 +71,17 @@ const List:React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((item) => (
-                                <tr key={item.id}>
-                                    <td>{item.id}</td>
-                                    <td><p>{item.name}</p></td>
-                                    <td>{item.manager}</td>
+                            {taskList.map((task:Task, index:number) => (
+                                <tr key={task.taskId}>
+                                    <td>{index + 1}</td>
+                                    <td><p>{task.taskName}</p></td>
+                                    <td>{task.assigneeId}</td>
                                     <td className={styles.status}>
-                                        <img src={item.statusColor} alt=""></img>
-                                        {item.status}
+                                        <img src={statusData[task.status].img} alt=""></img>
+                                        {statusData[task.status].label}
                                     </td>
-                                    <td>{item.deadline}</td>
-                                    <td><button onClick={() => handleButtonClick(item.id)}>상세</button></td>
+                                    <td>{task.dueDate}</td>
+                                    <td><button onClick={() => handleButtonClick(task.taskId)}>상세</button></td>
                                 </tr>
                             ))}
                         </tbody>

@@ -1,11 +1,11 @@
 import React, { useState, FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/Login.module.css'; // Import the CSS file for styling
 import { signup } from '../api/signup';
 import logo from '../styles/image/logo-black.png';
 
 const Signup:React.FC = () => {
-  const [id, setId] = useState<string>('');
+    const [id, setId] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordCheck, setPasswordCheck] = useState<string>('');
     const [name, setName] = useState<string>('');
@@ -17,34 +17,38 @@ const Signup:React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     // 버튼이 활성화되었는지 여부를 계산하는 함수
-  const isButtonEnabled = id.trim() !== '' && password.trim() !== '' && 
-  passwordCheck.trim() !== '' && name.trim() !== '' && 
-  phoneNumber.trim() !== '';
+    const isButtonEnabled = id.trim() !== '' && password.trim() !== '' && 
+    passwordCheck.trim() !== '' && name.trim() !== '' && 
+    phoneNumber.trim() !== '';
     
-  const handleSignup = async (e: FormEvent) => {
-      e.preventDefault();
-      setError(null);
+    const navigate = useNavigate();
+    
+    const handleSignup = async (e: FormEvent) => {
+        e.preventDefault();
+        setError(null);
+        
+        try {
+            const userData = {
+                id,
+                name,
+                password,
+                unit,
+                project,
+                email,
+                phoneNumber,
+                photo: null, // or a file/image if provided
+                position
+            };
 
-      try {
-        const userData = {
-            id,
-            name,
-            password,
-            unit,
-            project,
-            email,
-            phoneNumber,
-            photo: null, // or a file/image if provided
-            position
-        };
-
-        const response = await signup(userData);
-        console.log("Signup successful:", response);
-        // Redirect or update state after successful signup here
-      } catch (error) {
-          setError("이미 가입된 사용자입니다.");
-      }
-  };
+            const response = await signup(userData);
+            console.log("Signup successful:", response);
+            // Redirect or update state after successful signup here
+            navigate('/login');
+            
+        } catch (error) {
+            setError("이미 가입된 사용자입니다.");
+        }
+    };
 
     return (
       <div className={styles.container}>

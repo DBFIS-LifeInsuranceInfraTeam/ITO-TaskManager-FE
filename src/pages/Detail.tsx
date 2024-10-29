@@ -1,15 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/DetailPage.module.css';
+import { useLocation } from 'react-router-dom';
+import { getTaskById } from '../api/getTaskById';
+
+
+interface Task {
+  taskId: number;
+  projectId: number;
+  taskName: string;
+  description: string;
+  assigneeId: string;
+  createdDate: string;
+  startDate: string;
+  dueDate: string;
+  frequencyId: number;
+  commentCount: number;
+  status: number;
+  itoProcessId: number;
+  assigneeConfirmation: string;
+}
 
 const Detail: React.FC = () => {
+  
+  const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const id = searchParams.get('taskId'); // id는 문자열로 받아지므로, 필요 시 숫자로 변환
+    const [task, setTask] = useState<Task | undefined>();
+    const [error, setError] = useState<string | null>(null);
 
-  // const data = [
-  //   { id: '01', name: 'SAS 라이센스 교체', manager: '김소연', status: '완료', deadline: '2024/09/01' },
-  //   { id: '02', name: '주간보고서 작성', manager: '이규빈', status: '진행 중', deadline: '2024/09/15' },
-  //   { id: "03", name: 'WAS 버전 업그레이드', manager: '변유석', status: '진행 중', deadline: '2024/09/07' },
-  //   { id: "04", name: 'SAS 라이센스 교체', manager: '김소연', status: '지연', deadline: '2024/09/07' },
-  //   { id: "05", name: '주간보고서 작성', manager: '변유석', status: '지연', deadline: '2024/09/07' }
-  // ];
+    useEffect(() => {
+        if (id) {
+            const fetchData = async () => {
+                try {
+                    const taskData = await getTaskById(Number(id)); // id를 숫자로 변환하여 전달
+                    setTask(taskData);
+                } catch (error) {
+                    setError("데이터를 불러오는데 실패했습니다.");
+                }
+            };
+            fetchData();
+        }
+    }, [id]);
+
+
 
   return (
     <div className={styles.container}> {/* className을 사용하여 스타일 적용 */}
@@ -17,27 +50,27 @@ const Detail: React.FC = () => {
       
       <div className={styles.detail}>
         <label htmlFor="title">제목</label>
-        <p id="title">SSL인증서 교체</p>
+        <p id="title">{task?.taskName}</p>
       </div>
       
       <div className={styles.detail}>
         <label htmlFor="duration">기간</label>
-        <p id="duration">2024-01-01 ~ 2024-12-31</p>
+        <p id="duration">{task?.startDate} ~ {task?.dueDate}</p>
       </div>
       
       <div className={styles.detail}>
         <label htmlFor="process">ITO 프로세스</label>
-        <p id="process">변경</p>
+        <p id="process">{task?.itoProcessId}</p>
       </div>
       
       <div className={styles.detail}>
         <label htmlFor="manager">담당자</label>
-        <p id="manager">김소연</p>
+        <p id="manager">{task?.assigneeId}</p>
       </div>
       
       <div className={styles.detail}>
         <label htmlFor="content">내용</label>
-        <p id="content">SSL인증서 교체작업</p>
+        <p id="content">{task?.description}</p>
       </div>
 
       {/* 수정 버튼 추가 */}
