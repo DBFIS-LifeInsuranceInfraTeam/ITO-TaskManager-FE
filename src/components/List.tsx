@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { getAllTask } from '../api/getAllTask';
 
 interface Task {
-    taskId: number;
+    taskId: string;
     projectId: number;
     taskName: string;
     description: string;
@@ -25,40 +25,45 @@ interface Task {
 const List:React.FC = () => {
     
 
-    const [taskList, setTaskList] = useState<Task[]>([]);
-    const [loading, setLoading] = useState<boolean>(true); // 로딩 상태
-
-    useEffect(() => {
-      const fetchTaskList = async () => {
-        try {
-          const data = await getAllTask(); // 백엔드에서 날짜 데이터를 가져옴
-          
-          setTaskList(data); // 가져온 데이터를 설정
-        } catch (err) {
-          alert('서버에서 데이터를 가져오지 못했습니다.'); // 에러 메시지 설정
-        } finally {
-          setLoading(false); // 로딩 상태 해제
-        }
-      };
+  const [taskList, setTaskList] = useState<Task[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // 로딩 상태
   
-      fetchTaskList();
-    }, []);
-
-    const navigate = useNavigate(); // useNavigate 훅 사용
-    
-    const handleButtonClick = (taskId:number) => {
-    navigate(`/task/detail?taskId=${taskId}`); // 버튼 클릭 시 동적으로 URL 이동
+  useEffect(() => {
+    const fetchTaskList = async () => {
+      try {
+        const data = await getAllTask(); // 백엔드에서 데이터 가져옴
+        setTaskList(data || []); // undefined일 경우 빈 배열로 설정
+      } catch (err) {
+        alert('서버에서 데이터를 가져오지 못했습니다.');
+      } finally {
+        setLoading(false); // 로딩 상태 해제
+      }
+    };
+  
+    fetchTaskList();
+  }, []);
+  
+  const navigate = useNavigate();
+  
+  const handleButtonClick = (taskId: string) => {
+    navigate(`/task/detail?taskId=${taskId}`);
   };
-
+  
   const statusData = [
     { img: statusProgress, label: '진행 중' },
     { img: statusComplete, label: '완료' },
-    { img: statusPending, label: '지연' }
-];
+    { img: statusPending, label: '지연' },
+  ];
+  
   return (
     <>
         <li className={styles.list}>
                         <p>이번 달 할 일</p>
+                        {loading ? (
+        <p>로딩 중...</p>
+      ) : taskList.length === 0 ? (
+        <span>등록된 업무가 없습니다.</span> // taskList가 비어있을 때 메시지
+      ) : (
                         <table className={styles.table}>
                         <thead>
                             <tr>
@@ -86,7 +91,9 @@ const List:React.FC = () => {
                             ))}
                         </tbody>
                         </table>
+      )}
                     </li>
+                          
     </>
   )
 }

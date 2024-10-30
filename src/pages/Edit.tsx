@@ -1,25 +1,62 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styles from '../styles/Add.module.css';
-import { addTask } from '../api/addTask';
-import { useNavigate } from 'react-router-dom';
+import { updateTask } from '../api/updateTask'; // PUT 요청을 보내는 함수
 import { getUserByProjectId } from '../api/getUserByProjectId';
 
-const Add: React.FC = () => {
+interface Task {
+    taskId: number;
+    projectId: number;
+    taskName: string;
+    description: string;
+    assigneeId: string;
+    createdDate: string;
+    startDate: string;
+    dueDate: string;
+    frequencyId: number;
+    commentCount: number;
+    status: number;
+    itoProcessId: string;
+    assigneeConfirmation: string;
+  }
 
+const Edit: React.FC = () => {
+    
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { task } = location.state as { task: Task }; // task 데이터 추출
+    
     const [taskName, setTaskName] = useState<string>('');
     const [startDate, setStartDate] = useState<string>('');
-    const [endDate, setEndDate] = useState<string>('');
+    const [dueDate, setDueDate] = useState<string>('');
     const [processId, setProcessId] = useState<string>('');
     const [assigneeId, setAssigneeId] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     
-    const navigate = useNavigate();
+    const [formData, setFormData] = useState<Partial<Task>>(task); // 초기값을 task로 설정
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prevFormData => ({
+        ...prevFormData,
+        [name]: value,
+        }));
+    };
+
+    const handleSave = async () => {
+        
+    };
+
+    const handleCancel = () => {
+        navigate(-1); // 이전 페이지로 이동
+      };
+    
 
     interface User {
-      userId: string;
-      name: string;
-      // 필요에 따라 추가 속성 정의 가능
-    }
+        userId: string;
+        name: string;
+        // 필요에 따라 추가 속성 정의 가능
+      }
     
     // userList의 타입을 User[]로 설정
     const [userList, setUserList] = useState<User[]>([]);
@@ -47,49 +84,20 @@ const Add: React.FC = () => {
       }
     }, []);
     
-    
-    const handleAddTask = async () => {
-        
-        try {
-            const taskData = {
-                projectId:1,
-                taskName:taskName,
-                description:description,
-                assigneeId: assigneeId,
-                createdDate: new Date().toISOString().split('T')[0],
-                startDate: new Date(startDate).toISOString().split('T')[0],
-                dueDate: new Date(endDate).toISOString().split('T')[0],
-                frequencyId:null,
-                status:0,
-                itoProcessId:1,
-                assigneeConfirmation:'N',
-            };
-
-            const response = await addTask(taskData);
-            console.log("add Task successful:", response);
-            // Redirect or update state after successful signup here
-            navigate('/');
-            
-        } catch (error) {
-            alert("오류");
-        }
-    };
-
-  return (
+    return (
     <div className={styles.container}> {/* className을 사용하여 스타일 적용 */}
-      <h1 className={styles.title}>업무 생성</h1> {/* 제목에 클래스 추가 */}
-      
-      <div className={styles.detail}>
-        <label htmlFor="title">제목</label>
-        <input 
-            type="text" 
-            id="taskName" 
-            value={taskName} 
-            onChange={(e) => setTaskName(e.target.value)} 
-            placeholder="제목을 입력하세요." 
-            required 
-        />
-      </div>
+        <h1 className={styles.title}>업무 수정</h1> {/* 제목에 클래스 추가 */}
+        <div className={styles.detail}>
+            <label htmlFor="title">제목</label>
+            <input 
+                type="text" 
+                id="taskName" 
+                value={taskName} 
+                onChange={(e) => setTaskName(e.target.value)} 
+                placeholder={task.taskName} 
+                required 
+            />
+        </div>
       
       <div className={styles.detail}>
         <label htmlFor="duration">기간</label>
@@ -98,15 +106,15 @@ const Add: React.FC = () => {
             id="startDate" 
             value={startDate} 
             onChange={(e) => setStartDate(e.target.value)} 
-            placeholder="시작일을 입력하세요." 
+            placeholder={task.startDate} 
             required 
         />
         <input 
             type="date" 
-            id="endDate" 
-            value={endDate} 
-            onChange={(e) => setEndDate(e.target.value)} 
-            placeholder="마감일을 입력하세요." 
+            id="dueDate" 
+            value={dueDate} 
+            onChange={(e) => setDueDate(e.target.value)} 
+            placeholder={task.dueDate} 
             required 
         />
       </div>
@@ -118,7 +126,7 @@ const Add: React.FC = () => {
             id="processId" 
             value={processId} 
             onChange={(e) => setProcessId(e.target.value)} 
-            placeholder="프로세스를 입력하세요." 
+            placeholder={task.itoProcessId}  
             required 
         />
       </div>
@@ -145,14 +153,7 @@ const Add: React.FC = () => {
           )}
 
         </select>
-        {/* <input 
-            type="text" 
-            id="asignee" 
-            value={asigneeId} 
-            onChange={(e) => setAsigneeId(e.target.value)} 
-            placeholder="담당자를 입력하세요." 
-            required 
-        /> */}
+ 
       </div>
       
       <div className={styles.detail}>
@@ -162,18 +163,18 @@ const Add: React.FC = () => {
             id="description" 
             value={description} 
             onChange={(e) => setDescription(e.target.value)} 
-            placeholder="내용을 입력하세요." 
+            placeholder={task.description}  
             required 
         />
       </div>
 
-
+      {/* 수정 버튼 추가 */}
       <div className={styles.buttonContainer}>
-        <button onClick={() => handleAddTask()} className={styles.addButton}>등록</button>
-        <button className={styles.cancelButton}>취소</button>
+        <button  className={styles.addButton}>수정</button>
+        <button onClick={handleCancel} className={styles.cancelButton}>취소</button>
       </div>
     </div>
   );
 }
 
-export default Add;
+export default Edit;

@@ -179,9 +179,9 @@ const formatToMMDD = (date: string) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {selectedDateEvents.map((event) => (
+                                            {selectedDateEvents.map((event, index) => (
                                                     <tr key={event.taskId}>
-                                                    <td>{event.taskId}</td>
+                                                    <td>{index + 1}</td>
                                                     <td><p>{event.taskName}</p></td>
                                                     
                                                     <td className={styles.status}>

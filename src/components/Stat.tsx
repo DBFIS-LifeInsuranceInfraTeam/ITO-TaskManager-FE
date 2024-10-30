@@ -43,23 +43,26 @@ const Stat: React.FC = () => {
   
     const formatDate = (date: Date) => {
       // 날짜 형식: YYYY/MM/DD (요일)
-      const dateString = date
-        .toLocaleDateString('ko-KR', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          weekday: 'short', // 요일
-        })
-        .replace(/\./g, '/'); // '.' 대신 '/'로 변경
+      // const dateString = date
+      //   .toLocaleDateString('ko-KR', {
+      //     year: 'numeric',
+      //     month: '2-digit',
+      //     day: '2-digit',
+      //     weekday: 'short', // 요일
+      //   })
+      //   .replace(/\./g, '/')
+      //   .replace(/\/+$/, ''); // 문자열 끝에 붙는 모든 '/' 제거
+
+      // // 시간 형식: 12시간제 (AM/PM)
+      // const timeString = date.toLocaleTimeString('en-US', {
+      //   hour: 'numeric',
+      //   minute: '2-digit',
+      //   hour12: true,
+      // });
+      const dateString = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} (${date.toLocaleDateString('ko-KR', { weekday: 'short' })}) ${date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
   
-      // 시간 형식: 12시간제 (AM/PM)
-      const timeString = date.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-      });
-  
-      return `${dateString} ${timeString}`;
+      //return `${dateString} ${timeString}`;
+      return dateString;
     };
   
 

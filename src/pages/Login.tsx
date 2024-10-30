@@ -5,7 +5,7 @@ import { login } from '../api/login';
 import logo from '../styles/image/logo-black.png';
 
 const Login: React.FC = () => {
-    const [id, setId] = useState<string>('');
+    const [userId, setUserId] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -15,17 +15,19 @@ const Login: React.FC = () => {
       setError(null);
 
       try {
-          const response = await login(id, password);
+          const response = await login(userId, password);
           //console.log("Login successful:", response);
           // 리다이렉트
-          navigate('/', { state: { userData: response.data.userInfo } });
+          sessionStorage.setItem('userInfo', JSON.stringify(response.data.userInfo));
+          sessionStorage.setItem('token', response.data.token);
+          navigate('/');
       } catch (error) {
           setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요."); // Error message in Korean
       }
   };
 
   // 버튼이 활성화되었는지 여부를 계산하는 함수
-  const isButtonEnabled = id.trim() !== '' && password.trim() !== '';
+  const isButtonEnabled = userId.trim() !== '' && password.trim() !== '';
 
     return (
         <div className={styles.container}>
@@ -35,12 +37,12 @@ const Login: React.FC = () => {
           <div className={styles.formContainer}>
           <form onSubmit={handleLogin}>
                 <div className={styles.inputGroup}>
-                    <label htmlFor="id">아이디</label>
+                    <label htmlFor="userId">아이디</label>
                     <input 
                         type="text" 
-                        id="id" 
-                        value={id} 
-                        onChange={(e) => setId(e.target.value)} 
+                        id="userId" 
+                        value={userId} 
+                        onChange={(e) => setUserId(e.target.value)} 
                         placeholder="아이디를 입력하세요." 
                         required 
                     />

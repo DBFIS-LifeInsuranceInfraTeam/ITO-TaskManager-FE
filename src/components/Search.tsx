@@ -5,12 +5,9 @@ import calendaricon from '../styles/image/dashboard/calendar.svg';
 import searchicon from '../styles/image/dashboard/search.svg';
 
 const Search:React.FC = () => {
-
-    const [isDateSelected, setIsDateSelected] = useState(false);
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsDateSelected(!!e.target.value);
-  };
+    
+    const [endDate, setEndDate] = useState<string>('');
+    const [startDate, setStartDate] = useState<string>('');
   
   return (
     <>
@@ -32,8 +29,44 @@ const Search:React.FC = () => {
                                     <img src={filtericon} alt='' className={styles.searchIcon} />
                                 </div>
                             </li>
+                            <li>
+                                <div className={styles.search}>
+                                    <select className={styles.searchSelect} >
+                                        <option value="" disabled selected>유닛</option>
+                                        
+                                    </select>
+                                    <img src={filtericon} alt='' className={styles.searchIcon} />
+                                </div>
+                            </li>
+                            <li>
+                                <div className={styles.search}>
+                                    <select className={styles.searchSelect} >
+                                        <option value="" disabled selected>담당자</option>
+                                        
+                                    </select>
+                                    <img src={filtericon} alt='' className={styles.searchIcon} />
+                                </div>
+                            </li>
                             <li><div className={styles.search}>
-                                    <input type="date" onChange={handleDateChange} placeholder="마감일 선택" className={styles.searchInput} />
+                                    <input 
+                                        type="date" 
+                                        id="startDate" 
+                                        value={startDate} 
+                                        onChange={(e) => setStartDate(e.target.value)} 
+                                        className={styles.searchInput}
+                                        placeholder="시작일 선택" 
+                                    />
+                                    <img src={calendaricon} alt='' className={styles.searchIcon} />
+                                </div></li>
+                            <li><div className={styles.search}>
+                                    <input 
+                                        type="date" 
+                                        id="endDate" 
+                                        value={endDate} 
+                                        onChange={(e) => setEndDate(e.target.value)} 
+                                        className={styles.searchInput}
+                                        placeholder="마감일 선택" 
+                                    />
                                     <img src={calendaricon} alt='' className={styles.searchIcon} />
                                 </div></li>
                             <li><div className={styles.search}>

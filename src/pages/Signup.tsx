@@ -5,19 +5,19 @@ import { signup } from '../api/signup';
 import logo from '../styles/image/logo-black.png';
 
 const Signup:React.FC = () => {
-    const [id, setId] = useState<string>('');
+    const [userId, setUserId] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordCheck, setPasswordCheck] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [phoneNumber, setPhoneNumber] = useState<string>('');
-    const [project, setProject] = useState<string>('');
+    const [projectId, setProjectId] = useState<string>('');
     const [unit, setUnit] = useState<string>('');
     const [position, setPosition] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
 
     // 버튼이 활성화되었는지 여부를 계산하는 함수
-    const isButtonEnabled = id.trim() !== '' && password.trim() !== '' && 
+    const isButtonEnabled = userId.trim() !== '' && password.trim() !== '' && 
     passwordCheck.trim() !== '' && name.trim() !== '' && 
     phoneNumber.trim() !== '';
     
@@ -29,15 +29,16 @@ const Signup:React.FC = () => {
         
         try {
             const userData = {
-                id,
+                userId,
                 name,
                 password,
                 unit,
-                project,
+                projectId,
                 email,
                 phoneNumber,
                 photo: null, // or a file/image if provided
-                position
+                position,
+                admin: false
             };
 
             const response = await signup(userData);
@@ -58,12 +59,12 @@ const Signup:React.FC = () => {
         <div className={styles.formContainer}>
             <form onSubmit={handleSignup}>
                 <div className={styles.inputGroup}>
-                    <label htmlFor="id">아이디</label>
+                    <label htmlFor="userId">아이디</label>
                     <input 
                         type="text" 
-                        id="id" 
-                        value={id} 
-                        onChange={(e) => setId(e.target.value)} 
+                        id="userId" 
+                        value={userId} 
+                        onChange={(e) => setUserId(e.target.value)} 
                         placeholder="아이디를 입력하세요." 
                         required 
                     />
@@ -124,12 +125,12 @@ const Signup:React.FC = () => {
                     />
                 </div>
                 <div className={styles.inputGroup}>
-                    <label htmlFor="project">팀</label>
+                    <label htmlFor="projectId">팀</label>
                     <input 
                         type="string" 
-                        id="project" 
-                        value={project} 
-                        onChange={(e) => setProject(e.target.value)} 
+                        id="projectId" 
+                        value={projectId} 
+                        onChange={(e) => setProjectId(e.target.value)} 
                         placeholder="팀을 입력하세요." 
                         required 
                     />

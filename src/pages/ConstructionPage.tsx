@@ -1,7 +1,7 @@
 import React from 'react'
-import styles from '../styles/Loading.module.css';
+import styles from '../styles/ConstructionPage.module.css';
 import constructionlogo from '../styles/image/construction-logo.png';
-const Loading: React.FC = () => {
+const ConstructionPage: React.FC = () => {
   return (
     <div className={styles.container}>
         <img src={constructionlogo} alt=""/>
@@ -10,4 +10,4 @@ const Loading: React.FC = () => {
   )
 }
 
-export default Loading
+export default ConstructionPage

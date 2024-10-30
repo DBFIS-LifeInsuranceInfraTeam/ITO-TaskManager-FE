@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from '../styles/Menu.module.css';
 import dashboardicon from '../styles/image/menu/dashboard.svg';
 import listicon from '../styles/image/menu/list.svg';
@@ -13,6 +13,17 @@ const Menu: React.FC = () => {
     
     // 현재 경로가 활성화된 메뉴 항목에 대해 스타일 적용
     const isActive = (path: string) => location.pathname === path;
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        // sessionStorage에서 데이터 삭제
+        sessionStorage.removeItem('userInfo');
+        sessionStorage.removeItem('token');
+        
+        // 로그인 페이지로 이동
+        navigate('/login');
+    };
 
     return (
         <div className={styles.menu}>
@@ -49,10 +60,15 @@ const Menu: React.FC = () => {
                 </li>
             </ul>
             
-            <Link to="/login" className={styles.logout}>
+            {/* <Link to="/login" className={styles.logout}>
                 <img src={logouticon} alt=''></img>
                 로그아웃
-            </Link>
+            </Link> */}
+
+            <button onClick={handleLogout} className={styles.logout}>
+                <img src={logouticon} alt='' />
+                로그아웃
+            </button>
             
         </div>
     );

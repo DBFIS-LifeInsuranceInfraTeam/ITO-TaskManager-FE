@@ -6,8 +6,11 @@ import Dashboard from './pages/Dashboard';
 import Detail from './pages/Detail';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import Loading from './pages/Loading';
+import ConstructionPage from './pages/ConstructionPage';
 import Add from './pages/Add';
+import TaskList from './pages/TaskList';
+import Setting from './pages/Setting';
+import Edit from './pages/Edit';
 
 // const App: React.FC = () => {
   
@@ -38,9 +41,10 @@ const App: React.FC = () => {
       <Routes>
         {/* <Route path="/" element={<MainLayout><Home /></MainLayout>} /> */}
         <Route path="/" element={<MainLayout><Dashboard /></MainLayout>} />
-        <Route path="/list" element={<MainLayout><Loading/></MainLayout>} />
-        <Route path="/alarm" element={<MainLayout><Loading/></MainLayout>} />
-        <Route path="/setting" element={<MainLayout><Loading/></MainLayout>} />
+        <Route path="/list" element={<MainLayout><TaskList/></MainLayout>} />
+        <Route path="/alarm" element={<MainLayout><ConstructionPage/></MainLayout>} />
+        <Route path="/setting" element={<MainLayout><Setting/></MainLayout>} />
+        <Route path="/task/edit" element={<MainLayout><Edit /></MainLayout>} />
         <Route path="/task/add" element={<MainLayout><Add /></MainLayout>} />
         <Route path="/task/detail" element={<MainLayout><Detail /></MainLayout>} />
         <Route path="/login" element={<Login />} />
