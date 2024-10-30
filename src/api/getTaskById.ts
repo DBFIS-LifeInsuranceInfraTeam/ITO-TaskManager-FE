@@ -1,6 +1,6 @@
 import apiClient from '../services/apiClient';
 
-export const getTaskById = async (taskId:number) => {
+export const getTaskById = async (taskId:string) => {
   try {
     const response = await apiClient.get(`/tasks/${taskId}`);
     console.log(response);

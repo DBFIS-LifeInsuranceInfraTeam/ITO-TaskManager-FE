@@ -1,6 +1,7 @@
 import apiClient from '../services/apiClient';
 
-interface addTaskData {
+interface updateTaskData {
+    projectId: string;
     taskName: string;
     description: string;
     assigneeId: string;
@@ -13,9 +14,9 @@ interface addTaskData {
     assigneeConfirmation: string; //Y/N
 }
 
-export const addTask = async (taskData: addTaskData) => {
+export const updateTask = async (taskData: updateTaskData) => {
     try {
-        const response = await apiClient.post(`/tasks`, taskData);
+        const response = await apiClient.put(`/tasks`, taskData);
         console.log(response.data);
         return response.data;
     } catch (error) {
