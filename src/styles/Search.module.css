@@ -27,10 +27,10 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    gap: 0.2em;
+    
     justify-content: space-around;
     width: 100%;
-    padding: 12px 16px;
+    padding: 0;
     align-items: center;
     box-sizing: border-box; /* 패딩을 포함하여 너비 계산 */
   }
@@ -57,14 +57,18 @@ align-items: center;
     
     
     width: 100%; /* input이 부모 요소인 .searchContainer에 맞게 확장 */
-    padding: 6px 24px 6px 32px;
-    height: 40px;
+
+    padding-left: 2em;
+
     font-size: 16px;
-    box-sizing: border-box; /* padding 포함하여 전체 크기를 계산 */
-    border-radius: 12px;
+
+
     background: #FFF;
-    border: none;
+
     box-shadow: 0px 2.703px 27.031px 0px rgba(69, 69, 80, 0.10);
+
+    border: 1px solid #ccc;
+    border-radius: 0.7rem;
   }
   
   .detailsearch .searchInput {
@@ -73,13 +77,18 @@ align-items: center;
     appearance: none;         /* 표준 속성 */
     width: 100%; /* input이 부모 요소인 .searchContainer에 맞게 확장 */
     padding: 12px 24px 12px 32px;
-    height: 40px;
+
     font-size: 16px;
     box-sizing: border-box; /* padding 포함하여 전체 크기를 계산 */
     border-radius: 12px;
     background: #FFF;
-    border: none;
+
     box-shadow: 0px 2.703px 27.031px 0px rgba(69, 69, 80, 0.10);
+
+
+    border: 1px solid #ccc;
+    border-radius: 0.7rem;
+
   }
 
   input[type="date"]::-webkit-calendar-picker-indicator {
@@ -96,4 +105,11 @@ align-items: center;
     width: 20px; /* 아이콘 크기 */
     height: 20px; /* 아이콘 크기 */
     pointer-events: none; /* 아이콘이 클릭되지 않도록 설정 */
+  }
+
+
+  
+  .searchInput:focus, .searchSelect:focus {
+    border-color: #89C53F;
+    outline: none;
   }
