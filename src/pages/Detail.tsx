@@ -3,6 +3,8 @@ import styles from '../styles/DetailPage.module.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getTaskById } from '../api/getTaskById';
 import { deleteTask } from '../api/deleteTask';
+import { addComment } from '../api/addComment';
+import { addLiketoComment } from '../api/addLiketoComment';
 
 
 interface Task {
@@ -21,6 +23,16 @@ interface Task {
   assigneeConfirmation: string;
 }
 
+
+interface Comment {
+  commentId: bigint;
+  commenterId: string;
+  commentContent: string;
+  createDate: string;
+  likeCount: number;
+  likedByUser: boolean;
+}
+
 const Detail: React.FC = () => {
   
   const location = useLocation();
@@ -28,13 +40,19 @@ const Detail: React.FC = () => {
     const taskId = searchParams.get('taskId'); // id는 문자열로 받아지므로, 필요 시 숫자로 변환
     const [task, setTask] = useState<Task | undefined>();
     const [error, setError] = useState<string | null>(null);
+    const [commentList, setCommentList] = useState<Comment[]>([]);
+    const [commentContent, setCommentContent] = useState<string>('');
 
     useEffect(() => {
         if (taskId) {
             const fetchData = async () => {
                 try {
-                    const taskData = await getTaskById(taskId); // id를 숫자로 변환하여 전달
-                    setTask(taskData);
+                  const taskData = await getTaskById(taskId); // id를 숫자로 변환하여 전달
+                  setTask({
+                      ...taskData,
+                      comments: undefined // comments 필드 제거
+                  });
+                  setCommentList(taskData.comments || []); // comments를 commentList에 설정
                 } catch (error) {
                     setError("데이터를 불러오는데 실패했습니다.");
                 }
@@ -60,6 +78,51 @@ const Detail: React.FC = () => {
       } catch (error) {
           console.error("Failed to delete task:", error);
           // 에러 발생 시 사용자에게 알림을 줄 수도 있습니다.
+      }
+    };
+
+
+    const handleLikeClick = async (commentId: bigint) => {
+      const userInfo = sessionStorage.getItem("userInfo")
+      ? JSON.parse(sessionStorage.getItem("userInfo") as string)
+      : null;
+      if (userInfo?.userId) {
+      try {
+          const updatedComment = await addLiketoComment(commentId, userInfo?.userId);
+          setCommentList((prevComments) =>
+              prevComments.map((comment) =>
+                  comment.commentId === commentId
+                      ? {
+                          ...comment,
+                          likes: updatedComment.likeCount,
+                          likedByUser: !comment.likedByUser,
+                      }
+                      : comment
+              )
+          );
+      } catch (error) {
+          console.error("Failed to add like:", error);
+          alert("좋아요를 추가할 수 없습니다. 다시 시도해 주세요.");
+      }
+    }
+  };
+
+    const handleCommentSubmit = async () => {
+        const userInfo = sessionStorage.getItem("userInfo")
+      ? JSON.parse(sessionStorage.getItem("userInfo") as string)
+      : null;
+
+      if (taskId && commentContent.trim() && userInfo?.userId) {
+        try {
+          const newCommentData = await addComment({
+            taskId,
+            commentContent,
+            commenterId: userInfo.userId, // 키 이름 수정
+          });
+          console.log("Comment added:", newCommentData);
+        } catch (error) {
+          console.error("Failed to create comment:", error);
+        }
       }
     };
 
@@ -96,6 +159,39 @@ const Detail: React.FC = () => {
       <div className={styles.buttonContainer}>
         <button className={styles.editButton} onClick={handleEditClick}>수정</button>
         <button className={styles.cancelButton} onClick={() => task?.taskId && handleDeleteClick(task.taskId)}>삭제</button>
+      </div>
+
+
+
+      {/* 댓글 목록 */}
+      <div className={styles.commentSection}>
+        <h2>댓글 목록</h2>
+        {commentList.length > 0 ? (
+          commentList.map((comment) => (
+            <div key={comment.commentId} className={styles.comment}>
+            <p><strong>{comment.commenterId}:</strong> {comment.commentContent}</p>
+            <p className={styles.timestamp}>{comment.createDate}</p>
+            <button 
+              className={styles.likeButton} 
+              onClick={() => handleLikeClick(comment.commentId)}
+            >
+              {comment.likedByUser ? '♥️' : '♡'} {comment.likeCount}
+            </button>
+          </div>
+          ))
+        ) : (
+          <p>댓글이 없습니다.</p>
+        )}
+      </div>
+
+      {/* 댓글 작성 */}
+      <div className={styles.commentInput}>
+        <textarea
+          value={commentContent}
+          onChange={(e) => setCommentContent(e.target.value)}
+          placeholder="댓글을 작성하세요..."
+        />
+        <button onClick={handleCommentSubmit} className={styles.submitButton}>댓글 작성</button>
       </div>
     </div>
   );

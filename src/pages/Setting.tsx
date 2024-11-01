@@ -21,7 +21,7 @@ const Setting: React.FC = () => {
         const userInfoData = sessionStorage.getItem("userInfo")
           ? JSON.parse(sessionStorage.getItem("userInfo") as string)
           : null;
-
+          console.log(userInfo)
           setUserInfo(userInfoData);
       }, []);
 
@@ -33,28 +33,28 @@ const Setting: React.FC = () => {
       <h1 className={styles.title}>{userInfo?.name} {userInfo?.position} 님 안녕하세요!</h1> {/* 제목에 클래스 추가 */}
       
       <div className={styles.detail}>
-        <label htmlFor="title">아이디</label>
-        <p id="title">{userInfo?.userId}</p>
+        <label htmlFor="userId">아이디</label>
+        <p id="userId">{userInfo?.userId}</p>
       </div>
       
       <div className={styles.detail}>
-        <label htmlFor="process">이메일</label>
-        <p id="process">{userInfo?.email}</p>
+        <label htmlFor="email">이메일</label>
+        <p id="email">{userInfo?.email}</p>
       </div>
 
       <div className={styles.detail}>
-        <label htmlFor="process">전화번호</label>
-        <p id="process">{userInfo?.phoneNumber}</p>
+        <label htmlFor="phoneNumber">전화번호</label>
+        <p id="phoneNumber">{userInfo?.phoneNumber}</p>
       </div>
 
       <div className={styles.detail}>
-        <label htmlFor="process">프로젝트아이디</label>
-        <p id="process">{userInfo?.projectId}</p>
+        <label htmlFor="projectId">프로젝트아이디</label>
+        <p id="projectId">{userInfo?.projectId}</p>
       </div>
       
       <div className={styles.detail}>
-        <label htmlFor="manager">유닛</label>
-        <p id="manager">{userInfo?.unit}</p>
+        <label htmlFor="unit">유닛</label>
+        <p id="unit">{userInfo?.unit}</p>
       </div>
       
 

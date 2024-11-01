@@ -5,7 +5,7 @@ import progress from '../styles/image/status/progress.svg';
 import pending from '../styles/image/status/pending.svg';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { getDate } from '../api/getDate';
+import Clock from './Clock';
 
 // Chart.js의 기본 요소를 등록합니다.
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -14,56 +14,9 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const Stat: React.FC = () => {
     //const [dateTime, setDateTime] = useState<string>(getFormattedDateTime());
 
-    const [date, setDate] = useState<Date>(new Date());
-    const [loading, setLoading] = useState<boolean>(true); // 로딩 상태
-    const [error, setError] = useState<string | null>(null); // 에러 메시지 저장
+    
 
-    useEffect(() => {
-      const fetchDate = async () => {
-        try {
-          const data = await getDate(); // 백엔드에서 날짜 데이터를 가져옴
-          
-          setDate(new Date(
-            data.year,
-            data.month - 1, // 월을 0부터 시작하도록 조정
-            data.day,
-            data.hour,
-            data.minute,
-            data.second
-        )); // 가져온 데이터를 설정
-        } catch (err) {
-          setError('서버에서 데이터를 가져오지 못했습니다.'); // 에러 메시지 설정
-        } finally {
-          setLoading(false); // 로딩 상태 해제
-        }
-      };
-  
-      fetchDate();
-    }, []);
-  
-    const formatDate = (date: Date) => {
-      // 날짜 형식: YYYY/MM/DD (요일)
-      // const dateString = date
-      //   .toLocaleDateString('ko-KR', {
-      //     year: 'numeric',
-      //     month: '2-digit',
-      //     day: '2-digit',
-      //     weekday: 'short', // 요일
-      //   })
-      //   .replace(/\./g, '/')
-      //   .replace(/\/+$/, ''); // 문자열 끝에 붙는 모든 '/' 제거
-
-      // // 시간 형식: 12시간제 (AM/PM)
-      // const timeString = date.toLocaleTimeString('en-US', {
-      //   hour: 'numeric',
-      //   minute: '2-digit',
-      //   hour12: true,
-      // });
-      const dateString = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} (${date.toLocaleDateString('ko-KR', { weekday: 'short' })}) ${date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false })}`;
-  
-      //return `${dateString} ${timeString}`;
-      return dateString;
-    };
+    
   
 
   
@@ -92,14 +45,7 @@ const Stat: React.FC = () => {
   return (
     
         <div className={styles.stat}>
-            <div className={styles.title}>
-                <p className={styles.subtitle}>오늘의 통계</p>
-                {error ? (
-                  <p className={styles.timeerror}>{'⚠ '+formatDate(date)}</p>
-                ) : (
-                  <p className={styles.time}>{'  '+formatDate(date)}</p>
-                )}
-            </div>
+            <Clock/>
             
             <div className={styles.chart}>
                 <p>이번 달 진행률</p>

@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+
 const apiClient = axios.create({
-  baseURL: '/api', // 환경 변수를 사용
+  
+  baseURL: `/api`, // 환경 변수를 사용
   headers: {
     'Content-Type': 'application/json',
   },
