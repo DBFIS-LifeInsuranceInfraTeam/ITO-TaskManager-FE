@@ -22,26 +22,31 @@ interface Task {
     assigneeConfirmation: string;
 }
 
-const List:React.FC = () => {
+interface ListProps {
+  taskList: Task[];
+  loading: boolean;
+}
+
+const List: React.FC<ListProps> = ({ taskList, loading }) => {
     
 
-  const [taskList, setTaskList] = useState<Task[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // 로딩 상태
+  // const [taskList, setTaskList] = useState<Task[]>([]);
+  // const [loading, setLoading] = useState<boolean>(true); // 로딩 상태
   
-  useEffect(() => {
-    const fetchTaskList = async () => {
-      try {
-        const data = await getAllTask(); // 백엔드에서 데이터 가져옴
-        setTaskList(data || []); // undefined일 경우 빈 배열로 설정
-      } catch (err) {
-        alert('서버에서 데이터를 가져오지 못했습니다.');
-      } finally {
-        setLoading(false); // 로딩 상태 해제
-      }
-    };
+  // useEffect(() => {
+  //   const fetchTaskList = async () => {
+  //     try {
+  //       const data = await getAllTask(); // 백엔드에서 데이터 가져옴
+  //       setTaskList(data || []); // undefined일 경우 빈 배열로 설정
+  //     } catch (err) {
+  //       alert('서버에서 데이터를 가져오지 못했습니다.');
+  //     } finally {
+  //       setLoading(false); // 로딩 상태 해제
+  //     }
+  //   };
   
-    fetchTaskList();
-  }, []);
+  //   fetchTaskList();
+  // }, []);
   
   const navigate = useNavigate();
   
@@ -50,6 +55,7 @@ const List:React.FC = () => {
   };
   
   const statusData = [
+    { img: statusProgress, label: '시작 전' },
     { img: statusProgress, label: '진행 중' },
     { img: statusComplete, label: '완료' },
     { img: statusPending, label: '지연' },

@@ -10,6 +10,7 @@ const Add: React.FC = () => {
     const [startDate, setStartDate] = useState<string>('');
     const [endDate, setEndDate] = useState<string>('');
     const [processId, setProcessId] = useState<string>('');
+    const [project, setProject] = useState<string>('');
     const [assigneeId, setAssigneeId] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     
@@ -23,36 +24,40 @@ const Add: React.FC = () => {
     
     // userList의 타입을 User[]로 설정
     const [userList, setUserList] = useState<User[]>([]);
+    const [projectList, setProjectList] = useState<string[]>([]); // 여러 프로젝트 지원을 위한 배열
     
 
     useEffect(() => {
       const userInfo = sessionStorage.getItem("userInfo")
-        ? JSON.parse(sessionStorage.getItem("userInfo") as string)
-        : null;
-        
+          ? JSON.parse(sessionStorage.getItem("userInfo") as string)
+          : null;
+
       if (userInfo && userInfo.projectId) {
-        const { projectId } = userInfo;
-        
+          setProjectList(userInfo.projectId);
+      }
+  }, []);
+    
+  useEffect(() => {
+    if (project) {
         const fetchUsers = async () => {
-          try {
-            const userListData = await getUserByProjectId(projectId);
-            
-            setUserList(userListData || []);
-          } catch (error) {
-            console.error("Error fetching users:", error);
-          }
+            try {
+                const userListData = await getUserByProjectId(project);
+                setUserList(userListData || []);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
         };
         fetchUsers();
-        
-      }
-    }, []);
-    
+    }
+}, [project]);
     
     const handleAddTask = async () => {
-        
+      const userInfo = sessionStorage.getItem("userInfo")
+      ? JSON.parse(sessionStorage.getItem("userInfo") as string)
+      : null;
         try {
             const taskData = {
-                projectId:1,
+                projectId:project,
                 taskName:taskName,
                 description:description,
                 assigneeId: assigneeId,
@@ -121,6 +126,23 @@ const Add: React.FC = () => {
             placeholder="프로세스를 입력하세요." 
             required 
         />
+      </div>
+
+      <div className={styles.detail}>
+        <label htmlFor="project">프로젝트</label>
+        <select
+                    id="project"
+                    value={project}
+                    onChange={(e) => setProject(e.target.value)}
+                    required
+                >
+                    <option value="">프로젝트를 선택하세요.</option>
+                    {projectList.map((proj) => (
+                        <option key={proj} value={proj}>
+                            {proj}
+                        </option>
+                    ))}
+                </select>
       </div>
       
       <div className={styles.detail}>

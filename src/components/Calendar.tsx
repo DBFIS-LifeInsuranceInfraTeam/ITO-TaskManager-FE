@@ -60,9 +60,16 @@ const Calendar = () => {
     const formattedMonth = `${year}-${month < 10 ? '0' : ''}${month}`;
     setCurrentMonth(formattedMonth);
 
+
+    const userInfo = sessionStorage.getItem("userInfo")
+        ? JSON.parse(sessionStorage.getItem("userInfo") as string)
+        : null;
+
+    const projectIds = userInfo ? userInfo.projectId : []; // 유저의 프로젝트 ID 배열 가져오기
+
     try {
       // `getTaskByMonth` 호출하여 데이터를 가져옴
-      const tasksForMonth = await getTaskByMonth(year, month);
+      const tasksForMonth = await getTaskByMonth(year, month, projectIds);
       setEventList(tasksForMonth || []); // tasksForMonth가 undefined면 빈 배열로 설정
     } catch (error) {
       console.error("Error fetching tasks:", error);

@@ -74,8 +74,12 @@
   }
   
   .stat   .chart .chartWrapper {
-    width: 11em; /* 차트 가로 크기 설정 */
-    height: 11em; /* 차트 세로 크기 설정 */
+    width:  12rem;  /* 차트 가로 크기 설정  */
+    height: 12rem; /* 차트 세로 크기 설정   */
+    position: relative;
+
+
+    aspect-ratio: 1 / 1; /* 1:1 비율 설정 */
   }
 
 
@@ -137,10 +141,31 @@
   }
   
   .stat   .chart  .arrowDown {
-    color: #53B249;
+    color: #0887C9;
     font-size: 14px;
     font-weight: 700;
     line-height: 16px;
     letter-spacing: -0.126px;/* ↓ 초록색 */
   }
 
+  .neutral {
+    color: #CECECE; /* 0일 때 표시되는 '-' 기호 색상 */
+}
+
+.noDataText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1rem;
+  color: #A0A0A0; /* 연한 회색 */
+  text-align: center;
+  width: 100%;
+}
+
+.noTask {
+  
+  font-size: 1rem;
+  color: #A0A0A0; /* 연한 회색 */
+  text-align: center;
+}

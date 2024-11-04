@@ -1,13 +1,71 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from '../styles/Search.module.css';
 import filtericon from '../styles/image/dashboard/filter.svg';
 import calendaricon from '../styles/image/dashboard/calendar.svg';
 import searchicon from '../styles/image/dashboard/search.svg';
 
-const Search:React.FC = () => {
-    
-    const [endDate, setEndDate] = useState<string>('');
+import { getUserByProjectId } from '../api/getUserByProjectId';
+
+
+interface SearchProps {
+    onSearch: (filters: {
+        itoProcessId: string;
+        assigneeId: string;
+        startDate: string;
+        dueDate: string;
+        taskName: string;
+    }) => void;
+}
+
+const Search: React.FC<SearchProps> = ({ onSearch }) => {
+
+    const [itoProcessId, setItoProcessId] = useState<string>('');
+    const [assigneeId, setAssigneeId] = useState<string>('');
     const [startDate, setStartDate] = useState<string>('');
+    const [dueDate, setDueDate] = useState<string>('');
+    const [taskName, setTaskName] = useState<string>('');
+
+    // userList의 타입을 User[]로 설정
+    interface User {
+        userId: string;
+        name: string;
+        // 필요에 따라 추가 속성 정의 가능
+      }
+    const [userList, setUserList] = useState<User[]>([]);
+    
+
+    useEffect(() => {
+      const userInfo = sessionStorage.getItem("userInfo")
+        ? JSON.parse(sessionStorage.getItem("userInfo") as string)
+        : null;
+        
+      if (userInfo && userInfo.projectId) {
+        const { projectId } = userInfo;
+        
+        const fetchUsers = async () => {
+          try {
+            const userListData = await getUserByProjectId(projectId);
+            
+            setUserList(userListData || []);
+          } catch (error) {
+            console.error("Error fetching users:", error);
+          }
+        };
+        fetchUsers();
+        
+      }
+    }, []);
+
+
+    const handleSearchClick = () => {
+        onSearch({
+            itoProcessId,
+            assigneeId,
+            startDate,
+            dueDate,
+            taskName,
+        });
+    };
   
   return (
     <>
@@ -16,15 +74,17 @@ const Search:React.FC = () => {
                         <ul>
                             <li>
                                 <div className={styles.search}>
-                                    <select className={styles.searchSelect} >
-                                        <option value="" disabled selected>프로세스 구분</option>
-                                        <option value="avail">가용성</option>
-                                        <option value="compos">구성</option>
-                                        <option value="size">용량</option>
-                                        <option value="change">변경</option>
-                                        <option value="deploy">배포</option>
+                                    <select className={styles.searchSelect} 
+                                        value={itoProcessId} 
+                                        onChange={(e) => setItoProcessId(e.target.value)}>
+                                        <option value=""  selected>프로세스 구분</option>
+                                        <option value="1">가용성</option>
+                                        <option value="2">구성</option>
+                                        <option value="3">용량</option>
+                                        <option value="4">변경</option>
+                                        {/* <option value="deploy">배포</option>
                                         <option value="report">리포팅</option>
-                                        <option value="level">서비스수준</option>
+                                        <option value="level">서비스수준</option> */}
                                     </select>
                                     <img src={filtericon} alt='' className={styles.searchIcon} />
                                 </div>
@@ -32,7 +92,7 @@ const Search:React.FC = () => {
                             <li>
                                 <div className={styles.search}>
                                     <select className={styles.searchSelect} >
-                                        <option value="" disabled selected>유닛</option>
+                                        <option value=""  selected>유닛</option>
                                         
                                     </select>
                                     <img src={filtericon} alt='' className={styles.searchIcon} />
@@ -40,9 +100,22 @@ const Search:React.FC = () => {
                             </li>
                             <li>
                                 <div className={styles.search}>
-                                    <select className={styles.searchSelect} >
-                                        <option value="" disabled selected>담당자</option>
-                                        
+                                    <select className={styles.searchSelect} 
+                                        value={assigneeId} 
+                                        onChange={(e) => setAssigneeId(e.target.value)}
+                                    >               
+                                        {userList && userList.length > 0 ? (
+                                            <>
+                                            <option value=""  selected>담당자</option>
+                                            {userList.map((user) => (
+                                                <option key={user.userId} value={user.userId}>
+                                                {user.name}
+                                                </option>
+                                            ))}
+                                            </>
+                                        ) : (
+                                            <option disabled>사용자가 없습니다</option>
+                                        )}
                                     </select>
                                     <img src={filtericon} alt='' className={styles.searchIcon} />
                                 </div>
@@ -61,19 +134,22 @@ const Search:React.FC = () => {
                             <li><div className={styles.search}>
                                     <input 
                                         type="date" 
-                                        id="endDate" 
-                                        value={endDate} 
-                                        onChange={(e) => setEndDate(e.target.value)} 
+                                        id="dueDate" 
+                                        value={dueDate} 
+                                        onChange={(e) => setDueDate(e.target.value)} 
                                         className={styles.searchInput}
                                         placeholder="마감일 선택" 
                                     />
                                     <img src={calendaricon} alt='' className={styles.searchIcon} />
                                 </div></li>
                             <li><div className={styles.search}>
-                                    <input placeholder="업무명" spellCheck="false" className={styles.searchInput} />
+                                    <input placeholder="업무명" 
+                                        value={taskName} 
+                                        onChange={(e) => setTaskName(e.target.value)} 
+                                        spellCheck="false" className={styles.searchInput} />
                                     <img src={searchicon} alt='' className={styles.searchIcon} />
                                 </div></li>
-                            <button>조회</button>
+                            <button onClick={handleSearchClick}>조회</button>
                         </ul>
                     </li>
 

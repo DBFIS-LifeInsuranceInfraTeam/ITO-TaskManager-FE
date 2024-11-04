@@ -5,6 +5,7 @@ import { getTaskById } from '../api/getTaskById';
 import { deleteTask } from '../api/deleteTask';
 import { addComment } from '../api/addComment';
 import { addLiketoComment } from '../api/addLiketoComment';
+import { deleteComment } from "../api/deleteComment";
 
 
 interface Task {
@@ -30,7 +31,7 @@ interface Comment {
   commentContent: string;
   createDate: string;
   likeCount: number;
-  likedByUser: boolean;
+  likedUsers: string[];
 }
 
 const Detail: React.FC = () => {
@@ -42,6 +43,9 @@ const Detail: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [commentList, setCommentList] = useState<Comment[]>([]);
     const [commentContent, setCommentContent] = useState<string>('');
+    const userInfo = sessionStorage.getItem("userInfo")
+      ? JSON.parse(sessionStorage.getItem("userInfo") as string)
+      : null;
 
     useEffect(() => {
         if (taskId) {
@@ -83,23 +87,24 @@ const Detail: React.FC = () => {
 
 
     const handleLikeClick = async (commentId: bigint) => {
-      const userInfo = sessionStorage.getItem("userInfo")
-      ? JSON.parse(sessionStorage.getItem("userInfo") as string)
-      : null;
+      
       if (userInfo?.userId) {
       try {
           const updatedComment = await addLiketoComment(commentId, userInfo?.userId);
-          setCommentList((prevComments) =>
-              prevComments.map((comment) =>
-                  comment.commentId === commentId
-                      ? {
-                          ...comment,
-                          likes: updatedComment.likeCount,
-                          likedByUser: !comment.likedByUser,
-                      }
-                      : comment
-              )
-          );
+          setCommentList(commentList.map(comment =>
+            comment.commentId === commentId
+              ? {
+                  ...comment,
+                  likeCount: comment.likedUsers.includes(userInfo?.userId)
+                    ? comment.likeCount - 1
+                    : comment.likeCount + 1,
+                  likedUsers: comment.likedUsers.includes(userInfo?.userId)
+                    ? comment.likedUsers.filter(id => id !== userInfo?.userId) // Remove userId if already liked
+                    : [...comment.likedUsers, userInfo?.userId], // Add userId if not already liked
+                }
+              : comment
+          ));
+          console.log(updatedComment);
       } catch (error) {
           console.error("Failed to add like:", error);
           alert("좋아요를 추가할 수 없습니다. 다시 시도해 주세요.");
@@ -120,9 +125,25 @@ const Detail: React.FC = () => {
             commenterId: userInfo.userId, // 키 이름 수정
           });
           console.log("Comment added:", newCommentData);
+          window.location.reload(); // 페이지를 새로고침하여 변경 사항 반영
         } catch (error) {
           console.error("Failed to create comment:", error);
         }
+      }
+    };
+
+    const handleDeleteComment = async (commentId: bigint, userId: string) => {
+      const isConfirmed = window.confirm("정말 삭제하시겠습니까?"); // 삭제 여부 확인
+      if (!isConfirmed) {
+          return; // 사용자가 취소한 경우 함수 종료
+      }
+  
+      try {
+          await deleteComment(commentId,userId); // taskId를 전달하여 삭제
+          window.location.reload(); // 페이지를 새로고침하여 변경 사항 반영
+      } catch (error) {
+          console.error("Failed to delete comment:", error);
+          // 에러 발생 시 사용자에게 알림을 줄 수도 있습니다.
       }
     };
 
@@ -175,8 +196,13 @@ const Detail: React.FC = () => {
               className={styles.likeButton} 
               onClick={() => handleLikeClick(comment.commentId)}
             >
-              {comment.likedByUser ? '♥️' : '♡'} {comment.likeCount}
+              {comment.likedUsers.includes(userInfo?.userId) ? '♥️' : '♡'} {comment.likeCount}
             </button>
+            {comment.commenterId ===  userInfo?.userId&& (
+          <button onClick={() => handleDeleteComment(comment.commentId, userInfo?.userId)}>
+            Delete
+          </button>
+        )}
           </div>
           ))
         ) : (
