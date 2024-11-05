@@ -89,4 +89,8 @@ input, select, option {
     border-color: #89C53F;
     outline: none;
   }
+
+ .container .detail .input-light {
+    color: #989898;
+  }
   

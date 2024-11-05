@@ -61,6 +61,17 @@ font-size: medium;
     height: max-content;
   }
 
+  .asignee {
+    line-height: 1;
+  }
+
+  .asignee img {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+  }
+
+
   .status {
     line-height: 1;
   }

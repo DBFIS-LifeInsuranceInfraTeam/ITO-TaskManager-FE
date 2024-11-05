@@ -10,13 +10,13 @@ interface updateTaskData {
     dueDate: string;
     frequencyId: number|null;
     status: number;
-    itoProcessId: number;
+    itoProcessId: string;
     assigneeConfirmation: string; //Y/N
 }
 
-export const updateTask = async (taskData: updateTaskData) => {
+export const updateTask = async (taskId: string,taskData: updateTaskData) => {
     try {
-        const response = await apiClient.put(`/tasks`, taskData);
+        const response = await apiClient.put(`/tasks/${taskId}`, taskData);
         console.log(response.data);
         return response.data;
     } catch (error) {

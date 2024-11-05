@@ -14,6 +14,8 @@ interface Task {
     taskName: string;
     description: string;
     assigneeId: string;
+    assigneeName: string;
+    assigneeProfile: string;
     createdDate: string;
     startDate: string;
     dueDate: string;

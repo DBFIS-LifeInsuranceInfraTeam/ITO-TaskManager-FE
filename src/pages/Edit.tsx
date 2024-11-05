@@ -5,11 +5,13 @@ import { updateTask } from '../api/updateTask'; // PUT 요청을 보내는 함�
 import { getUserByProjectId } from '../api/getUserByProjectId';
 
 interface Task {
-    taskId: number;
-    projectId: number;
+    taskId: string;
+    projectId: string;
     taskName: string;
     description: string;
     assigneeId: string;
+    assigneeName: string;
+    assigneeProfile: string;
     createdDate: string;
     startDate: string;
     dueDate: string;
@@ -19,6 +21,20 @@ interface Task {
     itoProcessId: string;
     assigneeConfirmation: string;
   }
+
+  interface updateTaskData {
+    projectId: string;
+    taskName: string;
+    description: string;
+    assigneeId: string;
+    createdDate: string;
+    startDate: string;
+    dueDate: string;
+    frequencyId: number|null;
+    status: number;
+    itoProcessId: string;
+    assigneeConfirmation: string; //Y/N
+}
 
 const Edit: React.FC = () => {
     
@@ -43,8 +59,63 @@ const Edit: React.FC = () => {
         }));
     };
 
-    const handleSave = async () => {
-        
+    const handleEdit = async () => {
+      const taskData: Partial<updateTaskData> = {};
+
+      // 변경된 값만 taskData에 추가
+      if (taskName && taskName !== task.taskName) {
+        taskData.taskName = taskName;
+      }
+      if (startDate && startDate !== task.startDate) {
+          taskData.startDate = startDate;
+      }
+      if (dueDate && dueDate !== task.dueDate) {
+          taskData.dueDate = dueDate;
+      }
+      if (processId && processId !== task.itoProcessId) {
+          taskData.itoProcessId = processId;
+      }
+      if (assigneeId && assigneeId !== task.assigneeId) {
+          taskData.assigneeId = assigneeId;
+      }
+      if (description && description !== task.description) {
+          taskData.description = description;
+      }
+
+      
+      // projectId와 status는 필수로 포함될 수 있는 필드이므로 넣어줍니다.
+      // taskData.projectId = task.projectId;
+      // taskData.status = task.status;
+      // taskData.assigneeConfirmation = task.assigneeConfirmation;
+      // taskData.createdDate = task.createdDate;
+      // taskData.frequencyId = task.frequencyId;
+
+      // projectId와 status 등 필수 필드 포함
+    const fullTaskData: updateTaskData = {
+      projectId: taskData.projectId || task.projectId,
+      taskName: taskData.taskName || task.taskName,
+      description: taskData.description || task.description,
+      assigneeId: taskData.assigneeId || task.assigneeId,
+      createdDate: taskData.createdDate || task.createdDate,
+      startDate: taskData.startDate || task.startDate,
+      dueDate: taskData.dueDate || task.dueDate,
+      frequencyId: taskData.frequencyId || task.frequencyId,
+      status: taskData.status || task.status,
+      itoProcessId: taskData.itoProcessId || task.itoProcessId,
+      assigneeConfirmation: taskData.assigneeConfirmation || task.assigneeConfirmation,
+  };
+      // taskData가 비어있지 않은 경우에만 API 요청
+      if (Object.keys(taskData).length > 0) {
+          try {
+              const response = await updateTask(task.taskId,fullTaskData);
+              console.log("업무 수정 완료:", response);
+              navigate(-1); // 성공 시 이전 페이지로 이동
+          } catch (error) {
+              console.error("업무 수정 중 오류:", error);
+          }
+      } else {
+          console.log("변경된 사항이 없습니다.");
+      }
     };
 
     const handleCancel = () => {
@@ -104,17 +175,17 @@ const Edit: React.FC = () => {
         <input 
             type="date" 
             id="startDate" 
-            value={startDate} 
+            value={startDate || task.startDate} 
             onChange={(e) => setStartDate(e.target.value)} 
-            placeholder={task.startDate} 
+            className={startDate === task.startDate ? 'input-light' : ''}
             required 
         />
         <input 
             type="date" 
             id="dueDate" 
-            value={dueDate} 
+            value={dueDate || task.dueDate} 
             onChange={(e) => setDueDate(e.target.value)} 
-            placeholder={task.dueDate} 
+            className={dueDate === task.dueDate ? 'input-light' : ''}
             required 
         />
       </div>
@@ -141,7 +212,7 @@ const Edit: React.FC = () => {
           >
           {userList && userList.length > 0 ? (
             <>
-              <option value="">담당자를 선택하세요.</option>
+              <option value="">{task?.assigneeName}</option>
               {userList.map((user) => (
                 <option key={user.userId} value={user.userId}>
                   {user.name}
@@ -170,7 +241,7 @@ const Edit: React.FC = () => {
 
       {/* 수정 버튼 추가 */}
       <div className={styles.buttonContainer}>
-        <button  className={styles.addButton}>수정</button>
+        <button onClick={handleEdit} className={styles.addButton}>수정</button>
         <button onClick={handleCancel} className={styles.cancelButton}>취소</button>
       </div>
     </div>

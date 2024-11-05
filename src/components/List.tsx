@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from '../styles/List.module.css';
 import statusComplete from '../styles/image/list/status-complete.svg';
 import statusProgress from '../styles/image/list/status-progress.svg';
 import statusPending from '../styles/image/list/status-pending.svg';
 import { useNavigate } from 'react-router-dom';
-import { getAllTask } from '../api/getAllTask';
 
 interface Task {
     taskId: string;
@@ -12,6 +11,8 @@ interface Task {
     taskName: string;
     description: string;
     assigneeId: string;
+    assigneeName: string;
+    assigneeProfile: string;
     createdDate: string;
     startDate: string;
     dueDate: string;
@@ -86,7 +87,10 @@ const List: React.FC<ListProps> = ({ taskList, loading }) => {
                                 <tr key={task.taskId}>
                                     <td>{index + 1}</td>
                                     <td><p>{task.taskName}</p></td>
-                                    <td>{task.assigneeId}</td>
+                                    <td className={styles.asignee}>
+                                      <img src={`http://localhost:8080/${task.assigneeProfile}`} alt=""></img>
+                                      {task.assigneeName}
+                                    </td>
                                     <td className={styles.status}>
                                         <img src={statusData[task.status].img} alt=""></img>
                                         {statusData[task.status].label}

@@ -14,6 +14,8 @@ interface Task {
   taskName: string;
   description: string;
   assigneeId: string;
+  assigneeName: string;
+  assigneeProfile: string;
   createdDate: string;
   startDate: string;
   dueDate: string;
@@ -168,7 +170,8 @@ const Detail: React.FC = () => {
       
       <div className={styles.detail}>
         <label htmlFor="manager">담당자</label>
-        <p id="manager">{task?.assigneeId}</p>
+        <img src={`http://localhost:8080/${task?.assigneeProfile}`} alt=""></img>
+        <p id="manager">{task?.assigneeName}</p>
       </div>
       
       <div className={styles.detail}>

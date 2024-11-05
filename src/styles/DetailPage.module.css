@@ -45,6 +45,12 @@ body {
     font-size: 18px; /* 내용 글씨 크기 조정 */
 }
 
+.detail img{
+  width: 2em;
+  height: 2em;
+  vertical-align: middle;
+}
+
 .buttonContainer {
     display: flex;
     flex-direction: row;
