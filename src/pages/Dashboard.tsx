@@ -31,6 +31,10 @@ const Dashboard: React.FC = () => {
     const navigate = useNavigate();
     const [taskList, setTaskList] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [page, setPage] = useState<number>(0); // 현재 페이지 상태
+    const [totalPages, setTotalPages] = useState<number>(0); // 전체 페이지 수 상태
+    const [size, setSize] = useState<number>(5); // 페이지당 항목 수 상태
+
     const userInfo = sessionStorage.getItem("userInfo")
       ? JSON.parse(sessionStorage.getItem("userInfo") as string)
       : null;
@@ -44,13 +48,15 @@ const Dashboard: React.FC = () => {
         const fetchTasks = async () => {
             if (userInfo && Array.isArray(userInfo.projectId)) {
             try {
-                const allTasks = await getAllTask(userInfo.projectId);
+                const response = await getAllTask(userInfo.projectId, page, size);
+                setTaskList(response.content); // `content`는 응답 데이터의 항목 목록을 포함합니다.
+                setTotalPages(response.totalPages); // 전체 페이지 수 설정
                 // allTasks가 배열인지 확인
-                const sortedTasks = Array.isArray(allTasks)
-                    ? allTasks.sort((a: Task, b: Task) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()).slice(0, 5)
-                    : []; // 배열이 아니면 빈 배열로 설정
+                // const sortedTasks = Array.isArray(allTasks.content)
+                //     ? allTasks.sort((a: Task, b: Task) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()).slice(0, 5)
+                //     : []; // 배열이 아니면 빈 배열로 설정
 
-                setTaskList(sortedTasks);
+                // setTaskList(sortedTasks);
             } catch (error) {
                 console.error("Failed to fetch tasks:", error);
             } finally {

@@ -3,10 +3,10 @@ import qs from 'qs';
 
 
 
-export const getAllTask = async (projectIds: string[]) => {
+export const getAllTask = async (projectIds: string[], page: number, size: number) => {
   try {
     const response = await apiClient.get(`/tasks`, {
-      params: { projectIds },
+      params: { projectIds, page, size },
       paramsSerializer: params => qs.stringify(params, { arrayFormat: 'repeat' }) // projectIds[]=10&projectIds[]=20 형식으로 직렬화
     });
     console.log(response);
@@ -16,3 +16,7 @@ export const getAllTask = async (projectIds: string[]) => {
     throw error;
   }
 };
+
+
+
+

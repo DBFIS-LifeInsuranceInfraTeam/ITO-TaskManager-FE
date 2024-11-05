@@ -8,3 +8,46 @@
     justify-content: flex-start; /* 상단 정렬 */
     align-items: flex-start; /* 왼쪽 정렬 */
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    width: auto;
+    gap: 8px;
+    padding: 10px;
+}
+
+.pagination button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #333;
+    padding: 5px 10px;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.pagination button.active {
+    color: #fff;
+    background-color: #006AFF;
+}
+
+.pagination button.active::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.5em;
+    height: 1.5em;
+    background-color: #006AFF;
+    border-radius: 0%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
+
+.pagination button:hover:not(.active) {
+    color: #006AFF;
+}
