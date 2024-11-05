@@ -40,11 +40,12 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
         : null;
         
       if (userInfo && userInfo.projectId) {
-        const { projectId } = userInfo;
+        
+        const projectIds = userInfo.projectId;
         
         const fetchUsers = async () => {
           try {
-            const userListData = await getUserByProjectId(projectId);
+            const userListData = await getUserByProjectId(projectIds);
             
             setUserList(userListData || []);
           } catch (error) {
