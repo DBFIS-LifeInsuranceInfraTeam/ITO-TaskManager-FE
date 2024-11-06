@@ -81,7 +81,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           cd manifest
-          git config --global user.email "gb.lee@dbfis.co.kr"
-          git config --global user.name "gyubinlee-dbfis"
+          git config --global user.email "gb.lee@dbinc.co.kr"
+          git config --global user.name "gblee-dbinc"
           git commit -am "Update image tag to ${{ env.NEW_TAG }}"
           git push -u origin main
