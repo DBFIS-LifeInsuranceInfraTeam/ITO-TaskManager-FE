@@ -68,6 +68,11 @@ const Add: React.FC = () => {
                 status:0,
                 itoProcessId:1,
                 assigneeConfirmation:'N',
+
+                isRecurring: true,
+                frequencyType: 'daily',
+                frequencyInterval: 3,
+                hasEndDate: false
             };
 
             const response = await addTask(taskData);

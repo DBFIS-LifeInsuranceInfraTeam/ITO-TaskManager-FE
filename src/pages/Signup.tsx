@@ -1,8 +1,14 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/Login.module.css'; // Import the CSS file for styling
 import { signup } from '../api/signup';
 import logo from '../styles/image/logo-black.png';
+import { getAllProjects } from '../api/getAllProjects';
+
+interface Project {
+    projectId: string;
+    name: string;
+}
 
 const Signup:React.FC = () => {
     const [userId, setUserId] = useState<string>('');
@@ -16,6 +22,8 @@ const Signup:React.FC = () => {
     const [position, setPosition] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
 
+    //프로젝트 선택 가능 리스트
+    const [projectList, setProjectList] = useState<Project[]>([]);
     // 버튼이 활성화되었는지 여부를 계산하는 함수
     const isButtonEnabled = userId.trim() !== '' && password.trim() !== '' && 
     passwordCheck.trim() !== '' && name.trim() !== '' && 
@@ -23,6 +31,21 @@ const Signup:React.FC = () => {
     
     const navigate = useNavigate();
     
+    useEffect(() => {
+        const fetchProjectList = async () => {
+            
+                try {
+                    const resProjectListData = await getAllProjects();
+                    console.log(resProjectListData)
+                    setProjectList(resProjectListData);
+                } catch (error) {
+                    console.error("Error fetching statistics:", error);
+                }
+            }
+        fetchProjectList();
+    }, []);
+
+
     const handleSignup = async (e: FormEvent) => {
         e.preventDefault();
         setError(null);
@@ -125,37 +148,109 @@ const Signup:React.FC = () => {
                     />
                 </div>
                 <div className={styles.inputGroup}>
-                    <label htmlFor="projectId">팀</label>
-                    <input 
+                    <label htmlFor="projectId">프로젝트</label>
+                    <select 
+            id="projectId" 
+            value={projectId} 
+            onChange={(e) => setProjectId(e.target.value)} 
+            required
+          >
+                    {projectList && projectList.length > 0 ? (
+            <>
+              <option value="">프로젝트를 선택하세요.</option>
+              {projectList.map((project) => (
+                <option key={project.projectId} value={project.projectId}>
+                  {project.name}
+                </option>
+              ))}
+            </>
+          ) : (
+            <option disabled>선택 가능한 프로젝트가 없습니다.</option>
+          )}
+          </select>
+                    {/* <input 
                         type="string" 
                         id="projectId" 
                         value={projectId} 
                         onChange={(e) => setProjectId(e.target.value)} 
                         placeholder="팀을 입력하세요." 
                         required 
-                    />
+                    /> */}
                 </div>
                 <div className={styles.inputGroup}>
                     <label htmlFor="unit">유닛</label>
-                    <input 
+                    {/* <input 
                         type="string" 
                         id="unit" 
                         value={unit} 
                         onChange={(e) => setUnit(e.target.value)} 
                         placeholder="유닛을 입력하세요." 
                         required 
-                    />
+                    /> */}
+                    <select 
+            id="unit" 
+            value={unit} 
+            onChange={(e) => setUnit(e.target.value)} 
+            required
+          >
+            <option value="">유닛을 선택하세요.</option>
+            <option key="OS" value="OS">
+                  OS
+                </option>
+                <option key="MW" value="MW">
+                  미들웨어
+                </option>
+                <option key="DB" value="DB">
+                  DB
+                </option>
+                <option key="NET" value="NET">
+                  네트워크
+                </option>
+                <option key="SEC" value="SEC">
+                  보안
+                </option>
+          </select>
                 </div>
                 <div className={styles.inputGroup}>
                     <label htmlFor="position">직급</label>
-                    <input 
+                    {/* <input 
                         type="string" 
                         id="position" 
                         value={position} 
                         onChange={(e) => setPosition(e.target.value)} 
                         placeholder="직급을 입력하세요." 
                         required 
-                    />
+                    /> */}
+
+<select 
+            id="position" 
+            value={position} 
+            onChange={(e) => setPosition(e.target.value)} 
+            required
+          >
+            <option value="">직급을 입력하세요.</option>
+               <option key="프로" value="프로">
+                  프로
+                </option>
+                <option key="사원" value="사원">
+                    사원
+                </option>
+                <option key="대리" value="대리">
+                    대리
+                </option>
+                <option key="과장" value="과장">
+                    과장
+                </option>
+                <option key="차장" value="차장">
+                    차장
+                </option>
+                <option key="부장" value="부장">
+                    부장
+                </option>
+                <option key="팀장" value="팀장">
+                    팀장
+                </option>
+          </select>
                 </div>
                 <button 
                     type="submit"

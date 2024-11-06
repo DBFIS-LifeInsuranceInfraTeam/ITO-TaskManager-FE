@@ -9,7 +9,9 @@ import { getUserByProjectId } from '../api/getUserByProjectId';
 
 interface SearchProps {
     onSearch: (filters: {
+        projectIds: string[];
         itoProcessId: string;
+        unit: string;
         assigneeId: string;
         startDate: string;
         dueDate: string;
@@ -21,6 +23,7 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
 
     const [itoProcessId, setItoProcessId] = useState<string>('');
     const [assigneeId, setAssigneeId] = useState<string>('');
+    const [unit, setUnit] = useState<string>('');
     const [startDate, setStartDate] = useState<string>('');
     const [dueDate, setDueDate] = useState<string>('');
     const [taskName, setTaskName] = useState<string>('');
@@ -34,10 +37,12 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
     const [userList, setUserList] = useState<User[]>([]);
     
 
-    useEffect(() => {
-      const userInfo = sessionStorage.getItem("userInfo")
+    const userInfo = sessionStorage.getItem("userInfo")
         ? JSON.parse(sessionStorage.getItem("userInfo") as string)
         : null;
+
+    useEffect(() => {
+      
         
       if (userInfo && userInfo.projectId) {
         
@@ -59,13 +64,19 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
 
 
     const handleSearchClick = () => {
-        onSearch({
-            itoProcessId,
-            assigneeId,
-            startDate,
-            dueDate,
-            taskName,
-        });
+        if (userInfo && userInfo.projectId) {
+            const projectIds = userInfo.projectId;
+            onSearch({
+                projectIds,
+                itoProcessId,
+                assigneeId,
+                unit,
+                startDate,
+                dueDate,
+                taskName,
+            });
+        }
+        
     };
   
   return (
@@ -92,9 +103,30 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
                             </li>
                             <li>
                                 <div className={styles.search}>
-                                    <select className={styles.searchSelect} >
-                                        <option value=""  selected>유닛</option>
-                                        
+
+                                   <select 
+                                        id="unit" 
+                                        className={styles.searchSelect}
+                                        value={unit} 
+                                        onChange={(e) => setUnit(e.target.value)} 
+                                        required
+                                    >
+                                        <option value="">유닛</option>
+                                        <option key="OS" value="OS">
+                                            OS
+                                            </option>
+                                            <option key="MW" value="MW">
+                                            미들웨어
+                                            </option>
+                                            <option key="DB" value="DB">
+                                            DB
+                                            </option>
+                                            <option key="NET" value="NET">
+                                            네트워크
+                                            </option>
+                                            <option key="SEC" value="SEC">
+                                            보안
+                                            </option>
                                     </select>
                                     <img src={filtericon} alt='' className={styles.searchIcon} />
                                 </div>
