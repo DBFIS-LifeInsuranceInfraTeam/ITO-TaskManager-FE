@@ -181,7 +181,7 @@ const Detail: React.FC = () => {
       
       <div className={styles.detail}>
         <label htmlFor="manager">담당자</label>
-        <img src={`/${task?.assigneeProfile}`} alt=""></img>
+        <img src={`http://itopw-back-svc:8080/${task?.assigneeProfile}`} alt=""></img>
         <p id="manager">{task?.assigneeName}</p>
       </div>
       
