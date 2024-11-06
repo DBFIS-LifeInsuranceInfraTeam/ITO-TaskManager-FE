@@ -58,7 +58,7 @@ const Setting: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.detailTitle}>
-      <img src={`http://itopw-back-svc:8080/${userInfo?.photo}`} alt='' className={styles.profile}/>
+      <img src={`/${userInfo?.photo}`} alt='' className={styles.profile}/>
       <h1 className={styles.title}>{userInfo?.name} {userInfo?.position} 님 안녕하세요!</h1> {/* 제목에 클래스 추가 */}
       </div>
         
