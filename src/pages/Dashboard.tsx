@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
                 <ul className={styles.dashboard}>
                     <div className={styles.buttonDiv}>
                         {/* debugging 용이니까 나중에 삭제 필요 */}
-                        <span>projectID:{userInfo?.projectId}</span>
+                        {/* <span>projectID:{userInfo?.projectId}</span> */}
                         <button onClick={() => navigate('/task/add')} className={styles.btnAdd}>
                             <img src={btnAdd} alt=""/>
                             업무 추가하기

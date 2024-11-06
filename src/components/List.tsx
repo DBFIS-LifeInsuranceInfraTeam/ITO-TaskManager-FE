@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from '../styles/List.module.css';
+import statusBefore from '../styles/image/list/status-before.svg';
 import statusComplete from '../styles/image/list/status-complete.svg';
 import statusProgress from '../styles/image/list/status-progress.svg';
 import statusPending from '../styles/image/list/status-pending.svg';
@@ -56,7 +57,7 @@ const List: React.FC<ListProps> = ({ taskList, loading }) => {
   };
   
   const statusData = [
-    { img: statusProgress, label: '시작 전' },
+    { img: statusBefore, label: '시작 전' },
     { img: statusProgress, label: '진행 중' },
     { img: statusComplete, label: '완료' },
     { img: statusPending, label: '지연' },
@@ -88,7 +89,7 @@ const List: React.FC<ListProps> = ({ taskList, loading }) => {
                                     <td>{index + 1}</td>
                                     <td><p>{task.taskName}</p></td>
                                     <td className={styles.asignee}>
-                                      <img src={`http://localhost:8080/${task.assigneeProfile}`} alt=""></img>
+                                      <img src={`http://backend-service:8080/${task.assigneeProfile}`} alt=""></img>
                                       {task.assigneeName}
                                     </td>
                                     <td className={styles.status}>

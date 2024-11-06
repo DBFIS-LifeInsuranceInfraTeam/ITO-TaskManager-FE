@@ -32,6 +32,15 @@ body {
     width: 100%; /* 각 항목이 전체 너비를 차지하도록 설정 */
 }
 
+.detailDate {
+    display: flex; /* Flexbox를 사용하여 가로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    
+    width: 100%; /* 각 항목이 전체 너비를 차지하도록 설정 */
+    gap: 5em;
+}
+
+
 .detail label {
     font-weight: bold; /* 레이블 굵게 */
     margin-right: 50px; /* 레이블과 내용 사이 간격 추가 */
@@ -50,6 +59,7 @@ body {
     flex-direction: row;
     gap: 1em;
     box-sizing: border-box;
+    
 }
 
 
@@ -60,6 +70,9 @@ body {
     border-radius: 5px; /* 모서리 둥글게 */
     cursor: pointer; /* 커서 변경 */
     width: 100%;
+    
+    padding: 1em 2em;
+    white-space: nowrap;
 }
 
 
@@ -75,9 +88,11 @@ body {
     border-radius: 5px; /* 모서리 둥글게 */
     cursor: pointer; /* 커서 변경 */
     width: 100%;
+    padding: 1em 2em;
+    white-space: nowrap;
 }
 
-input, select, option {
+input, select, option, textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -85,7 +100,7 @@ input, select, option {
     box-sizing: border-box;
   }
   
-  input:focus, select:focus {
+  input:focus, select:focus, textarea:focus {
     border-color: #89C53F;
     outline: none;
   }

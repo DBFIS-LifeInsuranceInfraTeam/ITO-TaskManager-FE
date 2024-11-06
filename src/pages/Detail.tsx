@@ -22,7 +22,7 @@ interface Task {
   frequencyId: number;
   commentCount: number;
   status: number;
-  itoProcessId: number;
+  itoProcessId: string;
   assigneeConfirmation: string;
 }
 
@@ -149,6 +149,17 @@ const Detail: React.FC = () => {
       }
     };
 
+    const processMap: { [key: string]: string } = {
+      "1": "리포팅",
+      "2": "보안",
+      "3": "용량",
+      "4": "변경",
+      "5": "가용성",
+      "6": "감사지원",
+      "7": "구성",
+      "8": "배포"
+  };
+
   return (
     <div className={styles.container}> {/* className을 사용하여 스타일 적용 */}
       <h1 className={styles.title}>업무 상세정보</h1> {/* 제목에 클래스 추가 */}
@@ -165,12 +176,12 @@ const Detail: React.FC = () => {
       
       <div className={styles.detail}>
         <label htmlFor="process">ITO 프로세스</label>
-        <p id="process">{task?.itoProcessId}</p>
+        <p id="process">{processMap[task?.itoProcessId as string] || "값을 찾을 수 없습니다"}</p>
       </div>
       
       <div className={styles.detail}>
         <label htmlFor="manager">담당자</label>
-        <img src={`http://localhost:8080/${task?.assigneeProfile}`} alt=""></img>
+        <img src={`http://backend-service:8080/${task?.assigneeProfile}`} alt=""></img>
         <p id="manager">{task?.assigneeName}</p>
       </div>
       

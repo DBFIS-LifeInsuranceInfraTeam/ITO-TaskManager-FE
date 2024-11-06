@@ -90,10 +90,14 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
                                         value={itoProcessId} 
                                         onChange={(e) => setItoProcessId(e.target.value)}>
                                         <option value=""  selected>프로세스 구분</option>
-                                        <option value="1">가용성</option>
-                                        <option value="2">구성</option>
-                                        <option value="3">용량</option>
-                                        <option value="4">변경</option>
+                                        <option key="1" value="1">리포팅</option>
+                                        <option key="2" value="2">보안</option>
+                                        <option key="3" value="3">용량</option>
+                                        <option key="4" value="4">변경</option>
+                                        <option key="5" value="5">가용성</option>
+                                        <option key="6" value="6">감사지원</option>
+                                        <option key="7" value="7">구성</option>
+                                        <option key="8" value="8">배포</option>
                                         {/* <option value="deploy">배포</option>
                                         <option value="report">리포팅</option>
                                         <option value="level">서비스수준</option> */}

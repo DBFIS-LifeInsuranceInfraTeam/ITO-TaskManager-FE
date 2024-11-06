@@ -36,6 +36,25 @@ body {
     width: 100%; /* 각 항목이 전체 너비를 차지하도록 설정 */
 }
 
+.detailTitle {
+    display: flex; /* Flexbox를 사용하여 가로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    margin-bottom: 50px; /* 각 상세 항목 간격 */
+    width: 100%; /* 각 항목이 전체 너비를 차지하도록 설정 */
+    line-height: 1;
+}
+
+.detailTitle h1{
+    margin: 0;
+    
+
+}
+
+.detailTitle img{
+    display: block;
+
+}
+
 .detail label {
     font-weight: bold; /* 레이블 굵게 */
     margin-right: 50px; /* 레이블과 내용 사이 간격 추가 */

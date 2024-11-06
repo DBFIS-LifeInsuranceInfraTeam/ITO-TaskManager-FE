@@ -88,13 +88,16 @@ const Stat: React.FC = () => {
 //       };
 
 
-const hasData = statisticsData?.statistics?.totalTasks !== null;
+const hasData = !!(statisticsData?.statistics?.totalTasks && statisticsData.statistics.totalTasks > 0);
+
+
 
 
 const data = {
     labels: ['시작 전', '진행 중', '완료', '지연'],
     datasets: [
         {
+            
             data: hasData
                 ? [
                     statisticsData?.statistics.beforePercentage ?? 0,
@@ -102,7 +105,7 @@ const data = {
                     statisticsData?.statistics.completePercentage ?? 0,
                     statisticsData?.statistics.delayedPercentage ?? 0,
                 ]
-                : [1],  // 데이터가 없을 때 100%로 표시
+                : [1],   // 데이터가 없을 때 전체를 100%로 표시 // 데이터가 없을 때 100%로 표시
             backgroundColor: hasData
                 ? ['#CECECE', '#0887C9', '#86C440', '#DB4A26']
                 : ['#E0E0E0'],  // 데이터가 없을 때 회색
@@ -118,7 +121,7 @@ const data = {
 const options = {
     plugins: {
         legend: { display: false },
-        tooltip: { enabled: hasData },  // 데이터가 없을 때 툴팁 비활성화
+        tooltip: { enabled: hasData},  // 데이터가 없을 때 툴팁 비활성화
     },
     maintainAspectRatio: false,
 };

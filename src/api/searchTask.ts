@@ -32,8 +32,8 @@ export const searchTask = async (filters: {
     taskName?: string; 
     projectIds?: string[]; // 여러 프로젝트 ID 지원
     unit?: string; // 유닛 필터 추가
-}) => {
-    const params: { [key: string]: string | string[] } = {};
+}, page: number, size: number) => {
+    const params: { [key: string]: string | string[] | number } = {};
 
     // 필터에 따라 파라미터 추가
     if (filters.itoProcessId) params.itoProcessId = filters.itoProcessId;
@@ -48,15 +48,16 @@ export const searchTask = async (filters: {
     }
     if (filters.unit) params.unit = filters.unit;
 
+    // 페이지와 크기 추가
+    params.page = page;
+    params.size = size;
+
     try {
-        //const response = await apiClient.get('/tasks/search', { params });
         const response = await apiClient.get('/tasks/search', {
-            params: filters,
+            params,
             paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }) // projectIds[]=10&projectIds[]=20 형식으로 직렬화
-          });
+        });
         return response.data;
-        
-    
     } catch (error) {
         console.error("Error fetching tasks:", error);
         throw error;
