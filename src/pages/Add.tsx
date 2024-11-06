@@ -15,6 +15,33 @@ interface Project {
   smtpPw?: string;
 
 }
+
+interface AddTaskData {
+  projectId: string;
+  taskName: string;
+  description: string;
+  assigneeId: string;
+  createdDate: string;
+  startDate: string;
+  dueDate: string;
+  frequencyId: null | number;
+  status: number;
+  itoProcessId: number;
+  assigneeConfirmation: string;
+  recurring: boolean;
+  frequencyType: string;
+  frequencyInterval?: number | null;
+  hasEndDate?:boolean;
+  weeklyDays?: string[];
+  monthlyDayOfMonth?: number | null;
+  monthlyWeekOfMonth?: number | null;
+  monthlyDayOfWeek?: string | null;
+  yearlyMonth?: number | null;
+  yearlyDayOfMonth?: number | null;
+  yearlyWeekOfMonth?: number | null;
+  yearlyDayOfWeek?: string | null;
+}
+
 const Add: React.FC = () => {
 
     const [taskName, setTaskName] = useState<string>('');
@@ -25,6 +52,18 @@ const Add: React.FC = () => {
     const [assigneeId, setAssigneeId] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     
+    const [isRecurring, setIsRecurring] = useState<boolean>(false);
+  const [frequencyType, setFrequencyType] = useState<string>('');
+  const [frequencyInterval, setFrequencyInterval] = useState<number>(1);
+  const [weeklyDays, setWeeklyDays] = useState<string[]>([]);
+  const [monthlyDayOfMonth, setMonthlyDayOfMonth] = useState<number | null>(null);
+  const [monthlyWeekOfMonth, setMonthlyWeekOfMonth] = useState<number | null>(null);
+  const [monthlyDayOfWeek, setMonthlyDayOfWeek] = useState<string>('');
+  const [yearlyMonth, setYearlyMonth] = useState<number | null>(null);
+  const [yearlyDayOfMonth, setYearlyDayOfMonth] = useState<number | null>(null);
+  const [yearlyWeekOfMonth, setYearlyWeekOfMonth] = useState<number | null>(null);
+  const [yearlyDayOfWeek, setYearlyDayOfWeek] = useState<string>('');
+
     const navigate = useNavigate();
 
     interface User {
@@ -109,13 +148,129 @@ function getDayOfWeek(date:Date) {
   return days[date.getDay()];
 }
 
+// 반복 주기 옵션을 렌더링하는 함수
+const renderFrequencyOptions = () => {
+  switch (frequencyType) {
+    case 'daily':
+      return (
+        <div>
+          <label>간격 (일):</label>
+          <input
+            type="number"
+            value={frequencyInterval}
+            onChange={(e) => setFrequencyInterval(Number(e.target.value))}
+          />
+        </div>
+      );
+    case 'weekly':
+      return (
+        <div>
+          <label>간격 (주):</label>
+          <input
+            type="number"
+            value={frequencyInterval}
+            onChange={(e) => setFrequencyInterval(Number(e.target.value))}
+          />
+          <label>요일:</label>
+          <select multiple onChange={(e) => {
+            const selectedDays = Array.from(e.target.selectedOptions).map(option => option.value);
+            setWeeklyDays(selectedDays);
+          }}>
+            <option value="SUNDAY">일요일</option>
+            <option value="MONDAY">월요일</option>
+            <option value="TUESDAY">화요일</option>
+            <option value="WEDNESDAY">수요일</option>
+            <option value="THURSDAY">목요일</option>
+            <option value="FRIDAY">금요일</option>
+            <option value="SATURDAY">토요일</option>
+          </select>
+        </div>
+      );
+    case 'monthly':
+      return (
+        <div>
+          <label>간격 (월):</label>
+          <input
+            type="number"
+            value={frequencyInterval}
+            onChange={(e) => setFrequencyInterval(Number(e.target.value))}
+          />
+          <label>일자:</label>
+          <input
+            type="number"
+            value={monthlyDayOfMonth || ''}
+            onChange={(e) => setMonthlyDayOfMonth(Number(e.target.value))}
+          />
+          <label>몇 번째 주:</label>
+          <input
+            type="number"
+            value={monthlyWeekOfMonth || ''}
+            onChange={(e) => setMonthlyWeekOfMonth(Number(e.target.value))}
+          />
+          <label>요일:</label>
+          <select
+            value={monthlyDayOfWeek}
+            onChange={(e) => setMonthlyDayOfWeek(e.target.value)}
+          >
+            <option value="">요일 선택</option>
+            <option value="SUNDAY">일요일</option>
+            <option value="MONDAY">월요일</option>
+            <option value="TUESDAY">화요일</option>
+            <option value="WEDNESDAY">수요일</option>
+            <option value="THURSDAY">목요일</option>
+            <option value="FRIDAY">금요일</option>
+            <option value="SATURDAY">토요일</option>
+          </select>
+        </div>
+      );
+    case 'yearly':
+      return (
+        <div>
+          <label>월:</label>
+          <input
+            type="number"
+            value={yearlyMonth || ''}
+            onChange={(e) => setYearlyMonth(Number(e.target.value))}
+          />
+          <label>일자:</label>
+          <input
+            type="number"
+            value={yearlyDayOfMonth || ''}
+            onChange={(e) => setYearlyDayOfMonth(Number(e.target.value))}
+          />
+          <label>몇 번째 주:</label>
+          <input
+            type="number"
+            value={yearlyWeekOfMonth || ''}
+            onChange={(e) => setYearlyWeekOfMonth(Number(e.target.value))}
+          />
+          <label>요일:</label>
+          <select
+            value={yearlyDayOfWeek}
+            onChange={(e) => setYearlyDayOfWeek(e.target.value)}
+          >
+            <option value="">요일 선택</option>
+            <option value="SUNDAY">일요일</option>
+            <option value="MONDAY">월요일</option>
+            <option value="TUESDAY">화요일</option>
+            <option value="WEDNESDAY">수요일</option>
+            <option value="THURSDAY">목요일</option>
+            <option value="FRIDAY">금요일</option>
+            <option value="SATURDAY">토요일</option>
+          </select>
+        </div>
+      );
+    default:
+      return null;
+  }
+};
 
-    const handleAddTask = async () => {
+  const handleAddTask = async () => {
       const userInfo = sessionStorage.getItem("userInfo")
       ? JSON.parse(sessionStorage.getItem("userInfo") as string)
       : null;
         try {
-            const taskData = {
+            const taskData:AddTaskData = {
                 projectId:project,
                 taskName:taskName,
                 description:description,
@@ -127,7 +282,13 @@ function getDayOfWeek(date:Date) {
                 status:0,
                 itoProcessId:1,
                 assigneeConfirmation:'N',
-
+                recurring: isRecurring,
+                frequencyType: frequencyType,
+                hasEndDate:false,
+                // yearlyMonth: yearlyMonth || undefined, // null일 경우 undefined로 설정
+                // yearlyDayOfMonth: yearlyDayOfMonth || undefined, // null일 경우 undefined로 설정
+                // yearlyWeekOfMonth: yearlyWeekOfMonth || undefined,
+                // yearlyDayOfWeek: yearlyDayOfWeek || undefined,
                 // recurring: true,
                 // frequencyType: 'weekly',
                 // frequencyInterval: 3,
@@ -145,13 +306,46 @@ function getDayOfWeek(date:Date) {
                 // monthlyWeekOfMonth: 2,  // 매월 특정 주차 (예: 첫째 주)
                 // monthlyDayOfWeek: 'THURSDAY'   // 매월 특정 요일 (예: 'Wednesday' - 첫째 주 수요일)
                 
-                recurring: true,
-                frequencyType: 'yearly',
-                yearlyMonth: new Date(startDate).getMonth() + 1,         // 매년 특정 월 (예: 11 - 11월)
-                //yearlyDayOfMonth: new Date(startDate).getDate(),   // 매년 특정 일자 (예: 6일)
-                yearlyWeekOfMonth: getWeekOfMonthForSpecificDay(new Date(startDate)),   // 매년 특정 주차 (예: 첫째 주)
-                yearlyDayOfWeek: getDayOfWeek(new Date(startDate))     // 매년 특정 요일 (예: 'Wednesday' - 첫째 주 수요일)
+                // recurring: true,
+                // frequencyType: 'yearly',
+                // yearlyMonth: new Date(startDate).getMonth() + 1,         // 매년 특정 월 (예: 11 - 11월)
+                // //yearlyDayOfMonth: new Date(startDate).getDate(),   // 매년 특정 일자 (예: 6일)
+                // yearlyWeekOfMonth: getWeekOfMonthForSpecificDay(new Date(startDate)),   // 매년 특정 주차 (예: 첫째 주)
+                // yearlyDayOfWeek: getDayOfWeek(new Date(startDate))     // 매년 특정 요일 (예: 'Wednesday' - 첫째 주 수요일)
             };
+
+            // frequencyType에 따라 필요한 필드 추가
+            switch (frequencyType) {
+              case 'daily':
+                taskData.frequencyInterval = frequencyInterval;
+                break;
+              
+              case 'weekly':
+                taskData.frequencyInterval = frequencyInterval;
+                taskData.weeklyDays = weeklyDays; // 선택된 요일 배열
+                break;
+              
+              case 'monthly':
+                taskData.frequencyInterval = frequencyInterval;
+                if (monthlyDayOfMonth) {
+                  taskData.monthlyDayOfMonth = monthlyDayOfMonth;
+                } else {
+                  taskData.monthlyWeekOfMonth = monthlyWeekOfMonth;
+                  taskData.monthlyDayOfWeek = monthlyDayOfWeek;
+                }
+                break;
+              
+              case 'yearly':
+                taskData.yearlyMonth = yearlyMonth || undefined;
+                if (yearlyDayOfMonth) {
+                  taskData.yearlyDayOfMonth = yearlyDayOfMonth;
+                } else {
+                  taskData.yearlyWeekOfMonth = yearlyWeekOfMonth || undefined;
+                  taskData.yearlyDayOfWeek = yearlyDayOfWeek || undefined;
+                }
+                break;
+            }
+
 
             const response = await addTask(taskData);
             
@@ -203,6 +397,29 @@ function getDayOfWeek(date:Date) {
       </div>
       </div>
       
+      <div>
+        <label>반복 여부:</label>
+        <input
+          type="checkbox"
+          checked={isRecurring}
+          onChange={(e) => setIsRecurring(e.target.checked)}
+        />
+      </div>
+      {isRecurring && (
+        <div>
+          <label>반복 타입:</label>
+          <select value={frequencyType} onChange={(e) => setFrequencyType(e.target.value)}>
+            <option value="">반복 타입을 선택하세요</option>
+            <option value="daily">매일</option>
+            <option value="weekly">매주</option>
+            <option value="monthly">매월</option>
+            <option value="yearly">매년</option>
+          </select>
+          {renderFrequencyOptions()}
+        </div>
+      )}
+
+
       <div className={styles.detail}>
         <label htmlFor="process">ITO 프로세스</label>
         <select
