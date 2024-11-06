@@ -16,7 +16,3 @@ export const getAllTask = async (projectIds: string[], page: number, size: numbe
     throw error;
   }
 };
-
-
-
-

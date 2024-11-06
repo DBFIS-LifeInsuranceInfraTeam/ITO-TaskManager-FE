@@ -29,7 +29,7 @@ const TaskList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(0); // 현재 페이지 상태
   const [totalPages, setTotalPages] = useState<number>(0); // 전체 페이지 수 상태
-  const [size, setSize] = useState<number>(3); // 페이지당 항목 수 상태
+  const [size, setSize] = useState<number>(10); // 페이지당 항목 수 상태
 
   
 
@@ -59,22 +59,27 @@ const TaskList: React.FC = () => {
   }, [page, size]);
 
   const handleSearch = async (filters: {
+    projectIds?: string[];
     itoProcessId?: string;
+    unit?: string;
     assigneeId?: string;
     startDate?: string;
     dueDate?: string;
     taskName?: string;
   }) => {
     const adjustedFilters = {
+      projectIds: Array.isArray(filters.projectIds) ? filters.projectIds : filters.projectIds ? [filters.projectIds] : [],
       itoProcessId: filters.itoProcessId || "",
+      unit: filters.unit || "",
       assigneeId: filters.assigneeId || "",
       startDate: filters.startDate || "",
       dueDate: filters.dueDate || "",
       taskName: filters.taskName || ""
     };
 
-    const isFilterEmpty = !adjustedFilters.itoProcessId && !adjustedFilters.assigneeId && 
-                          !adjustedFilters.startDate && !adjustedFilters.dueDate && !adjustedFilters.taskName;
+    const isFilterEmpty = !adjustedFilters.projectIds && !adjustedFilters.itoProcessId 
+    && !adjustedFilters.unit && !adjustedFilters.assigneeId 
+    && !adjustedFilters.startDate && !adjustedFilters.dueDate && !adjustedFilters.taskName;
 
     setLoading(true);
     try {
