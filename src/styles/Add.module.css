@@ -19,6 +19,52 @@ body {
     align-items: flex-start; /* 왼쪽 정렬 */
 }
 
+.monthlyContainer {
+    
+    width: 100%; /* 전체 너비 사용 */
+    
+    
+    display: flex; /* Flexbox를 사용하여 내용 중앙 정렬 */
+    flex-direction: column; /* 세로 방향으로 배치 */
+
+}
+
+.detailDay{
+    width: 100%; /* 전체 너비 사용 */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.detailDay label{
+    font-weight: bold;
+    margin: 0; /* 모든 여백 제거 */
+    padding: 0; /* 모든 패딩 제거 */
+}
+
+.detailDay input{
+    width:fit-content;
+}
+
+
+.detailFrequencyType{
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+
+    align-items: center; /* 세로 중앙 정렬 */
+    margin-bottom: 50px; /* 각 상세 항목 간격 */
+
+}
+
+.detailFrequencyType label{
+    font-weight: bold; /* 레이블 굵게 */
+    margin-right: 50px; /* 레이블과 내용 사이 간격 추가 */
+    flex: 0 0 100px; /* 레이블 고정 너비 설정 */
+    font-size: 18px; /* 레이블 글씨 크기 조정 */
+}
+
 .title {
     font-size: 28px; /* 제목 글씨 크기 조정 */
     font-weight: bold; /* 제목 볼드 처리 */
@@ -39,6 +85,24 @@ body {
     width: 100%; /* 각 항목이 전체 너비를 차지하도록 설정 */
     gap: 5em;
 }
+
+.detailMonth{
+    width: 100%; /* 전체 너비 사용 */
+    box-sizing: border-box;
+    display: flex;
+}
+
+.detailDay span{
+    font-weight: bold;
+    
+    font-size: 18px; /* 레이블 글씨 크기 조정 */
+    
+}
+
+.detailMonth input{
+    width:fit-content;
+}
+    
 
 
 .detail label {
@@ -109,3 +173,77 @@ input, select, option, textarea {
     color: #989898;
   }
   
+  
+ .buttonGroup {
+    display: flex;
+    /* border: 1px solid #ddd; */
+    overflow: hidden;
+  }
+  
+.buttonGroup button {
+    flex: 1;
+    padding: 8px 12px;
+    background-color: #f0f0f0;
+    border: none;
+    border-right: 1px solid #ddd;
+    color: #919191;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-radius: 0;
+  }
+  
+  /* 첫 번째 버튼 - 왼쪽만 둥글게 */
+.buttonGroup button:first-child {
+    border-top-left-radius: 0.6em;
+    border-bottom-left-radius: 0.6em;
+  }
+  
+  /* 마지막 버튼 - 오른쪽만 둥글게 */
+  .detailFrequencyType .buttonGroup button:last-child {
+    border-top-right-radius: 0.6em;
+    border-bottom-right-radius: 0.6em;
+    
+    border-right: none; /* 마지막 버튼은 오른쪽 테두리 제거 */
+  }
+  
+  /* 활성화된 버튼 스타일 */
+  .detailFrequencyType .buttonGroup button.activeButton {
+    background-color: #007bff;
+    color: white;
+  }
+
+
+  /* daily */
+
+  .dailyContainer {
+    display: flex;
+    
+    
+    box-sizing: border-box;
+  }
+
+  .dailyContainer input, select, option, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 0.7rem;
+    box-sizing: border-box;
+  }
+
+  .dailyDayInput {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+  }
+
+  .dailyContainer span {
+    white-space: nowrap;
+    
+  }
+
+
+  .dailyHasEndDate{
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+  }

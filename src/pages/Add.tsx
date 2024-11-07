@@ -63,6 +63,7 @@ const Add: React.FC = () => {
   const [yearlyDayOfMonth, setYearlyDayOfMonth] = useState<number | null>(null);
   const [yearlyWeekOfMonth, setYearlyWeekOfMonth] = useState<number | null>(null);
   const [yearlyDayOfWeek, setYearlyDayOfWeek] = useState<string>('');
+  const [hasEndDate, setHasEndDate] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -153,13 +154,48 @@ const renderFrequencyOptions = () => {
   switch (frequencyType) {
     case 'daily':
       return (
-        <div>
-          <label>간격 (일):</label>
-          <input
+        <div className={styles.dailyContainer}>
+          <div className={styles.dailyDayInput}>
+            <input 
             type="number"
             value={frequencyInterval}
             onChange={(e) => setFrequencyInterval(Number(e.target.value))}
-          />
+            />
+            <span>일 마다</span>
+          </div>
+          <div className={styles.dailyHasEndDate}>
+            <label>종료일</label>
+             
+            <input
+              type="radio"
+              name="endDate"
+              value="없음"
+              checked={!hasEndDate}
+              onChange={() => setHasEndDate(false)}
+              style={{ marginLeft: '8px' }}
+            />
+            <span>없음</span>
+            
+            <input
+              type="radio"
+              name="endDate"
+              value="있음"
+              checked={hasEndDate}
+              onChange={() => setHasEndDate(true)}
+              style={{ marginLeft: '8px' }}
+            />
+            <span>있음</span>
+
+            {/* 종료일이 있을 때만 날짜 선택 입력 필드 표시 */}
+            {hasEndDate && (
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                style={{ marginLeft: '8px' }}
+              />
+            )}
+          </div>
         </div>
       );
     case 'weekly':
@@ -171,61 +207,102 @@ const renderFrequencyOptions = () => {
             value={frequencyInterval}
             onChange={(e) => setFrequencyInterval(Number(e.target.value))}
           />
+
           <label>요일:</label>
-          <select multiple onChange={(e) => {
-            const selectedDays = Array.from(e.target.selectedOptions).map(option => option.value);
-            setWeeklyDays(selectedDays);
-          }}>
-            <option value="SUNDAY">일요일</option>
-            <option value="MONDAY">월요일</option>
-            <option value="TUESDAY">화요일</option>
-            <option value="WEDNESDAY">수요일</option>
-            <option value="THURSDAY">목요일</option>
-            <option value="FRIDAY">금요일</option>
-            <option value="SATURDAY">토요일</option>
-          </select>
+          <div className={styles.detailDay}>
+            {[
+      { label: "일", value: "SUNDAY" },
+      { label: "월", value: "MONDAY" },
+      { label: "화", value: "TUESDAY" },
+      { label: "수", value: "WEDNESDAY" },
+      { label: "목", value: "THURSDAY" },
+      { label: "금", value: "FRIDAY" },
+      { label: "토", value: "SATURDAY" },
+    ].map((day) => (
+      <div>
+        <span key={day.value}>{day.label}</span>
+      <input
+        type="checkbox"
+        value={day.value}
+        checked={weeklyDays.includes(day.value)}
+        onChange={(e) => {
+          const selectedDays = e.target.checked
+            ? [...weeklyDays, day.value]
+            : weeklyDays.filter((d) => d !== day.value);
+          setWeeklyDays(selectedDays);
+        }}
+      />
+      </div>
+      
+            ))}
+          </div>
+
+
+          
         </div>
       );
     case 'monthly':
       return (
-        <div>
-          <label>간격 (월):</label>
-          <input
-            type="number"
-            value={frequencyInterval}
-            onChange={(e) => setFrequencyInterval(Number(e.target.value))}
-          />
-          <label>일자:</label>
-          <input
-            type="number"
-            value={monthlyDayOfMonth || ''}
-            onChange={(e) => setMonthlyDayOfMonth(Number(e.target.value))}
-          />
+        <div className={styles.monthlyContainer}>
+          <div className={styles.detailMonth}>
+          
+            <div>
+              <label>간격 (월):</label>
+              <input
+                type="number"
+                value={frequencyInterval}
+                onChange={(e) => setFrequencyInterval(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <label>일자:</label>
+              <input
+                type="number"
+                value={monthlyDayOfMonth || ''}
+                onChange={(e) => setMonthlyDayOfMonth(Number(e.target.value))}
+              />
+            </div>
+          <div>
           <label>몇 번째 주:</label>
           <input
             type="number"
             value={monthlyWeekOfMonth || ''}
             onChange={(e) => setMonthlyWeekOfMonth(Number(e.target.value))}
           />
-          <label>요일:</label>
-          <select
-            value={monthlyDayOfWeek}
-            onChange={(e) => setMonthlyDayOfWeek(e.target.value)}
-          >
-            <option value="">요일 선택</option>
-            <option value="SUNDAY">일요일</option>
-            <option value="MONDAY">월요일</option>
-            <option value="TUESDAY">화요일</option>
-            <option value="WEDNESDAY">수요일</option>
-            <option value="THURSDAY">목요일</option>
-            <option value="FRIDAY">금요일</option>
-            <option value="SATURDAY">토요일</option>
-          </select>
+          </div>
+          </div>
+          <div className={styles.detailDay}>
+            {[
+      { label: "일", value: "SUNDAY" },
+      { label: "월", value: "MONDAY" },
+      { label: "화", value: "TUESDAY" },
+      { label: "수", value: "WEDNESDAY" },
+      { label: "목", value: "THURSDAY" },
+      { label: "금", value: "FRIDAY" },
+      { label: "토", value: "SATURDAY" },
+    ].map((day) => (
+      <div>
+        <span key={day.value}>{day.label}</span>
+      <input
+        type="checkbox"
+        value={day.value}
+        checked={weeklyDays.includes(day.value)}
+        onChange={(e) => {
+          const selectedDays = e.target.checked
+            ? [...weeklyDays, day.value]
+            : weeklyDays.filter((d) => d !== day.value);
+          setWeeklyDays(selectedDays);
+        }}
+      />
+      </div>
+      
+            ))}
+          </div>
         </div>
       );
     case 'yearly':
       return (
-        <div>
+        <div className={styles.detailDate}>
           <label>월:</label>
           <input
             type="number"
@@ -395,29 +472,59 @@ const renderFrequencyOptions = () => {
             required 
         />
       </div>
-      </div>
-      
-      <div>
-        <label>반복 여부:</label>
+
+      <div className={styles.detail}>
+        <label>반복</label>
         <input
           type="checkbox"
           checked={isRecurring}
           onChange={(e) => setIsRecurring(e.target.checked)}
         />
       </div>
+      </div>
+      
+      
       {isRecurring && (
-        <div>
-          <label>반복 타입:</label>
-          <select value={frequencyType} onChange={(e) => setFrequencyType(e.target.value)}>
-            <option value="">반복 타입을 선택하세요</option>
-            <option value="daily">매일</option>
-            <option value="weekly">매주</option>
-            <option value="monthly">매월</option>
-            <option value="yearly">매년</option>
-          </select>
-          {renderFrequencyOptions()}
+    <>
+      <div className={styles.detailFrequencyType}>
+        <label>반복 주기</label>
+        <div className={styles.buttonGroup}>
+          <button
+            type="button"
+            className={frequencyType === 'daily' ? styles.activeButton : ''}
+            onClick={() => setFrequencyType('daily')}
+          >
+            매일
+          </button>
+          <button
+            type="button"
+            className={frequencyType === 'weekly' ? styles.activeButton : ''}
+            onClick={() => setFrequencyType('weekly')}
+          >
+            매주
+          </button>
+          <button
+            type="button"
+            className={frequencyType === 'monthly' ? styles.activeButton : ''}
+            onClick={() => setFrequencyType('monthly')}
+          >
+            매월
+          </button>
+          <button
+            type="button"
+            className={frequencyType === 'yearly' ? styles.activeButton : ''}
+            onClick={() => setFrequencyType('yearly')}
+          >
+            매년
+          </button>
         </div>
-      )}
+      </div>
+
+      <div className={styles.detail}>
+        {renderFrequencyOptions()}
+      </div>
+    </>
+)}
 
 
       <div className={styles.detail}>
