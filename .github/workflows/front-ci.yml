@@ -13,46 +13,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
-      - name: Set up Docker Buildx with insecure registry
+
+      - name: Configure Docker daemon for insecure Harbor registry and systemd cgroup
         run: |
-          docker buildx create --name mybuilder --use
-          docker buildx inspect mybuilder --bootstrap
-          echo '{"insecure-registries": ["${{ secrets.HARBOR_URL }}"]}' | sudo tee /etc/docker/daemon.json
+          echo '{
+            "insecure-registries": ["${{ secrets.HARBOR_URL }}"],
+            "exec-opts": ["native.cgroupdriver=systemd"]
+          }' | sudo tee /etc/docker/daemon.json
           sudo systemctl restart docker
-          
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.0
-        with:
-          github_token: ${{ secrets.PAT }}
 
-      - name: Set new tag and changelog as environment variables
+      - name: Set up Docker Buildx with valid cgroup-parent
         run: |
-          TAG_VERSION="${{ steps.tag_version.outputs.new_tag }}"
-          CLEAN_TAG=$(echo $TAG_VERSION | sed 's/refs-tags-//g')
-          echo "NEW_TAG=$CLEAN_TAG" >> $GITHUB_ENV
-
-      - name: Create a GitHub release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        with:
-          tag_name: ${{ env.NEW_TAG }}
-          release_name: Release ${{ env.NEW_TAG }}
-          body: ${{ env.CHANGELOG }}
-
-      - name: Docker meta
-        id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v1
-        with:
-          images: ${{ secrets.HARBOR_URL }}/itopw/itopw-front
-          tag-semver: |
-            {{version}}
-            {{major}}.{{minor}}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+          docker buildx create --name mybuilder --use \
+            --driver-opt network=host \
+            --buildkitd-flags '--oci-worker-caps=all --oci-worker-cgroup-parent=/docker.slice'
+          docker buildx inspect mybuilder --bootstrap
 
       - name: Login to Harbor
         uses: docker/login-action@v2
