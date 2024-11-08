@@ -71,6 +71,7 @@ jobs:
           tags: ${{ secrets.HARBOR_URL }}/itopw/itopw-front:${{ env.NEW_TAG }}
           outputs: type=image,push=true
           insecure: true
+          builder: mybuilder
       
       - name: Checkout Kustomize repository
         uses: actions/checkout@v3
