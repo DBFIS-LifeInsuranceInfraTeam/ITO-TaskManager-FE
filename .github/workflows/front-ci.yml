@@ -39,8 +39,6 @@ jobs:
         run: |
           docker buildx create --name mybuilder --use --driver-opt network=host
           docker buildx inspect mybuilder --bootstrap
-          echo '{"registry-mirrors": ["http://<HARBOR_URL>"], "insecure-registries": ["${{ secrets.HARBOR_URL }}"]}' | sudo tee /etc/buildkit/buildkitd.toml
-          sudo systemctl restart docker
 
       - name: Login to Harbor
         uses: docker/login-action@v2
@@ -58,12 +56,9 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ secrets.HARBOR_URL }}/itopw/itopw-front:${{ env.NEW_TAG }}
-          outputs: type=image,push=true
           builder: mybuilder
           build-args:
-            - BUILDKIT_INLINE_CACHE=1
-        env:
-          DOCKER_CLI_FLAGS: "--insecure-registry ${{ secrets.HARBOR_URL }}"
+            BUILDKIT_INLINE_CACHE=1
       
       - name: Checkout Kustomize repository
         uses: actions/checkout@v3
