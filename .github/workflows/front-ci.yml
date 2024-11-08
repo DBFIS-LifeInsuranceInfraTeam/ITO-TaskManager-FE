@@ -60,16 +60,6 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ${{ secrets.HARBOR_URL }}/itopw-front:${{ env.NEW_TAG }}
-          builder: mybuilder
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          platforms: linux/amd64
-          push: true
           tags: ${{ secrets.HARBOR_URL }}/itopw/itopw-front:${{ env.NEW_TAG }}
           outputs: type=image,push=true
           insecure: true
