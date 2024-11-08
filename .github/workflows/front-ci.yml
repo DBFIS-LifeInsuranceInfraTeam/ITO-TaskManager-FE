@@ -8,10 +8,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    env:
+      DOCKER_BUILDKIT: 1
+      BUILDKIT_INSECURE: 1
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.0
@@ -24,15 +27,6 @@ jobs:
           CLEAN_TAG=$(echo $TAG_VERSION | sed 's/refs-tags-//g')
           echo "NEW_TAG=$CLEAN_TAG" >> $GITHUB_ENV
 
-      - name: Create a GitHub release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        with:
-          tag_name: ${{ env.NEW_TAG }}
-          release_name: Release ${{ env.NEW_TAG }}
-          body: ${{ env.CHANGELOG }}
-          
       - name: Configure Docker daemon
         run: |
           echo '{
@@ -45,6 +39,8 @@ jobs:
         run: |
           docker buildx create --name mybuilder --use --driver-opt network=host
           docker buildx inspect mybuilder --bootstrap
+          echo '{"registry-mirrors": ["http://<HARBOR_URL>"], "insecure-registries": ["${{ secrets.HARBOR_URL }}"]}' | sudo tee /etc/buildkit/buildkitd.toml
+          sudo systemctl restart docker
 
       - name: Login to Harbor
         uses: docker/login-action@v2
@@ -52,6 +48,7 @@ jobs:
           registry: ${{ secrets.HARBOR_URL }}
           username: ${{ secrets.HARBOR_USERNAME }}
           password: ${{ secrets.HARBOR_PASSWORD }}
+          insecure: true
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -62,8 +59,11 @@ jobs:
           push: true
           tags: ${{ secrets.HARBOR_URL }}/itopw/itopw-front:${{ env.NEW_TAG }}
           outputs: type=image,push=true
-          insecure: true
           builder: mybuilder
+          build-args:
+            - BUILDKIT_INLINE_CACHE=1
+        env:
+          DOCKER_CLI_FLAGS: "--insecure-registry ${{ secrets.HARBOR_URL }}"
       
       - name: Checkout Kustomize repository
         uses: actions/checkout@v3
