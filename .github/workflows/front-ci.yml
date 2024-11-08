@@ -67,6 +67,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ secrets.HARBOR_URL }}/itopw/itopw-front:${{ env.NEW_TAG }}
+          outputs: type=image,push=true
+          insecure: true
       
       - name: Checkout Kustomize repository
         uses: actions/checkout@v3
