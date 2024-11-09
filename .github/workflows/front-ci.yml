@@ -7,8 +7,7 @@ on:
 
 jobs:
   build:
-    # Self-hosted Runner를 사용
-    runs-on: self-hosted
+    runs-on: ubuntu-20.04
     env:
       DOCKER_BUILDKIT: 1
       BUILDKIT_INSECURE: 1
