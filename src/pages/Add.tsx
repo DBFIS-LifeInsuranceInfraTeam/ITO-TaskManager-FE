@@ -451,7 +451,7 @@ const renderFrequencyOptions = () => {
         />
       </div>
       
-      <div className={styles.detailDate}>
+      {/* <div className={styles.detailDate}>
       <div className={styles.detail}>
         <label htmlFor="duration">시작일</label>
         <input 
@@ -473,16 +473,50 @@ const renderFrequencyOptions = () => {
         />
       </div>
 
-      <div className={styles.detail}>
-        <label>반복</label>
-        <input
-          type="checkbox"
-          checked={isRecurring}
-          onChange={(e) => setIsRecurring(e.target.checked)}
-        />
-      </div>
-      </div>
       
+      <div className={styles.detail}>
+                    <label>반복 여부</label>
+                    <div
+                        className={`${styles.toggle} ${isRecurring ? styles.active : ''}`}
+                        onClick={() => setIsRecurring(!isRecurring)}
+                    >
+                        <div className={styles.toggleCircle}></div>
+                    </div>
+                </div>
+      </div> */}
+      
+      <div className={styles.detailDate}>
+    <div className={styles.field}>
+        <label htmlFor="startDate">시작일</label>
+        <input 
+            type="date" 
+            id="startDate" 
+            value={startDate} 
+            onChange={(e) => setStartDate(e.target.value)} 
+        />
+    </div>
+
+    <div className={styles.field}>
+        <label htmlFor="endDate">종료일</label>
+        <input 
+            type="date" 
+            id="endDate" 
+            value={endDate} 
+            onChange={(e) => setEndDate(e.target.value)} 
+        />
+    </div>
+
+    <div className={styles.field}>
+        <label>반복 여부</label>
+        <div
+            className={`${styles.toggle} ${isRecurring ? styles.active : ''}`}
+            onClick={() => setIsRecurring(!isRecurring)}
+        >
+            <div className={styles.toggleCircle}></div>
+        </div>
+    </div>
+</div>
+
       
       {isRecurring && (
     <>
@@ -518,7 +552,9 @@ const renderFrequencyOptions = () => {
             매년
           </button>
         </div>
-      </div>
+      </div> 
+      
+
 
       <div className={styles.detail}>
         {renderFrequencyOptions()}

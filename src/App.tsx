@@ -11,6 +11,7 @@ import Add from './pages/Add';
 import TaskList from './pages/TaskList';
 import Setting from './pages/Setting';
 import Edit from './pages/Edit';
+import Addv2 from "./pages/Addv2";
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const App: React.FC = () => {
         <Route path="/alarm" element={<RequireAuth><MainLayout><ConstructionPage /></MainLayout></RequireAuth>} />
         <Route path="/setting" element={<RequireAuth><MainLayout><Setting /></MainLayout></RequireAuth>} />
         <Route path="/task/edit" element={<RequireAuth><MainLayout><Edit /></MainLayout></RequireAuth>} />
-        <Route path="/task/add" element={<RequireAuth><MainLayout><Add /></MainLayout></RequireAuth>} />
+        <Route path="/task/add" element={<RequireAuth><MainLayout><Add/></MainLayout></RequireAuth>} />
         <Route path="/task/detail" element={<RequireAuth><MainLayout><Detail /></MainLayout></RequireAuth>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />

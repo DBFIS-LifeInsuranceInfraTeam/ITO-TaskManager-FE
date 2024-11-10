@@ -1,249 +1,336 @@
+/* 공통 스타일 */
 * {
-    box-sizing: border-box; /* 모든 요소의 box-sizing을 border-box로 설정 */
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0; /* 기본 여백 제거 */
-    padding: 0; /* 기본 패딩 제거 */
-    overflow: hidden; /* 스크롤 제거 */
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
 }
 
 .container {
-    height: 100vh; /* 화면 높이를 100%로 설정 */
-    width: 100%; /* 전체 너비 사용 */
-    padding: 40px 20px 20px 80px; /* 위쪽과 왼쪽 여백을 추가 (top, right, bottom, left) */
-    background: white; /* 배경색을 하얀색으로 설정 */
-    display: flex; /* Flexbox를 사용하여 내용 중앙 정렬 */
-    flex-direction: column; /* 세로 방향으로 배치 */
-    justify-content: flex-start; /* 상단 정렬 */
-    align-items: flex-start; /* 왼쪽 정렬 */
+  height: 100vh;
+  width: 100%;
+  padding: 40px 20px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
-.monthlyContainer {
-    
-    width: 100%; /* 전체 너비 사용 */
-    
-    
-    display: flex; /* Flexbox를 사용하여 내용 중앙 정렬 */
-    flex-direction: column; /* 세로 방향으로 배치 */
-
-}
-
-.detailDay{
-    width: 100%; /* 전체 너비 사용 */
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
-
-.detailDay label{
-    font-weight: bold;
-    margin: 0; /* 모든 여백 제거 */
-    padding: 0; /* 모든 패딩 제거 */
-}
-
-.detailDay input{
-    width:fit-content;
-}
-
-
-.detailFrequencyType{
-    display: flex;
-    box-sizing: border-box;
-    width: 100%;
-
-    align-items: center; /* 세로 중앙 정렬 */
-    margin-bottom: 50px; /* 각 상세 항목 간격 */
-
-}
-
-.detailFrequencyType label{
-    font-weight: bold; /* 레이블 굵게 */
-    margin-right: 50px; /* 레이블과 내용 사이 간격 추가 */
-    flex: 0 0 100px; /* 레이블 고정 너비 설정 */
-    font-size: 18px; /* 레이블 글씨 크기 조정 */
-}
-
+/* 제목 스타일 */
 .title {
-    font-size: 28px; /* 제목 글씨 크기 조정 */
-    font-weight: bold; /* 제목 볼드 처리 */
-    margin-bottom: 70px; /* 제목 아래 여백 추가 */
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 40px;
 }
 
-.detail {
-    display: flex; /* Flexbox를 사용하여 가로 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-    margin-bottom: 50px; /* 각 상세 항목 간격 */
-    width: 100%; /* 각 항목이 전체 너비를 차지하도록 설정 */
+/* 세부 항목 스타일 */
+.detail,
+.detailDate,
+.detailFrequencyType {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  
 }
 
-.detailDate {
-    display: flex; /* Flexbox를 사용하여 가로 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-    
-    width: 100%; /* 각 항목이 전체 너비를 차지하도록 설정 */
-    gap: 5em;
+.detailDate{
+  gap:3em;
 }
 
-.detailMonth{
-    width: 100%; /* 전체 너비 사용 */
-    box-sizing: border-box;
-    display: flex;
+.detail label,
+.detailDate label,
+.detailFrequencyType label {
+  font-weight: bold;
+  margin-right: 20px;
+  white-space: nowrap;
+  font-size: 16px;
 }
 
-.detailDay span{
-    font-weight: bold;
-    
-    font-size: 18px; /* 레이블 글씨 크기 조정 */
-    
+.detail input,
+.detail select,
+.detail textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 0.7rem;
 }
 
-.detailMonth input{
-    width:fit-content;
-}
-    
-
-
-.detail label {
-    font-weight: bold; /* 레이블 굵게 */
-    margin-right: 50px; /* 레이블과 내용 사이 간격 추가 */
-    flex: 0 0 100px; /* 레이블 고정 너비 설정 */
-    font-size: 18px; /* 레이블 글씨 크기 조정 */
+.detail input:focus,
+.detail select:focus,
+.detail textarea:focus {
+  border-color: #89C53F;
+  outline: none;
 }
 
-.detail p {
-    margin: 0; /* 문단 간격 초기화 */
-    flex: 1; /* 내용이 가능한 공간을 차지하도록 설정 */
-    font-size: 18px; /* 내용 글씨 크기 조정 */
+/* 반복 주기 버튼 그룹 */
+.detailFrequencyType .buttonGroup {
+  display: flex;
+  width: 100%;
+  gap: 10px;
 }
 
+.buttonGroup button {
+  flex: 1;
+  padding: 10px 15px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 0.6em;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  color: #555;
+}
+
+.buttonGroup button.activeButton {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.buttonGroup button:hover {
+  background-color: #ddd;
+}
+
+/* 반복 주기 옵션 - Daily */
+.dailyContainer,
+.weeklyContainer,
+.monthlyContainer,
+.yearlyContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.dailyDayInput {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dailyDayInput span {
+  white-space: nowrap;
+}
+
+/* 반복 종료 옵션 */
+.dailyHasEndDate {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dailyHasEndDate input[type="radio"] {
+  margin: 0 5px;
+}
+
+/* 반복 주기 옵션 - Weekly */
+.detailDay {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.detailDay div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.detailDay span {
+  font-size: 14px;
+  color: #555;
+}
+
+/* 반복 주기 옵션 - Monthly */
+.detailMonth {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.detailMonth div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detailMonth label {
+  white-space: nowrap;
+}
+
+/* 반복 여부 토글 컨테이너 */
+.detailDate .field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.field label {
+  font-weight: bold;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.field input {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-width: 200px;
+}
+
+/* 토글 버튼 스타일 */
+.toggle {
+  width: 50px;
+  height: 25px;
+  background-color: #ccc;
+  border-radius: 25px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggle.active {
+  background-color: #007bff;
+}
+
+.toggleCircle {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2.5px;
+  left: 3px;
+  transition: left 0.3s;
+}
+
+.toggle.active .toggleCircle {
+  left: 27px;
+}
+
+
+
+
+/* 버튼 그룹 컨테이너 */
+.buttonGroup {
+  display: flex;
+  width: 100%;
+}
+
+/* 버튼 스타일 */
+.buttonGroup button {
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: none; /* 기본 테두리 제거 */
+  
+  color: #555;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* 버튼 간 구분선 */
+.buttonGroup button:not(:last-child) {
+  border-right: 1px solid #ccc; /* 버튼 사이 경계선 */
+}
+
+/* 첫 번째 버튼 - 왼쪽 둥글게 */
+.buttonGroup button:first-child {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+/* 마지막 버튼 - 오른쪽 둥글게 */
+.buttonGroup button:last-child {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+/* 활성화된 버튼 스타일 */
+.buttonGroup button.activeButton {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.buttonGroup button:hover {
+  background-color: #ddd;
+}
+
+
+/* 요일 체크박스 */
+.detailDay input[type="checkbox"] {
+  accent-color: #007bff;
+  cursor: pointer;
+}
+
+/* 버튼 컨테이너 */
 .buttonContainer {
-    display: flex;
-    flex-direction: row;
-    gap: 1em;
-    box-sizing: border-box;
-    
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
 }
-
 
 .addButton {
-    background-color: #007bff; /* 버튼 배경색 (파란색) */
-    color: white; /* 버튼 글씨 색상 */
-    border: none; /* 테두리 제거 */
-    border-radius: 5px; /* 모서리 둥글게 */
-    cursor: pointer; /* 커서 변경 */
-    width: 100%;
-    
-    padding: 1em 2em;
-    white-space: nowrap;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 150px;
 }
-
 
 .addButton:hover {
-    background-color: #0056b3; /* 버튼 호버 시 색상 변화 */
+  background-color: #0056b3;
 }
-
 
 .cancelButton {
-    background-color: #fff;
-    color: #797979; /* 버튼 글씨 색상 */
-    border: 1px solid #797979; /* 테두리 제거 */
-    border-radius: 5px; /* 모서리 둥글게 */
-    cursor: pointer; /* 커서 변경 */
-    width: 100%;
-    padding: 1em 2em;
-    white-space: nowrap;
+  background-color: #fff;
+  color: #797979;
+  border: 1px solid #797979;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 150px;
 }
 
-input, select, option, textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 0.7rem;
-    box-sizing: border-box;
-  }
-  
-  input:focus, select:focus, textarea:focus {
-    border-color: #89C53F;
-    outline: none;
+.cancelButton:hover {
+  border-color: #555;
+  color: #555;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .detail,
+  .detailDate,
+  .detailFrequencyType {
+      flex-direction: column;
+      align-items: flex-start;
   }
 
- .container .detail .input-light {
-    color: #989898;
-  }
-  
-  
- .buttonGroup {
-    display: flex;
-    /* border: 1px solid #ddd; */
-    overflow: hidden;
-  }
-  
-.buttonGroup button {
-    flex: 1;
-    padding: 8px 12px;
-    background-color: #f0f0f0;
-    border: none;
-    border-right: 1px solid #ddd;
-    color: #919191;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    border-radius: 0;
-  }
-  
-  /* 첫 번째 버튼 - 왼쪽만 둥글게 */
-.buttonGroup button:first-child {
-    border-top-left-radius: 0.6em;
-    border-bottom-left-radius: 0.6em;
-  }
-  
-  /* 마지막 버튼 - 오른쪽만 둥글게 */
-  .detailFrequencyType .buttonGroup button:last-child {
-    border-top-right-radius: 0.6em;
-    border-bottom-right-radius: 0.6em;
-    
-    border-right: none; /* 마지막 버튼은 오른쪽 테두리 제거 */
-  }
-  
-  /* 활성화된 버튼 스타일 */
-  .detailFrequencyType .buttonGroup button.activeButton {
-    background-color: #007bff;
-    color: white;
+  .detail label,
+  .detailDate label,
+  .detailFrequencyType label {
+      margin-bottom: 10px;
   }
 
-
-  /* daily */
-
-  .dailyContainer {
-    display: flex;
-    
-    
-    box-sizing: border-box;
+  .buttonContainer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
   }
-
-  .dailyContainer input, select, option, textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 0.7rem;
-    box-sizing: border-box;
-  }
-
-  .dailyDayInput {
-    display: flex;
-    flex-direction: row;
-    width: fit-content;
-  }
-
-  .dailyContainer span {
-    white-space: nowrap;
-    
-  }
-
-
-  .dailyHasEndDate{
-    display: flex;
-    flex-direction: row;
-    width: fit-content;
-  }
+}
