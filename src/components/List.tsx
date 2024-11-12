@@ -89,7 +89,7 @@ const List: React.FC<ListProps> = ({ taskList, loading }) => {
                                     <td>{index + 1}</td>
                                     <td><p>{task.taskName}</p></td>
                                     <td className={styles.asignee}>
-                                      <img src={`http://itopw-back-svc:8080/${task.assigneeProfile}`} alt=""></img>
+                                      <img src={`/${task.assigneeProfile}`} alt=""></img>
                                       {task.assigneeName}
                                     </td>
                                     <td className={styles.status}>

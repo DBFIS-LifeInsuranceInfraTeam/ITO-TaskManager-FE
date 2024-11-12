@@ -32,7 +32,7 @@ interface AddTaskData {
     dueDate: string;
     frequencyId: null | number;
     status: number;
-    itoProcessId: number;
+    itoProcessId: string;
     assigneeConfirmation: string;
     recurring?: boolean; // 주기적 여부
     frequencyType?: string; // daily, weekly, monthly, yearly 등
@@ -57,7 +57,7 @@ export const addTask = async (taskData: AddTaskData) => {
             dueDate: taskData.startDate,
         };
 
-        const response = await apiClient.post(`/tasks`, fullTaskData);
+        const response = await apiClient.post(`/tasks/addtask`, fullTaskData);
         console.log(response.data);
         return response.data;
     } catch (error) {

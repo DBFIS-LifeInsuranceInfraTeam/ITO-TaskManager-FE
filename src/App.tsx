@@ -11,7 +11,6 @@ import Add from './pages/Add';
 import TaskList from './pages/TaskList';
 import Setting from './pages/Setting';
 import Edit from './pages/Edit';
-import Addv2 from "./pages/Addv2";
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();

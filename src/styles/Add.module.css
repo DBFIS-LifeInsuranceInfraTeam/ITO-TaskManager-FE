@@ -28,15 +28,34 @@ body {
   margin-bottom: 40px;
 }
 
+.recurringContainer{
+  
+  
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  width: 100%;
+  padding-right: 5rem;
+  
+}
+
+.detailFrequencyType {
+  display: flex;
+  align-self: center;
+  margin-bottom: 20px;
+  width: 70%;
+  justify-content: center;
+}
+
 /* 세부 항목 스타일 */
 .detail,
-.detailDate,
-.detailFrequencyType {
+.detailDate {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
   width: 100%;
-  
+  padding-right: 5rem;
 }
 
 .detailDate{
@@ -51,6 +70,35 @@ body {
   white-space: nowrap;
   font-size: 16px;
 }
+/* 기본 input[type="date"] 스타일 재정의 */
+.field input[type="date"] {
+  -webkit-appearance: none; /* Webkit 브라우저 기본 스타일 제거 */
+  -moz-appearance: none;    /* Firefox 기본 스타일 제거 */
+  appearance: none;         /* 표준 속성 */
+
+  width: 100%; /* 원하는 너비 설정 */
+  padding: 10px; /* 패딩 추가 */
+  border: 1px solid #ccc; /* 테두리 설정 */
+   /* 둥근 모서리 설정 */
+   border-radius: 0.7rem;
+
+  color: #555; /* 글자 색상 */
+  background-color: #fff; /* 배경색 */
+  
+}
+
+/* focus 상태 스타일 */
+.field input[type="date"]:focus {
+  border-color: #007bff; /* 포커스 시 테두리 색상 */
+  outline: none; /* 기본 outline 제거 */
+}
+
+/* 플래이스홀더 텍스트 스타일 */
+.field input[type="date"]::placeholder {
+  color: #aaa; /* 플래이스홀더 색상 */
+  font-style: italic; /* 기울임꼴 */
+}
+
 
 .detail input,
 .detail select,
@@ -64,28 +112,41 @@ body {
 .detail input:focus,
 .detail select:focus,
 .detail textarea:focus {
-  border-color: #89C53F;
+  border-color: #007bff;
   outline: none;
 }
 
 /* 반복 주기 버튼 그룹 */
 .detailFrequencyType .buttonGroup {
   display: flex;
-  width: 100%;
-  gap: 10px;
+  width: 70%;
 }
 
 .buttonGroup button {
-  flex: 1;
-  padding: 10px 15px;
+  border-radius: 0;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
-  border-radius: 0.6em;
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s;
   color: #555;
+  
 }
+
+/* 첫 번째 버튼 - 왼쪽만 둥글게 */
+.buttonGroup button:first-child {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+/* 마지막 버튼 - 오른쪽만 둥글게 */
+.buttonGroup button:last-child {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-right: none; /* 마지막 버튼은 오른쪽 테두리 제거 */
+}
+
+
 
 .buttonGroup button.activeButton {
   background-color: #007bff;
@@ -98,16 +159,139 @@ body {
 }
 
 /* 반복 주기 옵션 - Daily */
+
 .dailyContainer,
 .weeklyContainer,
 .monthlyContainer,
 .yearlyContainer {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+
+    justify-content: center;
+    align-items: center;
 }
+
+.inputInterval {
+  display: flex;
+  gap: 2rem;
+  width: 50%;
+  justify-content: left;
+}
+
+.inputInterval input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 0.7rem;
+  width: 3em;
+
+}
+
+.inputInterval input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.inputInterval span {
+  white-space: nowrap;
+  width: 3em;
+}
+
+.radioGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: left;
+    width: 50%;
+}
+
+.checkBoxGroup {
+  box-sizing: border-box;
+  display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    
+    width: 50%;
+  
+}
+
+.checkBoxGroup span{
+  white-space: nowrap;
+}
+
+.radioGroup label,
+.checkBoxGroup label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+
+    
+}
+
+.radioGroup input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 0.7rem;
+
+}
+
+.radioGroup input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.selectMonthlyOption{
+  display: flex;
+  gap: 2rem;
+  width: 50%;
+  justify-content: left;
+  display: flex;
+  
+}
+
+.selectMonthlyOption span{
+  white-space: nowrap;
+  
+}
+
+.selectMonthlyOption input{
+  width: fit-content;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    cursor: pointer;
+}
+
+
+input[type="number"],
+select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 0.7rem;
+    -moz-appearance: textfield; /* Firefox */
+    -webkit-appearance: none;  /* Chrome, Safari */
+    appearance: none;          /* 표준 속성 */
+      
+}
+
+.detail select.placeholder {
+  color: #aaa; /* 연한 회색 */
+}
+
+.detail select.placeholder option {
+  color: #000000; /* 연한 회색 */
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none; /* Chrome, Safari */
+          margin: 0; /* 여백 제거 */
+      }
 
 .dailyDayInput {
   display: flex;

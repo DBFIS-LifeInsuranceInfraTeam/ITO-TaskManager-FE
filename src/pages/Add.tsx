@@ -26,13 +26,14 @@ interface AddTaskData {
   dueDate: string;
   frequencyId: null | number;
   status: number;
-  itoProcessId: number;
+  itoProcessId: string;
   assigneeConfirmation: string;
   recurring: boolean;
   frequencyType: string;
-  frequencyInterval?: number | null;
+  frequencyInterval?: number;
   hasEndDate?:boolean;
-  weeklyDays?: string[];
+  endDate?: string;
+  weeklyDay?: string[];
   monthlyDayOfMonth?: number | null;
   monthlyWeekOfMonth?: number | null;
   monthlyDayOfWeek?: string | null;
@@ -53,9 +54,17 @@ const Add: React.FC = () => {
     const [description, setDescription] = useState<string>('');
     
     const [isRecurring, setIsRecurring] = useState<boolean>(false);
-  const [frequencyType, setFrequencyType] = useState<string>('');
+  const [frequencyType, setFrequencyType] = useState<string>('daily');
+  
+
   const [frequencyInterval, setFrequencyInterval] = useState<number>(1);
-  const [weeklyDays, setWeeklyDays] = useState<string[]>([]);
+
+  const [dailyFrequencyInterval, setDailyFrequencyInterval] = useState<string>('1');
+  const [weeklyFrequencyInterval, setWeeklyFrequencyInterval] = useState<string>('1');
+  const [monthlyFrequencyInterval, setMonthlyFrequencyInterval] = useState<string>('1');
+  
+  
+  const [weeklyDay, setWeeklyDay] = useState<string[]>([]);
   const [monthlyDayOfMonth, setMonthlyDayOfMonth] = useState<number | null>(null);
   const [monthlyWeekOfMonth, setMonthlyWeekOfMonth] = useState<number | null>(null);
   const [monthlyDayOfWeek, setMonthlyDayOfWeek] = useState<string>('');
@@ -78,8 +87,37 @@ const Add: React.FC = () => {
     const [projectList, setProjectList] = useState<Project[]>([]); // 여러 프로젝트 지원을 위한 배열
     
 
+    
 
+
+    const dayMapping: Record<string, string> = {
+      '일': 'SUNDAY',
+      '월': 'MONDAY',
+      '화': 'TUESDAY',
+      '수': 'WEDNESDAY',
+      '목': 'THURSDAY',
+      '금': 'FRIDAY',
+      '토': 'SATURDAY',
+  };
+  
+  const numberToDay: Record<number, string> = {
+      0: '일',
+      1: '월',
+      2: '화',
+      3: '수',
+      4: '목',
+      5: '금',
+      6: '토',
+  };
+  
   useEffect(() => {
+     // 오늘의 요일을 계산하고 초기 상태로 설정
+     const today = new Date().getDay(); // 0(일요일) ~ 6(토요일)
+     const todayKoreanDay = numberToDay[today]; // 숫자를 한국어 요일로 변환
+     const todayEnglishDay = dayMapping[todayKoreanDay]; // 한국어 요일을 영어로 변환
+     setWeeklyDay([todayEnglishDay]); // 오늘의 요일을 초기 상태로 설정
+
+
     const userInfo = sessionStorage.getItem("userInfo")
           ? JSON.parse(sessionStorage.getItem("userInfo") as string)
           : null;
@@ -112,6 +150,11 @@ const Add: React.FC = () => {
     }
 }, [project]);
     
+useEffect(()=>{
+  setDailyFrequencyInterval('1');
+  setWeeklyFrequencyInterval('1');
+  setMonthlyFrequencyInterval('1');
+},[frequencyType]);
 
 function getWeekOfMonth(date:Date) {
   const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -145,202 +188,303 @@ function getWeekOfMonthForSpecificDay(date:Date) {
 }
 
 function getDayOfWeek(date:Date) {
-  const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+  const days = ["일", "월", "화", "수", "목", "금", "토"];
   return days[date.getDay()];
 }
 
-// 반복 주기 옵션을 렌더링하는 함수
+
 const renderFrequencyOptions = () => {
   switch (frequencyType) {
-    case 'daily':
-      return (
-        <div className={styles.dailyContainer}>
-          <div className={styles.dailyDayInput}>
-            <input 
-            type="number"
-            value={frequencyInterval}
-            onChange={(e) => setFrequencyInterval(Number(e.target.value))}
-            />
-            <span>일 마다</span>
-          </div>
-          <div className={styles.dailyHasEndDate}>
-            <label>종료일</label>
-             
-            <input
-              type="radio"
-              name="endDate"
-              value="없음"
-              checked={!hasEndDate}
-              onChange={() => setHasEndDate(false)}
-              style={{ marginLeft: '8px' }}
-            />
-            <span>없음</span>
-            
-            <input
-              type="radio"
-              name="endDate"
-              value="있음"
-              checked={hasEndDate}
-              onChange={() => setHasEndDate(true)}
-              style={{ marginLeft: '8px' }}
-            />
-            <span>있음</span>
+      case 'daily':
+          return (
+              <div className={styles.dailyContainer}>
+                  <div className={styles.inputInterval}>
+                      <input 
+                          type="text" 
+                          value={dailyFrequencyInterval} 
+                          onChange={(e) => setDailyFrequencyInterval(e.target.value)} 
+                      />
+                      <span>일마다</span>
+                  </div>
+                  <div className={styles.radioGroup}>
+                    <label>
+                        <input 
+                            type="radio" 
+                            name="endDate" 
+                            checked={!hasEndDate} 
+                            onChange={() => setHasEndDate(false)} 
+                        />
+                        종료일 없음
+                    </label>
+                    <label>
+                        <input 
+                            type="radio" 
+                            name="endDate" 
+                            checked={hasEndDate} 
+                            onChange={() => setHasEndDate(true)} 
+                        />
+                        종료일 있음
+                    </label>
+                    <div className={styles.dateInputContainer}>
+                        <input 
+                            type="date" 
+                            value={endDate} 
+                            onChange={(e) => setEndDate(e.target.value)} 
+                            style={{ visibility: hasEndDate ? 'visible' : 'hidden' }}
+                        />
+                    </div>
+                </div>
+              </div>
+          );
+      case 'weekly':
+          return (
+              <div className={styles.weeklyContainer}>
+                  <div className={styles.inputInterval}>
 
-            {/* 종료일이 있을 때만 날짜 선택 입력 필드 표시 */}
-            {hasEndDate && (
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                style={{ marginLeft: '8px' }}
-              />
-            )}
-          </div>
-        </div>
-      );
-    case 'weekly':
-      return (
-        <div>
-          <label>간격 (주):</label>
-          <input
-            type="number"
-            value={frequencyInterval}
-            onChange={(e) => setFrequencyInterval(Number(e.target.value))}
-          />
+                      <input 
+                          type="text" 
+                          value={weeklyFrequencyInterval} 
+                          onChange={(e) => setWeeklyFrequencyInterval(e.target.value)} 
+                      />
+                      <span>주마다</span>
+                  </div>
+                  {/* <div className={styles.checkBoxGroup}>
+                      
+                      {['일', '월', '화', '수', '목', '금', '토'].map((day, idx) => (
+                          <>
+                              <input 
+                                  key={idx}
+                                  type="checkbox" 
+                                  value={day} 
+                                  checked={weeklyDays.includes(day)} 
+                                  onChange={(e) => {
+                                      const selectedDays = e.target.checked 
+                                          ? [...weeklyDays, day] 
+                                          : weeklyDays.filter(d => d !== day);
+                                      setWeeklyDays(selectedDays);
+                                  }} 
+                              />
+                              <span>{day}</span>
+                              </>
+                          
+                      ))}
+                  </div> */}
+                  <div className={styles.checkBoxGroup}>
+    {['일', '월', '화', '수', '목', '금', '토'].map((day, idx) => {
+        const englishDay = dayMapping[day];
 
-          <label>요일:</label>
-          <div className={styles.detailDay}>
-            {[
-      { label: "일", value: "SUNDAY" },
-      { label: "월", value: "MONDAY" },
-      { label: "화", value: "TUESDAY" },
-      { label: "수", value: "WEDNESDAY" },
-      { label: "목", value: "THURSDAY" },
-      { label: "금", value: "FRIDAY" },
-      { label: "토", value: "SATURDAY" },
-    ].map((day) => (
-      <div>
-        <span key={day.value}>{day.label}</span>
-      <input
-        type="checkbox"
-        value={day.value}
-        checked={weeklyDays.includes(day.value)}
-        onChange={(e) => {
-          const selectedDays = e.target.checked
-            ? [...weeklyDays, day.value]
-            : weeklyDays.filter((d) => d !== day.value);
-          setWeeklyDays(selectedDays);
-        }}
-      />
-      </div>
-      
-            ))}
-          </div>
-
-
-          
-        </div>
-      );
-    case 'monthly':
-      return (
-        <div className={styles.monthlyContainer}>
-          <div className={styles.detailMonth}>
-          
-            <div>
-              <label>간격 (월):</label>
-              <input
-                type="number"
-                value={frequencyInterval}
-                onChange={(e) => setFrequencyInterval(Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <label>일자:</label>
-              <input
-                type="number"
-                value={monthlyDayOfMonth || ''}
-                onChange={(e) => setMonthlyDayOfMonth(Number(e.target.value))}
-              />
-            </div>
-          <div>
-          <label>몇 번째 주:</label>
-          <input
-            type="number"
-            value={monthlyWeekOfMonth || ''}
-            onChange={(e) => setMonthlyWeekOfMonth(Number(e.target.value))}
-          />
-          </div>
-          </div>
-          <div className={styles.detailDay}>
-            {[
-      { label: "일", value: "SUNDAY" },
-      { label: "월", value: "MONDAY" },
-      { label: "화", value: "TUESDAY" },
-      { label: "수", value: "WEDNESDAY" },
-      { label: "목", value: "THURSDAY" },
-      { label: "금", value: "FRIDAY" },
-      { label: "토", value: "SATURDAY" },
-    ].map((day) => (
-      <div>
-        <span key={day.value}>{day.label}</span>
-      <input
-        type="checkbox"
-        value={day.value}
-        checked={weeklyDays.includes(day.value)}
-        onChange={(e) => {
-          const selectedDays = e.target.checked
-            ? [...weeklyDays, day.value]
-            : weeklyDays.filter((d) => d !== day.value);
-          setWeeklyDays(selectedDays);
-        }}
-      />
-      </div>
-      
-            ))}
-          </div>
-        </div>
-      );
-    case 'yearly':
-      return (
-        <div className={styles.detailDate}>
-          <label>월:</label>
-          <input
-            type="number"
-            value={yearlyMonth || ''}
-            onChange={(e) => setYearlyMonth(Number(e.target.value))}
-          />
-          <label>일자:</label>
-          <input
-            type="number"
-            value={yearlyDayOfMonth || ''}
-            onChange={(e) => setYearlyDayOfMonth(Number(e.target.value))}
-          />
-          <label>몇 번째 주:</label>
-          <input
-            type="number"
-            value={yearlyWeekOfMonth || ''}
-            onChange={(e) => setYearlyWeekOfMonth(Number(e.target.value))}
-          />
-          <label>요일:</label>
-          <select
-            value={yearlyDayOfWeek}
-            onChange={(e) => setYearlyDayOfWeek(e.target.value)}
-          >
-            <option value="">요일 선택</option>
-            <option value="SUNDAY">일요일</option>
-            <option value="MONDAY">월요일</option>
-            <option value="TUESDAY">화요일</option>
-            <option value="WEDNESDAY">수요일</option>
-            <option value="THURSDAY">목요일</option>
-            <option value="FRIDAY">금요일</option>
-            <option value="SATURDAY">토요일</option>
-          </select>
-        </div>
-      );
-    default:
-      return null;
+        return (
+            <React.Fragment key={idx}>
+                <input
+                    type="checkbox"
+                    value={englishDay}
+                    checked={weeklyDay.includes(englishDay)}
+                    onChange={(e) => {
+                        const selectedDays = e.target.checked
+                            ? [...weeklyDay, englishDay]
+                            : weeklyDay.filter(d => d !== englishDay);
+                        setWeeklyDay(selectedDays);
+                    }}
+                />
+                <span>{day}</span>
+            </React.Fragment>
+        );
+    })}
+</div>
+                  <div className={styles.radioGroup}>
+                    <label>
+                        <input 
+                            type="radio" 
+                            name="endDate" 
+                            checked={!hasEndDate} 
+                            onChange={() => setHasEndDate(false)} 
+                        />
+                        종료일 없음
+                    </label>
+                    <label>
+                        <input 
+                            type="radio" 
+                            name="endDate" 
+                            checked={hasEndDate} 
+                            onChange={() => setHasEndDate(true)} 
+                        />
+                        종료일 있음
+                    </label>
+                    <div className={styles.dateInputContainer}>
+                        <input 
+                            type="date" 
+                            value={endDate} 
+                            onChange={(e) => setEndDate(e.target.value)} 
+                            style={{ visibility: hasEndDate ? 'visible' : 'hidden' }}
+                        />
+                    </div>
+                </div>
+              </div>
+          );
+      case 'monthly':
+          return (
+              <div className={styles.monthlyContainer}>
+                  <div className={styles.inputInterval}>
+                      <input 
+                          type="text" 
+                          value={monthlyFrequencyInterval} 
+                          onChange={(e) => setMonthlyFrequencyInterval(e.target.value)} 
+                      />
+                      <span>개월마다</span>
+                  </div>
+                  <div className={styles.selectMonthlyOption}>
+                      <>
+                          <input 
+                              type="radio" 
+                              name="monthlyOption" 
+                              checked={!!monthlyDayOfMonth} 
+                              onChange={() => {
+                                  setMonthlyDayOfMonth(new Date(startDate).getDate());
+                                  setMonthlyWeekOfMonth(null);
+                                  setMonthlyDayOfWeek('');
+                              }} 
+                          />
+                          <span>{`${new Date(startDate).getDate()}일`}</span>
+                          {/* {monthlyDayOfMonth && (
+                              <input 
+                                  type="number" 
+                                  value={monthlyDayOfMonth || ''} 
+                                  onChange={(e) => setMonthlyDayOfMonth(Number(e.target.value))} 
+                              />
+                          )} */}
+                      </>
+                      <>
+                          <input 
+                              type="radio" 
+                              name="monthlyOption" 
+                              checked={!!monthlyWeekOfMonth} 
+                              onChange={() => {
+                                  setMonthlyDayOfMonth(null);
+                                  setMonthlyWeekOfMonth(getWeekOfMonthForSpecificDay(new Date(startDate)));
+                                  setMonthlyDayOfWeek(dayMapping[getDayOfWeek(new Date(startDate))]);
+                              }} 
+                          />
+                          <span>{`${getWeekOfMonthForSpecificDay(new Date(startDate))}번째 ${getDayOfWeek(new Date(startDate))}요일`}</span>
+                          {/* {monthlyWeekOfMonth && (
+                              <>
+                                  <input 
+                                      type="number" 
+                                      value={monthlyWeekOfMonth || ''} 
+                                      onChange={(e) => setMonthlyWeekOfMonth(Number(e.target.value))} 
+                                  />
+                                  <select 
+                                      value={monthlyDayOfWeek || ''} 
+                                      onChange={(e) => setMonthlyDayOfWeek(e.target.value)} 
+                                  >
+                                      {['일', '월', '화', '수', '목', '금', '토'].map((day, idx) => (
+                                          <option key={idx} value={day}>
+                                              {day}
+                                          </option>
+                                      ))}
+                                  </select>
+                              </>
+                          )} */}
+                      </>
+                  </div>
+                  <div className={styles.radioGroup}>
+                    <label>
+                        <input 
+                            type="radio" 
+                            name="endDate" 
+                            checked={!hasEndDate} 
+                            onChange={() => setHasEndDate(false)} 
+                        />
+                        종료일 없음
+                    </label>
+                    <label>
+                        <input 
+                            type="radio" 
+                            name="endDate" 
+                            checked={hasEndDate} 
+                            onChange={() => setHasEndDate(true)} 
+                        />
+                        종료일 있음
+                    </label>
+                    <div className={styles.dateInputContainer}>
+                        <input 
+                            type="date" 
+                            value={endDate} 
+                            onChange={(e) => setEndDate(e.target.value)} 
+                            style={{ visibility: hasEndDate ? 'visible' : 'hidden' }}
+                        />
+                    </div>
+                </div>
+              </div>
+          );
+      case 'yearly':
+          return (
+              <div className={styles.yearlyContainer}>
+                  <div className={styles.selectMonthlyOption}>
+                      <>
+                          <input 
+                              type="radio" 
+                              name="yearlyOption" 
+                              checked={!!yearlyDayOfMonth} 
+                              onChange={() => {
+                                  setYearlyDayOfMonth(new Date(startDate).getDate());
+                                  setYearlyMonth(new Date(startDate).getMonth()+1);
+                                  setYearlyWeekOfMonth(null);
+                                  setYearlyDayOfWeek('');
+                              }} 
+                          />
+                          <span>{`${new Date(startDate).getMonth()+1}월 ${new Date(startDate).getDate()}일`}</span>
+                      </>
+                      <>
+                          <input 
+                              type="radio" 
+                              name="yearlyOption" 
+                              checked={!!yearlyWeekOfMonth} 
+                              onChange={() => {
+                                  setYearlyDayOfMonth(null);
+                                  setYearlyMonth(new Date(startDate).getMonth()+1);
+                                  setYearlyWeekOfMonth(getWeekOfMonthForSpecificDay(new Date(startDate)));
+                                  setYearlyDayOfWeek(dayMapping[getDayOfWeek(new Date(startDate))]);
+                              }} 
+                          />
+                          <span>{`${new Date(startDate).getMonth()+1}월 ${getWeekOfMonthForSpecificDay(new Date(startDate))}번째 ${getDayOfWeek(new Date(startDate))}요일`}</span>
+                          
+                      </>
+                  </div>
+                  <div className={styles.radioGroup}>
+                    <label>
+                        <input 
+                            type="radio" 
+                            name="endDate" 
+                            checked={!hasEndDate} 
+                            onChange={() => setHasEndDate(false)} 
+                        />
+                        종료일 없음
+                    </label>
+                    <label>
+                        <input 
+                            type="radio" 
+                            name="endDate" 
+                            checked={hasEndDate} 
+                            onChange={() => setHasEndDate(true)} 
+                        />
+                        종료일 있음
+                    </label>
+                    <div className={styles.dateInputContainer}>
+                        <input 
+                            type="date" 
+                            value={endDate} 
+                            onChange={(e) => setEndDate(e.target.value)} 
+                            style={{ visibility: hasEndDate ? 'visible' : 'hidden' }}
+                        />
+                    </div>
+                </div>
+              </div>
+          );
+      default:
+          return null;
   }
 };
+
 
   const handleAddTask = async () => {
       const userInfo = sessionStorage.getItem("userInfo")
@@ -354,14 +498,13 @@ const renderFrequencyOptions = () => {
                 assigneeId: assigneeId,
                 createdDate: new Date().toISOString().split('T')[0],
                 startDate: new Date(startDate).toISOString().split('T')[0],
-                dueDate: new Date(endDate).toISOString().split('T')[0],
+                dueDate: new Date(startDate).toISOString().split('T')[0],
                 frequencyId:null,
                 status:0,
-                itoProcessId:1,
+                itoProcessId: processId,
                 assigneeConfirmation:'N',
                 recurring: isRecurring,
                 frequencyType: frequencyType,
-                hasEndDate:false,
                 // yearlyMonth: yearlyMonth || undefined, // null일 경우 undefined로 설정
                 // yearlyDayOfMonth: yearlyDayOfMonth || undefined, // null일 경우 undefined로 설정
                 // yearlyWeekOfMonth: yearlyWeekOfMonth || undefined,
@@ -394,21 +537,41 @@ const renderFrequencyOptions = () => {
             // frequencyType에 따라 필요한 필드 추가
             switch (frequencyType) {
               case 'daily':
-                taskData.frequencyInterval = frequencyInterval;
+                taskData.frequencyInterval = Number(dailyFrequencyInterval);
+                if(taskData.hasEndDate){
+                  taskData.hasEndDate = hasEndDate;
+                  taskData.endDate = endDate;
+                }else{
+                  taskData.hasEndDate = hasEndDate;
+                }
+                
                 break;
               
               case 'weekly':
-                taskData.frequencyInterval = frequencyInterval;
-                taskData.weeklyDays = weeklyDays; // 선택된 요일 배열
+                taskData.frequencyInterval = Number(weeklyFrequencyInterval);
+                taskData.weeklyDay = weeklyDay; // 선택된 요일 배열
+                if(hasEndDate){
+                  taskData.hasEndDate = hasEndDate;
+                  taskData.endDate = endDate;
+                }else{
+                  taskData.hasEndDate = hasEndDate;
+                }
                 break;
               
               case 'monthly':
-                taskData.frequencyInterval = frequencyInterval;
+                taskData.frequencyInterval = Number(monthlyFrequencyInterval);
                 if (monthlyDayOfMonth) {
                   taskData.monthlyDayOfMonth = monthlyDayOfMonth;
                 } else {
                   taskData.monthlyWeekOfMonth = monthlyWeekOfMonth;
                   taskData.monthlyDayOfWeek = monthlyDayOfWeek;
+                }
+
+                if(hasEndDate){
+                  taskData.hasEndDate = hasEndDate;
+                  taskData.endDate = endDate;
+                }else{
+                  taskData.hasEndDate = hasEndDate;
                 }
                 break;
               
@@ -420,10 +583,18 @@ const renderFrequencyOptions = () => {
                   taskData.yearlyWeekOfMonth = yearlyWeekOfMonth || undefined;
                   taskData.yearlyDayOfWeek = yearlyDayOfWeek || undefined;
                 }
+
+                if(hasEndDate){
+                  taskData.hasEndDate = hasEndDate;
+                  taskData.endDate = endDate;
+                }else{
+                  taskData.hasEndDate = hasEndDate;
+                }
                 break;
             }
 
 
+            console.log(taskData);
             const response = await addTask(taskData);
             
             console.log("add Task successful:", response);
@@ -497,12 +668,12 @@ const renderFrequencyOptions = () => {
     </div>
 
     <div className={styles.field}>
-        <label htmlFor="endDate">종료일</label>
+        <label htmlFor="dueDate">종료일</label>
         <input 
             type="date" 
-            id="endDate" 
-            value={endDate} 
-            onChange={(e) => setEndDate(e.target.value)} 
+            id="dueDate" 
+            value={startDate} 
+            onChange={(e) => setStartDate(e.target.value)} 
         />
     </div>
 
@@ -519,9 +690,9 @@ const renderFrequencyOptions = () => {
 
       
       {isRecurring && (
-    <>
+    <div className={styles.recurringContainer}>
       <div className={styles.detailFrequencyType}>
-        <label>반복 주기</label>
+        
         <div className={styles.buttonGroup}>
           <button
             type="button"
@@ -556,22 +727,23 @@ const renderFrequencyOptions = () => {
       
 
 
-      <div className={styles.detail}>
+      <div className={styles.detailFrequencyType}>
         {renderFrequencyOptions()}
       </div>
-    </>
+    </div>
 )}
 
 
       <div className={styles.detail}>
         <label htmlFor="process">ITO 프로세스</label>
-        <select
+                <select
                     id="processId"
                     value={processId}
                     onChange={(e) => setProcessId(e.target.value)}
+                    className={processId === "" ? styles.placeholder : ""}
                     required
                 >
-                    <option value="">프로세스를 선택하세요.</option>
+                    <option >프로세스를 선택하세요.</option>
                     <option key="1" value="1">리포팅</option>
                     <option key="2" value="2">보안</option>
                     <option key="3" value="3">용량</option>
@@ -589,6 +761,7 @@ const renderFrequencyOptions = () => {
                     id="project"
                     value={project}
                     onChange={(e) => setProject(e.target.value)}
+                    className={project === "" ? styles.placeholder : ""}
                     required
                 >
                     <option value="">프로젝트를 선택하세요.</option>
@@ -606,6 +779,7 @@ const renderFrequencyOptions = () => {
             id="assignee" 
             value={assigneeId} 
             onChange={(e) => setAssigneeId(e.target.value)} 
+            className={assigneeId === "" ? styles.placeholder : ""}
             required
           >
             <option value="">담당자를 선택하세요.</option>
