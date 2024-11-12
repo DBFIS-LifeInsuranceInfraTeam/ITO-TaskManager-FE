@@ -6,9 +6,14 @@ import { deleteTask } from '../api/deleteTask';
 import { addComment } from '../api/addComment';
 import { addLiketoComment } from '../api/addLiketoComment';
 import { deleteComment } from "../api/deleteComment";
+import statusBefore from '../styles/image/list/status-before.svg';
+import statusComplete from '../styles/image/list/status-complete.svg';
+import statusProgress from '../styles/image/list/status-progress.svg';
+import statusPending from '../styles/image/list/status-pending.svg';
 
 
 interface Task {
+  createdBy: string;
   taskId: string;
   projectId: number;
   taskName: string;
@@ -21,7 +26,7 @@ interface Task {
   dueDate: string;
   frequencyId: number;
   commentCount: number;
-  status: number;
+  status: 0 | 1 | 2 | 3; // 진행 상태는 0~3으로 제한
   itoProcessId: string;
   assigneeConfirmation: string;
 }
@@ -41,7 +46,7 @@ const Detail: React.FC = () => {
   const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const taskId = searchParams.get('taskId'); // id는 문자열로 받아지므로, 필요 시 숫자로 변환
-    const [task, setTask] = useState<Task | undefined>();
+    const [task, setTask] = useState<Task>();
     const [error, setError] = useState<string | null>(null);
     const [commentList, setCommentList] = useState<Comment[]>([]);
     const [commentContent, setCommentContent] = useState<string>('');
@@ -149,6 +154,9 @@ const Detail: React.FC = () => {
       }
     };
 
+    const handleStatusChangeClick = () => {
+
+    };
     const processMap: { [key: string]: string } = {
       "1": "리포팅",
       "2": "보안",
@@ -160,6 +168,13 @@ const Detail: React.FC = () => {
       "8": "배포"
   };
 
+  const statusData = [
+    { img: statusBefore, label: '시작 전' },
+    { img: statusProgress, label: '진행 중' },
+    { img: statusComplete, label: '완료' },
+    { img: statusPending, label: '지연' },
+  ];
+
   return (
     <div className={styles.container}> {/* className을 사용하여 스타일 적용 */}
       <h1 className={styles.title}>업무 상세정보</h1> {/* 제목에 클래스 추가 */}
@@ -169,6 +184,22 @@ const Detail: React.FC = () => {
         <p id="title">{task?.taskName}</p>
       </div>
       
+      <div className={styles.detail}>
+        <label htmlFor="status">진행상태</label>
+        <p id="status">
+          {typeof task?.status === "number" && statusData[task.status] ? (
+            <>
+              <img src={statusData[task.status].img} alt="" />
+              {statusData[task.status].label}
+            </>
+          ) : (
+            "상태 정보를 가져올 수 없습니다"
+          )}
+        </p>
+                                        
+                                    
+      </div>
+
       <div className={styles.detail}>
         <label htmlFor="duration">기간</label>
         <p id="duration">{task?.startDate} ~ {task?.dueDate}</p>
@@ -190,11 +221,28 @@ const Detail: React.FC = () => {
         <p id="content">{task?.description}</p>
       </div>
 
-      {/* 수정 버튼 추가 */}
-      <div className={styles.buttonContainer}>
+      
+      {/* <div className={styles.buttonContainer}>
         <button className={styles.editButton} onClick={handleEditClick}>수정</button>
         <button className={styles.cancelButton} onClick={() => task?.taskId && handleDeleteClick(task.taskId)}>삭제</button>
-      </div>
+      </div> */}
+
+      {/* 수정 및 삭제 버튼 */}
+      {userInfo.userId === task?.createdBy && (
+        <div className={styles.buttonContainer}>
+          <button className={styles.editButton} onClick={handleEditClick}>수정</button>
+          <button className={styles.cancelButton} onClick={() => task?.taskId && handleDeleteClick(task.taskId)}>삭제</button>
+        </div>
+      )}
+
+      {/* 상태변경 버튼 */}
+      {userInfo.userId === task?.assigneeId && (
+        <div className={styles.buttonContainer}>
+          <button className={styles.statusButton} onClick={handleStatusChangeClick}>
+            상태 변경
+          </button>
+        </div>
+      )}
 
 
 

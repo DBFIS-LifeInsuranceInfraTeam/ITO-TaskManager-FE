@@ -23,10 +23,12 @@ import apiClient from '../services/apiClient';
 //     }
 // };
 interface AddTaskData {
+    createdBy: string;
     projectId: string;
     taskName: string;
     description: string;
-    assigneeId: string;
+    // assigneeId: string;
+    assigneeIds: string[];
     createdDate: string;
     startDate: string;
     dueDate: string;
@@ -57,7 +59,7 @@ export const addTask = async (taskData: AddTaskData) => {
             dueDate: taskData.startDate,
         };
 
-        const response = await apiClient.post(`/tasks/addtask`, fullTaskData);
+        const response = await apiClient.post(`/tasks/addTaskMultiple`, fullTaskData);
         console.log(response.data);
         return response.data;
     } catch (error) {

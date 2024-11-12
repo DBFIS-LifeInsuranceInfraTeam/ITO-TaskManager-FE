@@ -49,6 +49,8 @@ const List: React.FC<ListProps> = ({ taskList, loading }) => {
   
   //   fetchTaskList();
   // }, []);
+
+  console.log(taskList);
   
   const navigate = useNavigate();
   
@@ -69,7 +71,7 @@ const List: React.FC<ListProps> = ({ taskList, loading }) => {
                         <p>이번 달 할 일</p>
                         {loading ? (
         <p>로딩 중...</p>
-      ) : taskList.length === 0 ? (
+      ) : !taskList?.length ? (
         <span>등록된 업무가 없습니다.</span> // taskList가 비어있을 때 메시지
       ) : (
                         <table className={styles.table}>
@@ -84,7 +86,10 @@ const List: React.FC<ListProps> = ({ taskList, loading }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {taskList.map((task:Task, index:number) => (
+                            {taskList
+      .slice() // 원본 배열 변경 방지
+      .sort((a: Task, b: Task) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()) // dueDate 기준으로 정렬
+      .map((task: Task, index: number) => (
                                 <tr key={task.taskId}>
                                     <td>{index + 1}</td>
                                     <td><p>{task.taskName}</p></td>

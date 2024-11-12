@@ -17,10 +17,12 @@ interface Project {
 }
 
 interface AddTaskData {
+  createdBy: string;
   projectId: string;
   taskName: string;
   description: string;
-  assigneeId: string;
+  //assigneeId: string;
+  assigneeIds: string[];
   createdDate: string;
   startDate: string;
   dueDate: string;
@@ -51,6 +53,24 @@ const Add: React.FC = () => {
     const [processId, setProcessId] = useState<string>('');
     const [project, setProject] = useState<string>('');
     const [assigneeId, setAssigneeId] = useState<string>('');
+
+    const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
+    const handleAssigneeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const clickedValue = event.target.value; // 현재 선택된 값
+  
+      setSelectedAssignees((prevAssignees) => {
+        if (prevAssignees.includes(clickedValue)) {
+          // 이미 선택된 값이면 제거
+          return prevAssignees.filter((id) => id !== clickedValue);
+        } else {
+          // 선택되지 않은 값이면 추가
+          return [...prevAssignees, clickedValue];
+        }
+      });
+    };
+
+    
+  
     const [description, setDescription] = useState<string>('');
     
     const [isRecurring, setIsRecurring] = useState<boolean>(false);
@@ -492,10 +512,13 @@ const renderFrequencyOptions = () => {
       : null;
         try {
             const taskData:AddTaskData = {
+                createdBy: userInfo.userId,
                 projectId:project,
                 taskName:taskName,
                 description:description,
-                assigneeId: assigneeId,
+                //assigneeId: assigneeId,
+
+                assigneeIds: selectedAssignees,
                 createdDate: new Date().toISOString().split('T')[0],
                 startDate: new Date(startDate).toISOString().split('T')[0],
                 dueDate: new Date(startDate).toISOString().split('T')[0],
@@ -774,13 +797,21 @@ const renderFrequencyOptions = () => {
       </div>
       
       <div className={styles.detail}>
+        <p>{selectedAssignees}</p>
+        </div>
+        <div className={styles.detail}>
         <label htmlFor="manager">담당자</label>
           <select 
-            id="assignee" 
-            value={assigneeId} 
-            onChange={(e) => setAssigneeId(e.target.value)} 
-            className={assigneeId === "" ? styles.placeholder : ""}
+            // id="assignee" 
+            // value={assigneeId} 
+            // onChange={(e) => setAssigneeId(e.target.value)} 
+            //className={assigneeId === "" ? styles.placeholder : ""}
             required
+            id="assignees"
+            multiple
+            value={selectedAssignees}
+            onChange={handleAssigneeChange}
+
           >
             <option value="">담당자를 선택하세요.</option>
           {userList && userList.length > 0 ? (

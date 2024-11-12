@@ -5,6 +5,7 @@ import interactionPlugin from '@fullcalendar/interaction'; // 반드시 추가�
 import '../styles/Calendar.css';
 import styles from '../styles/Calendar.module.css';
 import eventIcon from '../styles/image/eventIcon.png'
+import statusBefore from '../styles/image/list/status-before.svg';
 import statusComplete from '../styles/image/list/status-complete.svg';
 import statusProgress from '../styles/image/list/status-progress.svg';
 import statusPending from '../styles/image/list/status-pending.svg';
@@ -29,7 +30,7 @@ interface Task {
 
     // 날짜를 'YYYY-MM-DD' 형식으로 변환하는 함수
 const formatDate = (date: Date) => {
-    return date.toLocaleDateString('ko-KR').split('T')[0]; // 'YYYY-MM-DD' 형식으로 변환
+    return date.toISOString().split('T')[0]// 'YYYY-MM-DD' 형식으로 변환
   };
 const Calendar = () => {
 
@@ -79,6 +80,7 @@ const Calendar = () => {
 
   useEffect(() => {
     const eventsForSelectedDate = eventList.filter(event => event.dueDate === selectedDate);
+    
     setSelectedDateEvents(eventsForSelectedDate);
   }, [selectedDate, eventList]);
 
@@ -86,6 +88,7 @@ const Calendar = () => {
 
   const handleDateClick = (info: any) => {
     setSelectedDate(info.dateStr);
+    
     //console.log(selectedDate)
     //const selectedDate = info.dateStr; // 클릭한 날짜 (YYYY-MM-DD 형식)
     const eventsForSelectedDate = eventList.filter(event => event.dueDate === selectedDate);
@@ -135,6 +138,7 @@ const formatToMMDD = (date: string) => {
   };
 
   const statusData = [
+    { img: statusBefore, label: '시작전' },
     { img: statusProgress, label: '진행 중' },
     { img: statusComplete, label: '완료' },
     { img: statusPending, label: '지연' }
