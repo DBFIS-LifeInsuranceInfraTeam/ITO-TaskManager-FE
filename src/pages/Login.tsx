@@ -18,9 +18,14 @@ const Login: React.FC = () => {
           const response = await login(userId, password);
           //console.log("Login successful:", response);
           // 리다이렉트
+          
           sessionStorage.setItem('userInfo', JSON.stringify(response.data.userInfo));
           sessionStorage.setItem('token', response.data.token);
-          navigate('/');
+
+          const redirectUrl = sessionStorage.getItem('redirectUrl') || '/'; // 기본은 홈 페이지로
+        sessionStorage.removeItem('redirectUrl'); // 리다이렉트 후에는 저장된 URL 제거
+        navigate(redirectUrl, { replace: true });
+        
       } catch (error) {
           setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요."); // Error message in Korean
       }

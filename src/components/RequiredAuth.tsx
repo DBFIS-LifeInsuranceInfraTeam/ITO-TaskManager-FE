@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
-
+  const location = useLocation();
+  
   useEffect(() => {
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo") as string);
       
@@ -12,6 +13,7 @@ const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       
       if (!userInfo) {
         // 로그인하지 않으면 로그인 페이지로 리다이렉트
+        sessionStorage.setItem('redirectUrl', location.pathname + location.search);
         navigate('/login', { replace: true });
       }else{
         setIsLoading(false);

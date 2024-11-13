@@ -65,7 +65,9 @@ const Detail: React.FC = () => {
       
       if (!userInfo) {
         // 로그인하지 않으면 로그인 페이지로 리다이렉트
-        navigate('/login', { replace: true });
+               // 로그인하지 않으면 로그인 페이지로 리다이렉트
+               sessionStorage.setItem('redirectUrl', location.pathname + location.search);
+               navigate('/login', { replace: true });
       }else{
         setUserId(userInfo.userId);
        
@@ -168,9 +170,7 @@ const Detail: React.FC = () => {
       if (!userId) {
         navigate('/login', { replace: true });
       }else{
-        if (!userId) {
-          navigate('/login', { replace: true });
-        }else{
+        
           try {
               await deleteComment(commentId,userId); // taskId를 전달하여 삭제
               window.location.reload(); // 페이지를 새로고침하여 변경 사항 반영
@@ -178,7 +178,7 @@ const Detail: React.FC = () => {
               console.error("Failed to delete comment:", error);
               // 에러 발생 시 사용자에게 알림을 줄 수도 있습니다.
           }
-        }
+        
       }
     };
 
