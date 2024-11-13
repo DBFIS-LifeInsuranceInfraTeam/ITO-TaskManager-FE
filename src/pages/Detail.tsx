@@ -10,6 +10,7 @@ import statusBefore from '../styles/image/list/status-before.svg';
 import statusComplete from '../styles/image/list/status-complete.svg';
 import statusProgress from '../styles/image/list/status-progress.svg';
 import statusPending from '../styles/image/list/status-pending.svg';
+import RequireAuth from '../components/RequiredAuth';
 
 
 interface Task {
@@ -178,6 +179,7 @@ const Detail: React.FC = () => {
   ];
 
   return (
+    <RequireAuth>
     <div className={styles.container}> {/* className을 사용하여 스타일 적용 */}
       <h1 className={styles.title}>업무 상세정보</h1> {/* 제목에 클래스 추가 */}
       
@@ -284,6 +286,7 @@ const Detail: React.FC = () => {
         <button onClick={handleCommentSubmit} className={styles.submitButton}>댓글 작성</button>
       </div>
     </div>
+    </RequireAuth>
   );
 }
 
