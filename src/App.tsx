@@ -16,9 +16,9 @@ const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isLoggedIn = sessionStorage.getItem('userInfo'); // 로그인 정보 확인
+    const isLoggedIn = sessionStorage.getItem('userInfo');
     if (!isLoggedIn) {
-      navigate('/login'); // 로그인 페이지로 리다이렉트
+      navigate('/login', { replace: true }); // 로그인 페이지로 리다이렉트
     }
   }, [navigate]);
 
