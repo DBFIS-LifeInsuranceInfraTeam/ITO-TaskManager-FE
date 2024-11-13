@@ -55,6 +55,12 @@ const Detail: React.FC = () => {
       : null;
 
     useEffect(() => {
+      
+        const isLoggedIn = sessionStorage.getItem('userInfo'); // 로그인 정보 확인
+        if (!isLoggedIn) {
+          navigate('/login'); // 로그인 페이지로 리다이렉트
+        }
+      
         if (taskId) {
             const fetchData = async () => {
                 try {
