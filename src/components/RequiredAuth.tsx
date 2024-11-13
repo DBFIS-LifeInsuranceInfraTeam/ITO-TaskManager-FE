@@ -6,15 +6,17 @@ const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
 
   useEffect(() => {
-    const isLoggedIn = sessionStorage.getItem('userInfo');
-
-    //console.log(isLoggedIn)
-    if (!isLoggedIn) {
-      // 로그인하지 않으면 로그인 페이지로 리다이렉트
-      navigate('/login', { replace: true });
-    } else {
-      setIsLoading(false); // 로그인 되어 있으면 로딩 완료
-    }
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo") as string);
+      
+      console.log(userInfo)
+      
+      if (!userInfo) {
+        // 로그인하지 않으면 로그인 페이지로 리다이렉트
+        navigate('/login', { replace: true });
+      }else{
+        setIsLoading(false);
+       
+      }
   }, []);
 
   // 로그인 상태 체크 중일 때 로딩 화면 표시
