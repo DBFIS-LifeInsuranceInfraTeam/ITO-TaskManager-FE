@@ -51,13 +51,27 @@ const Detail: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [commentList, setCommentList] = useState<Comment[]>([]);
     const [commentContent, setCommentContent] = useState<string>('');
-    const userInfo = sessionStorage.getItem("userInfo")
-      ? JSON.parse(sessionStorage.getItem("userInfo") as string)
-      : null;
+
+    const [userId, setUserId] = useState('');
+
+    const navigate = useNavigate();
 
     useEffect(() => {
+
+
+      const userInfo = JSON.parse(sessionStorage.getItem("userInfo") as string);
       
+      console.log(userInfo)
       
+      if (!userInfo) {
+        // 로그인하지 않으면 로그인 페이지로 리다이렉트
+        navigate('/login', { replace: true });
+      }else{
+        setUserId(userInfo.userId);
+       
+      }
+      
+
         if (taskId) {
             const fetchData = async () => {
                 try {
@@ -75,7 +89,8 @@ const Detail: React.FC = () => {
         }
     }, [taskId]);
 
-    const navigate = useNavigate();
+    
+
     const handleEditClick = () => {
       navigate('/task/edit', { state: { task } }); // task 데이터 전달
     };
@@ -98,19 +113,21 @@ const Detail: React.FC = () => {
 
     const handleLikeClick = async (commentId: bigint) => {
       
-      if (userInfo?.userId) {
-      try {
-          const updatedComment = await addLiketoComment(commentId, userInfo?.userId);
+      if (!userId) {
+        navigate('/login', { replace: true });
+      }else{
+        try {
+          const updatedComment = await addLiketoComment(commentId, userId);
           setCommentList(commentList.map(comment =>
             comment.commentId === commentId
               ? {
                   ...comment,
-                  likeCount: comment.likedUsers.includes(userInfo?.userId)
+                  likeCount: comment.likedUsers.includes(userId)
                     ? comment.likeCount - 1
                     : comment.likeCount + 1,
-                  likedUsers: comment.likedUsers.includes(userInfo?.userId)
-                    ? comment.likedUsers.filter(id => id !== userInfo?.userId) // Remove userId if already liked
-                    : [...comment.likedUsers, userInfo?.userId], // Add userId if not already liked
+                  likedUsers: comment.likedUsers.includes(userId)
+                    ? comment.likedUsers.filter(id => id !== userId) // Remove userId if already liked
+                    : [...comment.likedUsers, userId], // Add userId if not already liked
                 }
               : comment
           ));
@@ -123,16 +140,16 @@ const Detail: React.FC = () => {
   };
 
     const handleCommentSubmit = async () => {
-        const userInfo = sessionStorage.getItem("userInfo")
-      ? JSON.parse(sessionStorage.getItem("userInfo") as string)
-      : null;
-
-      if (taskId && commentContent.trim() && userInfo?.userId) {
+        
+      if (!userId) {
+        navigate('/login', { replace: true });
+      }else{
+        if (taskId && commentContent.trim()) {
         try {
           const newCommentData = await addComment({
             taskId,
             commentContent,
-            commenterId: userInfo.userId, // 키 이름 수정
+            commenterId: userId, // 키 이름 수정
           });
           console.log("Comment added:", newCommentData);
           window.location.reload(); // 페이지를 새로고침하여 변경 사항 반영
@@ -140,26 +157,35 @@ const Detail: React.FC = () => {
           console.error("Failed to create comment:", error);
         }
       }
-    };
+    }};
 
-    const handleDeleteComment = async (commentId: bigint, userId: string) => {
+    const handleDeleteComment = async (commentId: bigint) => {
       const isConfirmed = window.confirm("정말 삭제하시겠습니까?"); // 삭제 여부 확인
       if (!isConfirmed) {
           return; // 사용자가 취소한 경우 함수 종료
       }
   
-      try {
-          await deleteComment(commentId,userId); // taskId를 전달하여 삭제
-          window.location.reload(); // 페이지를 새로고침하여 변경 사항 반영
-      } catch (error) {
-          console.error("Failed to delete comment:", error);
-          // 에러 발생 시 사용자에게 알림을 줄 수도 있습니다.
+      if (!userId) {
+        navigate('/login', { replace: true });
+      }else{
+        if (!userId) {
+          navigate('/login', { replace: true });
+        }else{
+          try {
+              await deleteComment(commentId,userId); // taskId를 전달하여 삭제
+              window.location.reload(); // 페이지를 새로고침하여 변경 사항 반영
+          } catch (error) {
+              console.error("Failed to delete comment:", error);
+              // 에러 발생 시 사용자에게 알림을 줄 수도 있습니다.
+          }
+        }
       }
     };
 
     const handleStatusChangeClick = () => {
 
     };
+
     const processMap: { [key: string]: string } = {
       "1": "리포팅",
       "2": "보안",
@@ -232,7 +258,7 @@ const Detail: React.FC = () => {
       </div> */}
 
       {/* 수정 및 삭제 버튼 */}
-      {userInfo.userId === task?.createdBy && (
+      {userId === task?.createdBy && (
         <div className={styles.buttonContainer}>
           <button className={styles.editButton} onClick={handleEditClick}>수정</button>
           <button className={styles.cancelButton} onClick={() => task?.taskId && handleDeleteClick(task.taskId)}>삭제</button>
@@ -240,7 +266,7 @@ const Detail: React.FC = () => {
       )}
 
       {/* 상태변경 버튼 */}
-      {userInfo.userId === task?.assigneeId && (
+      {userId === task?.assigneeId && (
         <div className={styles.buttonContainer}>
           <button className={styles.statusButton} onClick={handleStatusChangeClick}>
             상태 변경
@@ -262,10 +288,10 @@ const Detail: React.FC = () => {
               className={styles.likeButton} 
               onClick={() => handleLikeClick(comment.commentId)}
             >
-              {comment.likedUsers.includes(userInfo?.userId) ? '♥️' : '♡'} {comment.likeCount}
+              {comment.likedUsers.includes(userId) ? '♥️' : '♡'} {comment.likeCount}
             </button>
-            {comment.commenterId ===  userInfo?.userId&& (
-          <button onClick={() => handleDeleteComment(comment.commentId, userInfo?.userId)}>
+            {comment.commenterId ===  userId&& (
+          <button onClick={() => handleDeleteComment(comment.commentId)}>
             Delete
           </button>
         )}
