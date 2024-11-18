@@ -1,0 +1,10 @@
+/* styles.css */
+.ant-layout-sider {
+    background: #F8F7F1;  /* 사이드바 배경 */
+  }
+  
+  .content {
+    background: #f0f2f5;  /* 본문 배경 */
+    padding: 0 20px;
+  }
+  

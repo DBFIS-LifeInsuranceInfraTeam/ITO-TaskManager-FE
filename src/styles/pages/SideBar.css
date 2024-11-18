@@ -1,0 +1,23 @@
+.ant-menu-item-selected {
+    background-color: #8AC53F !important; /* 원하는 배경색 */
+    color: #fff !important; /* 원하는 글자색 */
+}
+
+.ant-layout-sider-children{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #393939;
+}
+
+.ant-menu-item{
+    height: 50px;
+    padding: 12px 24px;
+}
+
+
+
+.ant-menu-title-content a{
+    font-size: large;
+}

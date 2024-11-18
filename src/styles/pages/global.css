@@ -1,0 +1,24 @@
+*{
+    font-family: "CustomFont" !important;
+    
+}
+
+@font-face{
+    font-family: "CustomFont";
+    src: url("../font/Pretendard.ttf");
+} 
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    min-height: 100vh; /* 최소 높이를 화면 크기로 설정 */
+    overflow: auto; /* 세로 스크롤만 활성화 */
+}
+
+body {
+    min-height: 100vh; /* 최소 높이를 화면 크기로 설정 */
+    margin: 0;
+    overflow: auto; /* 스크롤을 활성화 */
+}

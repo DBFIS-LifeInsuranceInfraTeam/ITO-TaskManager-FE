@@ -1,271 +1,257 @@
-import React, { useState, FormEvent, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import styles from '../styles/Login.module.css'; // Import the CSS file for styling
-import { signup } from '../api/signup';
-import logo from '../styles/image/logo-black.png';
-import { getAllProjects } from '../api/getAllProjects';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Select, Typography, Layout, Card, Image } from 'antd';
+import { Link, useNavigate } from "react-router-dom";
+import { signup } from "../api/auth/signup";
+import { toast } from "react-toastify";
+import { getAllProjects } from "../api/user/getAllProjects";
+import logo from '../styles/images/logo_v2_black.png'; // 로고 이미지 추가
 
-interface Project {
-    projectId: string;
-    name: string;
-}
+const { Title } = Typography;
+const { Option } = Select;
 
-const Signup:React.FC = () => {
-    const [userId, setUserId] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [passwordCheck, setPasswordCheck] = useState<string>('');
-    const [name, setName] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
-    const [phoneNumber, setPhoneNumber] = useState<string>('');
-    const [projectId, setProjectId] = useState<string>('');
-    const [unit, setUnit] = useState<string>('');
-    const [position, setPosition] = useState<string>('');
-    const [error, setError] = useState<string | null>(null);
-
-    //프로젝트 선택 가능 리스트
-    const [projectList, setProjectList] = useState<Project[]>([]);
-    // 버튼이 활성화되었는지 여부를 계산하는 함수
-    const isButtonEnabled = userId.trim() !== '' && password.trim() !== '' && 
-    passwordCheck.trim() !== '' && name.trim() !== '' && 
-    phoneNumber.trim() !== '';
+const SignUp: React.FC = () => {
     
     const navigate = useNavigate();
+    const [projectList, setProjectList] = useState([]);
     
     useEffect(() => {
-        const fetchProjectList = async () => {
-            
-                try {
-                    const resProjectListData = await getAllProjects();
-                    console.log(resProjectListData)
-                    setProjectList(resProjectListData);
-                } catch (error) {
-                    console.error("Error fetching statistics:", error);
+        const fetchProjects = async () => {
+            try {
+                const response = await getAllProjects();
+                if (response.status===200 && response.data) {
+                    setProjectList(response.data); // 프로젝트 리스트 상태 업데이트
+                } else {
+                    toast.error("프로젝트 목록을 불러오는 데 실패했습니다.");
                 }
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+                toast.error("프로젝트 목록을 불러오는 중 오류가 발생했습니다.");
             }
-        fetchProjectList();
+        };
+    
+        fetchProjects(); // 비동기 함수 호출
     }, []);
+    
 
-
-    const handleSignup = async (e: FormEvent) => {
-        e.preventDefault();
-        setError(null);
-        
+    const onFinish = async (values: {
+        userId: string;
+        name: string;
+        password: string;
+        confirmPassword: string; // 추가로 받는 값
+        unit: string;
+        projectId: string;
+        email: string;
+        phoneNumber: string;
+        photo: null;
+        position: string;
+        admin: false;
+    }) => {
         try {
-            const userData = {
-                userId,
-                name,
-                password,
-                unit,
-                projectId,
-                email,
-                phoneNumber,
-                photo: null, // or a file/image if provided
-                position,
-                admin: false
-            };
-
-            const response = await signup(userData);
-            console.log("Signup successful:", response);
-            // Redirect or update state after successful signup here
+            // confirmPassword 제거
+            const { confirmPassword, ...filteredValues } = values;
+    
+            // API 요청
+            const response = await signup({ ...filteredValues, admin: false });
+    
+            // 응답 확인
+            if (response.success === false) {
+                // 서버에서 반환된 에러 메시지 표시
+                toast.error(response.error || '회원가입에 실패했습니다.');
+                return;
+            }
+    
+            // 성공 처리
+            toast.success('회원가입 성공!');
             navigate('/login');
-            
         } catch (error) {
-            setError("이미 가입된 사용자입니다.");
+            console.error('Unhandled Error:', error);
+            toast.error('서버와 통신 중 오류가 발생했습니다.');
         }
     };
 
     return (
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <img src={logo} alt=""/>
-        </div>
-        <div className={styles.formContainer}>
-            <form onSubmit={handleSignup}>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="userId">아이디</label>
-                    <input 
-                        type="text" 
-                        id="userId" 
-                        value={userId} 
-                        onChange={(e) => setUserId(e.target.value)} 
-                        placeholder="아이디를 입력하세요." 
-                        required 
+        <Layout
+            style={{
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'linear-gradient(to bottom, #ffffff, #f0f2f5)',
+                padding: '20px',
+            }}
+        >
+            <Card
+                style={{
+                    maxWidth: '600px',
+                    width: '100%',
+                    padding: '30px 40px',
+                    boxShadow: '0 6px 20px rgba(0, 0, 0, 0.1)',
+                    borderRadius: '15px',
+                    backgroundColor: '#ffffff',
+                }}
+            >
+                {/* 로고 */}
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <Image
+                        src={logo}
+                        preview={false}
+                        alt="logo"
+                        style={{ height: '60px' }}
                     />
                 </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="password">비밀번호</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)} 
-                        placeholder="비밀번호를 입력하세요." 
-                        required 
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="passwordCheck">비밀번호 확인</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        value={passwordCheck} 
-                        onChange={(e) => setPasswordCheck(e.target.value)} 
-                        placeholder="비밀번호를 재입력하세요." 
-                        required 
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="email">이메일</label>
-                    <input 
-                        type="text" 
-                        id="email" 
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)} 
-                        placeholder="이메일 입력하세요." 
-                        required 
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="name">이름</label>
-                    <input 
-                        type="text" 
-                        id="name" 
-                        value={name} 
-                        onChange={(e) => setName(e.target.value)} 
-                        placeholder="이름을 입력하세요." 
-                        required 
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="phoneNumber">전화번호</label>
-                    <input 
-                        type="string" 
-                        id="phoneNumber" 
-                        value={phoneNumber} 
-                        onChange={(e) => setPhoneNumber(e.target.value)} 
-                        placeholder="전화번호를 입력하세요." 
-                        required 
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="projectId">프로젝트</label>
-                    <select 
-            id="projectId" 
-            value={projectId} 
-            onChange={(e) => setProjectId(e.target.value)} 
-            required
-          >
-                    {projectList && projectList.length > 0 ? (
-            <>
-              <option value="">프로젝트를 선택하세요.</option>
-              {projectList.map((project) => (
-                <option key={project.projectId} value={project.projectId}>
-                  {project.name}
-                </option>
-              ))}
-            </>
-          ) : (
-            <option disabled>선택 가능한 프로젝트가 없습니다.</option>
-          )}
-          </select>
-                    {/* <input 
-                        type="string" 
-                        id="projectId" 
-                        value={projectId} 
-                        onChange={(e) => setProjectId(e.target.value)} 
-                        placeholder="팀을 입력하세요." 
-                        required 
-                    /> */}
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="unit">유닛</label>
-                    {/* <input 
-                        type="string" 
-                        id="unit" 
-                        value={unit} 
-                        onChange={(e) => setUnit(e.target.value)} 
-                        placeholder="유닛을 입력하세요." 
-                        required 
-                    /> */}
-                    <select 
-            id="unit" 
-            value={unit} 
-            onChange={(e) => setUnit(e.target.value)} 
-            required
-          >
-            <option value="">유닛을 선택하세요.</option>
-            <option key="OS" value="OS">
-                  OS
-                </option>
-                <option key="MW" value="MW">
-                  미들웨어
-                </option>
-                <option key="DB" value="DB">
-                  DB
-                </option>
-                <option key="NET" value="NET">
-                  네트워크
-                </option>
-                <option key="SEC" value="SEC">
-                  보안
-                </option>
-          </select>
-                </div>
-                <div className={styles.inputGroup}>
-                    <label htmlFor="position">직급</label>
-                    {/* <input 
-                        type="string" 
-                        id="position" 
-                        value={position} 
-                        onChange={(e) => setPosition(e.target.value)} 
-                        placeholder="직급을 입력하세요." 
-                        required 
-                    /> */}
 
-<select 
-            id="position" 
-            value={position} 
-            onChange={(e) => setPosition(e.target.value)} 
-            required
-          >
-            <option value="">직급을 입력하세요.</option>
-               <option key="프로" value="프로">
-                  프로
-                </option>
-                <option key="사원" value="사원">
-                    사원
-                </option>
-                <option key="대리" value="대리">
-                    대리
-                </option>
-                <option key="과장" value="과장">
-                    과장
-                </option>
-                <option key="차장" value="차장">
-                    차장
-                </option>
-                <option key="부장" value="부장">
-                    부장
-                </option>
-                <option key="팀장" value="팀장">
-                    팀장
-                </option>
-          </select>
-                </div>
-                <button 
-                    type="submit"
-                    disabled={!isButtonEnabled} // 비활성화 상태 설정
+                <Title level={3} style={{ textAlign: 'center', marginTop:'0', marginBottom: '20px', color: '#333' }}>
+                    회원가입
+                </Title>
+                <Form
+                    layout="vertical"
+                    onFinish={onFinish}
+                    initialValues={{admin:false}}
                 >
-                    가입하기
-                </button>
-            </form>
-            
-        </div>
-        <div className={styles.signuplink}>
-              이미 계정이 있으신가요?<Link to="/login">로그인하기</Link>
-            </div>
-        </div>
-    );
-}
+                    {/* 아이디 */}
+                    <Form.Item
+                        label="아이디"
+                        name="userId"
+                        rules={[{ required: true, message: '아이디를 입력해주세요.' }]}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <Input size="large" placeholder="아이디를 입력해주세요" />
+                    </Form.Item>
 
-export default Signup
+                    {/* 비밀번호 */}
+                    <Form.Item
+                        label="비밀번호"
+                        name="password"
+                        rules={[{ required: true, message: '비밀번호를 입력해주세요.' }]}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <Input.Password size="large" placeholder="비밀번호를 입력해주세요" />
+                    </Form.Item>
+
+                    {/* 비밀번호 확인 */}
+                    <Form.Item
+                        label="비밀번호 확인"
+                        name="confirmPassword"
+                        dependencies={['password']}
+                        rules={[
+                            { required: true, message: '비밀번호 확인을 입력해주세요.' },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (!value || getFieldValue('password') === value) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(new Error('비밀번호가 일치하지 않습니다.'));
+                                },
+                            }),
+                        ]}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <Input.Password size="large" placeholder="비밀번호를 다시 입력해주세요" />
+                    </Form.Item>
+
+                    {/* 이름 */}
+                    <Form.Item
+                        label="이름"
+                        name="name"
+                        rules={[{ required: true, message: '이름을 입력해주세요.' }]}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <Input size="large" placeholder="이름을 입력해주세요" />
+                    </Form.Item>
+
+                    {/* 이메일 */}
+                    <Form.Item
+                        label="이메일"
+                        name="email"
+                        rules={[
+                            { required: true, message: '이메일을 입력해주세요.' },
+                            { type: 'email', message: '유효한 이메일을 입력해주세요.' },
+                        ]}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <Input size="large" placeholder="이메일을 입력해주세요" />
+                    </Form.Item>
+
+                    {/* 이메일 */}
+                    <Form.Item
+                        label="전화번호"
+                        name="phoneNumber"
+                        rules={[
+                            { required: true, message: '전화번호를 입력해주세요.' }
+                        ]}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <Input size="large" placeholder="전화번호를 입력해주세요" />
+                    </Form.Item>
+
+                    {/* 프로젝트 */}
+                    <Form.Item
+                        label="프로젝트"
+                        name="projectId"
+                        rules={[{ required: true, message: '프로젝트를 선택해주세요.' }]}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <Select size="large" placeholder="프로젝트를 선택해주세요">
+                        {projectList.map((project: any) => (
+            <Option key={project.projectId} value={project.projectId}>
+                {project.name}
+            </Option>
+        ))}
+                        </Select>
+                    </Form.Item>
+
+                    {/* 파트 */}
+                    <Form.Item
+                        label="파트"
+                        name="unit"
+                        rules={[{ required: true, message: '파트를 선택해주세요.' }]}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <Select size="large" placeholder="파트를 선택해주세요">
+                            <Option value="OS">OS</Option>
+                            <Option value="MW">미들웨어</Option>
+                            <Option value="DB">DB</Option>
+                            <Option value="NET">네트워크</Option>
+                            <Option value="SEC">보안</Option>
+                        </Select>
+                    </Form.Item>
+
+                    {/* 직급 */}
+                    <Form.Item
+                        label="직급"
+                        name="position"
+                        rules={[{ required: true, message: '직급을 선택해주세요.' }]}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <Select size="large" placeholder="직급을 선택해주세요">
+                            <Option value="프로">프로</Option>
+                            <Option value="유닛장">유닛장</Option>
+                            <Option value="파트장">파트장</Option>
+                            <Option value="팀장">팀장</Option>
+                            <Option value="담당">담당</Option>
+                            <Option value="사원">사원</Option>
+                            <Option value="대리">대리</Option>
+                            <Option value="과장">과장</Option>
+                            <Option value="차장">차장</Option>
+                        </Select>
+                    </Form.Item>
+
+                    {/* 제출 버튼 */}
+                    <Form.Item style={{ textAlign: 'center', marginTop: '20px' }}>
+                        <Button size="large" type="primary" htmlType="submit" style={{ width: '100%',borderRadius: '10px' }}>
+                            회원가입
+                        </Button>
+                        <div style={{ marginTop: '10px' }}>
+                            이미 계정이 있으신가요?{' '}
+                            <Button type="link" style={{ padding: 0 }}>
+                                <Link to="/login">로그인하기</Link>
+                            </Button>
+                        </div>
+                    </Form.Item>
+                </Form>
+            </Card>
+        </Layout>
+    );
+};
+
+export default SignUp;

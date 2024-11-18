@@ -1,0 +1,34 @@
+/* thead 배경색 및 세로선 제거 */
+.custom-table thead > tr > th {
+    background-color: transparent !important; /* 배경색 제거 */
+    border-right: none !important; /* 세로선 제거 */
+    border-bottom: 2px solid #f0f0f0 !important; /* 하단 테두리만 유지 */
+  }
+  
+  .ant-table-cell::before{
+    background: none !important; /* 배경색 제거 */
+    
+  }
+  /* thead 마지막 열도 세로선 제거 */
+  .custom-table thead > tr > th:last-child {
+    border-right: none !important;
+  }
+  
+  /* tbody 세로선 제거 (선택 사항) */
+  .custom-table tbody > tr > td {
+    border-right: none !important;
+  }
+  
+  /* 전체 테이블 외곽선 제거 */
+  .custom-table .ant-table {
+    border: none !important;
+  }
+
+  .custom-table .ant-table-cell{
+    padding: 13px 13px !important;
+  }
+  
+
+  .ant-avatar-group .ant-avatar {
+    border: none !important;
+}

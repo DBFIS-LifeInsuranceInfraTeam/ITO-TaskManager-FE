@@ -1,0 +1,18 @@
+/* .ant-form-item  {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+} */
+.custom-form-item {
+    display: flex;
+    flex-direction: column; /* 에러 메시지가 아래에 위치 */
+    position: relative; /* 에러 메시지가 위치 고정 */
+}
+  
+.custom-form-item .ant-form-item-explain {
+    position: absolute;
+    top: 45px; /* 메시지가 DatePicker 아래에 위치 */
+    left: 0;
+    /* font-size: 12px; 에러 메시지 크기 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+  }

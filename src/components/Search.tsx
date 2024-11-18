@@ -1,26 +1,34 @@
-import React, { useEffect, useState } from 'react'
-import styles from '../styles/Search.module.css';
-import filtericon from '../styles/image/dashboard/filter.svg';
-import calendaricon from '../styles/image/dashboard/calendar.svg';
-import searchicon from '../styles/image/dashboard/search.svg';
+import React, { useEffect, useState } from 'react';
+import { Input, Select, DatePicker, Table, Typography, Button, Space } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import {
+  CalendarOutlined,
+  UserOutlined,
 
-import { getUserByProjectId } from '../api/getUserByProjectId';
+} from '@ant-design/icons';
 
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import TuneIcon from '@mui/icons-material/Tune';
+import { SearchOutlined } from '@mui/icons-material';
+import { getUserByProjectId } from "../api/user/getUserByProjectId";
+import { searchTask } from "../api/task/searchTask";
 
+const { Option } = Select;
+const { RangePicker } = DatePicker;
+const { Text, Title } = Typography;
 interface SearchProps {
-    onSearch: (filters: {
-        projectIds: string[];
-        itoProcessId: string;
-        unit: string;
-        assigneeId: string;
-        startDate: string;
-        dueDate: string;
-        taskName: string;
-    }) => void;
+  onSearch: (filters: {
+      projectIds: string[];
+      itoProcessId: string;
+      unit: string;
+      assigneeId: string;
+      startDate: string;
+      dueDate: string;
+      taskName: string;
+  }) => void;
 }
 
 const Search: React.FC<SearchProps> = ({ onSearch }) => {
-
     const [itoProcessId, setItoProcessId] = useState<string>('');
     const [assigneeId, setAssigneeId] = useState<string>('');
     const [unit, setUnit] = useState<string>('');
@@ -51,7 +59,6 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
         const fetchUsers = async () => {
           try {
             const userListData = await getUserByProjectId(projectIds);
-            
             setUserList(userListData || []);
           } catch (error) {
             console.error("Error fetching users:", error);
@@ -62,135 +69,78 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
       }
     }, []);
 
-
     const handleSearchClick = () => {
-        if (userInfo && userInfo.projectId) {
-            const projectIds = userInfo.projectId;
-            onSearch({
-                projectIds,
-                itoProcessId,
-                assigneeId,
-                unit,
-                startDate,
-                dueDate,
-                taskName,
-            });
-        }
-        
-    };
-  
+      if (userInfo && userInfo.projectId) {
+          const projectIds = userInfo.projectId;
+          onSearch({
+              projectIds,
+              itoProcessId,
+              assigneeId,
+              unit,
+              startDate,
+              dueDate,
+              taskName,
+          });
+      }
+      
+  };
+
   return (
-    <>
-        <li className={styles.detailsearch}>
-                        <p>업무 조회</p>
-                        <ul>
-                            <li>
-                                <div className={styles.search}>
-                                    <select className={styles.searchSelect} 
-                                        value={itoProcessId} 
-                                        onChange={(e) => setItoProcessId(e.target.value)}>
-                                        <option value=""  selected>프로세스 구분</option>
-                                        <option key="1" value="1">리포팅</option>
-                                        <option key="2" value="2">보안</option>
-                                        <option key="3" value="3">용량</option>
-                                        <option key="4" value="4">변경</option>
-                                        <option key="5" value="5">가용성</option>
-                                        <option key="6" value="6">감사지원</option>
-                                        <option key="7" value="7">구성</option>
-                                        <option key="8" value="8">배포</option>
-                                        {/* <option value="deploy">배포</option>
-                                        <option value="report">리포팅</option>
-                                        <option value="level">서비스수준</option> */}
-                                    </select>
-                                    <img src={filtericon} alt='' className={styles.searchIcon} />
-                                </div>
-                            </li>
-                            <li>
-                                <div className={styles.search}>
-
-                                   <select 
-                                        id="unit" 
-                                        className={styles.searchSelect}
-                                        value={unit} 
-                                        onChange={(e) => setUnit(e.target.value)} 
-                                        required
-                                    >
-                                        <option value="">유닛</option>
-                                        <option key="OS" value="OS">
-                                            OS
-                                            </option>
-                                            <option key="MW" value="MW">
-                                            미들웨어
-                                            </option>
-                                            <option key="DB" value="DB">
-                                            DB
-                                            </option>
-                                            <option key="NET" value="NET">
-                                            네트워크
-                                            </option>
-                                            <option key="SEC" value="SEC">
-                                            보안
-                                            </option>
-                                    </select>
-                                    <img src={filtericon} alt='' className={styles.searchIcon} />
-                                </div>
-                            </li>
-                            <li>
-                                <div className={styles.search}>
-                                    <select className={styles.searchSelect} 
-                                        value={assigneeId} 
-                                        onChange={(e) => setAssigneeId(e.target.value)}
-                                    >               
-                                        {userList && userList.length > 0 ? (
-                                            <>
-                                            <option value=""  selected>담당자</option>
-                                            {userList.map((user) => (
-                                                <option key={user.userId} value={user.userId}>
-                                                {user.name}
-                                                </option>
-                                            ))}
-                                            </>
-                                        ) : (
-                                            <option disabled>사용자가 없습니다</option>
-                                        )}
-                                    </select>
-                                    <img src={filtericon} alt='' className={styles.searchIcon} />
-                                </div>
-                            </li>
-                            <li><div className={styles.search}>
-                                    <input 
-                                        type="date" 
-                                        id="startDate" 
-                                        value={startDate} 
-                                        onChange={(e) => setStartDate(e.target.value)} 
-                                        className={styles.searchInput}
-                                        placeholder="시작일 선택" 
-                                    />
-                                    <img src={calendaricon} alt='' className={styles.searchIcon} />
-                                </div></li>
-                            <li><div className={styles.search}>
-                                    <input 
-                                        type="date" 
-                                        id="dueDate" 
-                                        value={dueDate} 
-                                        onChange={(e) => setDueDate(e.target.value)} 
-                                        className={styles.searchInput}
-                                        placeholder="마감일 선택" 
-                                    />
-                                    <img src={calendaricon} alt='' className={styles.searchIcon} />
-                                </div></li>
-                            <li><div className={styles.search}>
-                                    <input placeholder="업무명" 
-                                        value={taskName} 
-                                        onChange={(e) => setTaskName(e.target.value)} 
-                                        spellCheck="false" className={styles.searchInput} />
-                                    <img src={searchicon} alt='' className={styles.searchIcon} />
-                                </div></li>
-                            <button onClick={handleSearchClick}>조회</button>
-                        </ul>
-                    </li>
-
-    </>
+    <div
+      style={{
+        padding: '20px',
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        marginBottom: '16px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px', // 요소 간 간격 조정
+        flexWrap: 'wrap',
+      }}
+    >
+      <Select 
+    onChange={(value:string) => setItoProcessId(value)} size="large" placeholder="프로세스" style={{ flex: 1, minWidth: '150px' }} allowClear prefix={<AccountTreeOutlinedIcon style={{ fontSize:'16px', color: '#c9c9c9' , verticalAlign: 'middle'}}/>}>
+        <Option value="1">리포팅</Option>
+        <Option value="2">보안</Option>
+        <Option value="3">용량</Option>
+        <Option value="4">변경</Option>
+        <Option value="5">가용성</Option>
+        <Option value="6">감사지원</Option>
+        <Option value="7">구성</Option>
+        <Option value="8">배포</Option>
+      </Select>
+      <Select 
+      onChange={(value:string) => setUnit(value)} size="large" placeholder="파트" style={{ flex: 1, minWidth: '150px' }} allowClear prefix={<TuneIcon style={{ fontSize:'16px',color: '#c9c9c9' , verticalAlign: 'middle'}}/>}>
+        <Option value="OS">OS</Option>
+        <Option value="MW">미들웨어</Option>
+        <Option value="DB">DB</Option>
+        <Option value="NET">네트워크</Option>
+        <Option value="SEC">보안</Option>
+      </Select>
+      <Select 
+      onChange={(value:string) => setAssigneeId(value)} size="large" placeholder="담당자" style={{ flex: 1, minWidth: '150px' }} allowClear prefix={<UserOutlined style={{ color: '#c9c9c9' , verticalAlign: 'middle'}}/>} >
+      {userList && userList.length > 0 ? (
+        <>
+        {userList.map((user) => (
+          <Option key={user.userId} value={user.userId}>
+            {user.name}
+          </Option>
+        ))}
+        </>) : (
+          <Option disabled>사용자가 없습니다</Option>
+          )}
+      </Select>
+      <DatePicker 
+      onChange={(date, dateString) => setStartDate(dateString.toString())} size="large" placeholder="시작일" style={{ flex: 1, minWidth: '150px' }} prefix={<CalendarOutlined style={{ color: '#c9c9c9' , verticalAlign: 'middle'}}/>} suffixIcon={null}/>
+      <DatePicker 
+      onChange={(date, dateString) => setDueDate(dateString.toString())} size="large" placeholder="마감일" style={{ flex: 1, minWidth: '150px' }} prefix={<CalendarOutlined style={{ color: '#c9c9c9' , verticalAlign: 'middle'}}/>} suffixIcon={null} />
+      <Input 
+      onChange={(e) => setTaskName(e.target.value)} size="large" placeholder="업무명" style={{ flex: 2, minWidth: '200px' }} prefix={<SearchOutlined style={{ fontSize:'16px',color: '#c9c9c9' , verticalAlign: 'middle'}}/>}/>
+      <Button size="large" type="primary" onClick={handleSearchClick}>
+        검색
+      </Button>
+    </div>
   )
 }
 

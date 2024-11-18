@@ -1,34 +1,47 @@
-import React, { useEffect, useState } from 'react'
-import styles from '../styles/Dashboard.module.css';
+import { Typography, Card ,Layout, Button} from 'antd';
+import AddTaskIcon from '@mui/icons-material/AddTask';
+import '../styles/pages/Dashboard.css'
 import Stat from "../components/Stat";
-import List from '../components/List';
-import btnAdd from '../styles/image/btnAdd.png';
-import Calendar from "../components/Calendar";
-import { useNavigate } from 'react-router-dom';
-import { getAllTask } from "../api/getAllTask";
+import TaskList from "../components/List";
+import CalendarList from "../components/CalendarList";
+import { useNavigate } from "react-router-dom";
+import { getAllTask } from "../api/task/getAllTask";
+import { useEffect, useState } from "react";
+import List from "../components/List";
 
+const { Content } = Layout;
+const { Title } = Typography;
 
+interface Assignee {
+  assigneeId: string;
+  assigneeName: string;
+  assigneeProfile: string;
+}
 interface Task {
-    taskId: string;
-    projectId: number;
-    taskName: string;
-    description: string;
-    assigneeId: string;
-    assigneeName: string;
-    assigneeProfile: string;
-    createdDate: string;
-    startDate: string;
-    dueDate: string;
-    frequencyId: number;
-    commentCount: number;
-    status: number;
-    itoProcessId: number;
-    assigneeConfirmation: string;
+  taskId: string;
+  projectId: number;
+  taskName: string;
+  description: string;
+  assignees: Assignee[];
+  createdDate: string;
+  startDate: string;
+  dueDate: string;
+  frequencyId: number;
+  commentCount: number;
+  status: number;
+  itoProcessId: number;
+  assigneeConfirmation: string;
 }
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
     
-    const navigate = useNavigate();
+  const navigation = useNavigate();
+  const goToAddTaskPage = () => {
+    navigation('/tasks/add');
+  }
+
+
+  
     const [taskList, setTaskList] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [page, setPage] = useState<number>(0); // 현재 페이지 상태
@@ -68,25 +81,54 @@ const Dashboard: React.FC = () => {
         fetchTasks();
     }, []);
     
+  //전체업무에서 사용자가 속한 프로젝트들의 업무 중 마감일 임박한 5개 업무 가져오기
+
+  //기본 일자는 오늘, calendar에서 날짜 선택하면 마감일 기준 해당 날짜의 업무 리스트 조회
+
   return (
-        <div className={styles.content}>
-            <Stat/>
-            <div className={styles.container}>
-                <ul className={styles.dashboard}>
-                    <div className={styles.buttonDiv}>
-                        {/* debugging 용이니까 나중에 삭제 필요 */}
-                        {/* <span>projectID:{userInfo?.projectId}</span> */}
-                        <button onClick={() => navigate('/task/add')} className={styles.btnAdd}>
-                            <img src={btnAdd} alt=""/>
-                            업무 추가하기
-                        </button>
-                    </div>
-                    <List taskList={taskList} loading={loading} />
-                    <Calendar/>
-                </ul>
+    <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection:'row'  }}>
+    {/* 왼쪽 고정 영역 */}
+    <Stat/>
+
+    {/* 오른쪽 컨텐츠 영역 */}
+    <Layout style={{ flex: 1,  overflowY: 'auto' }}>
+      <Content
+        style={{
+          padding: '20px 40px',
+          backgroundColor: '#fff',
+          minHeight: '100vh',
+          display: 'flex',
+          overflowY: 'auto',
+          flexDirection: 'column',
+          gap: '20px',
+        }}
+      >
+        
+      {/* 상단 버튼 */}
+      <div style={{ textAlign: 'right'}}>
+              <Button
+              size="large"
+                type="primary"
+                icon={<AddTaskIcon />}
+                style={{ marginRight: '8px' }}
+                onClick={goToAddTaskPage}
+              >
+                업무 추가하기
+              </Button>
             </div>
-        </div>
-    );
+      
+      {/* 상단 업무 리스트 */}
+      <Card style={{ flex: 1, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'}}>
+        <Title level={4} style={{ margin:0 }}>업무 리스트</Title>
+        <List taskList={taskList} loading={loading} size={5}/>
+      </Card>
+
+      {/* 하단 캘린더와 업무 리스트 */}
+      <CalendarList/>
+      </Content>
+    </Layout>
+  </Layout>
+  )
 }
 
-export default Dashboard;
+export default Dashboard

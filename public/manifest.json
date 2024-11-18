@@ -1,6 +1,6 @@
 {
-  "short_name": "TaskManager",
-  "name": "ITO - TaskManager",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "dblogofavicon.ico",
