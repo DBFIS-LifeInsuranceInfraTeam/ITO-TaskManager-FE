@@ -1,5 +1,0 @@
-# Prevent unnecessary files from being copied
-node_modules
-build
-# Allow specific files or directories
-!src/pages/SignUp*

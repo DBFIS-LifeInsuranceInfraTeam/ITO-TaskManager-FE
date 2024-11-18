@@ -27,9 +27,9 @@ import './styles/pages/SideBar.css';
 import AddTask from "./pages/AddTask";
 import DetailTask from "./pages/DetailTask";
 import EditTask from './pages/EditTask';
-import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import RequireAuth from './components/RequireAuth';
+import SignUp from "./pages/SignUp";
 
 const { Sider, Content } = Layout;
 
