@@ -29,7 +29,7 @@ import DetailTask from "./pages/DetailTask";
 import EditTask from './pages/EditTask';
 import Login from "./pages/Login";
 import RequireAuth from './components/RequireAuth';
-import SignUp from "./pages/SignUp";
+import SignUp from "./pages/SignUp.tsx";
 
 const { Sider, Content } = Layout;
 
