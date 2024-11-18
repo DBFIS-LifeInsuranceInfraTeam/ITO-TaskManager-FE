@@ -1,24 +1,26 @@
-#Build Stage Start
-#Specify a base image
+# Build Stage Start
 FROM node:20-slim as builder
 
-#Specify a working directory
-WORKDIR '/app'
+WORKDIR /app
 
-#Copy the dependencies file
-COPY package.json .
-
-#Install dependencies
+# Copy dependencies file and install
+COPY package.json package-lock.json ./
 RUN npm install --loglevel=error
 
-#Copy remaining files
+# Copy the rest of the files
 COPY . .
 
-#Build the project for production
+# Ensure all files are copied correctly
+RUN ls -R /app
+
+# Build the project
 RUN npm run build
 
-#Run Stage Start
+# Run Stage Start
 FROM nginx:stable-alpine
 
-#Copy production build files from builder phase to nginx
+# Copy production build files from builder
 COPY --from=builder /app/build /usr/share/nginx/html
+
+# Expose port 80
+EXPOSE 80
