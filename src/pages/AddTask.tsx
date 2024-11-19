@@ -1046,7 +1046,7 @@ const numberToDay: Record<number, string> = {
       {userList.map((user) => (
         <Option key={user.userId} value={user.userId}>
           <Space>
-            <Avatar src={`http://localhost:8080/${user.photo}`} />
+            <Avatar src={`/${user.photo}`} />
             {user.name}
           </Space>
         </Option>
