@@ -13,7 +13,9 @@ import {
     SyncOutlined, 
     FlagOutlined
 } from '@ant-design/icons';
+import { Spin } from "antd";
 
+import { LoadingOutlined } from '@ant-design/icons';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -183,7 +185,7 @@ const DetailTask: React.FC = () => {
 
     // 로딩 상태 처리
     if (!task) {
-        return <div>Loading...</div>;
+        return <Spin indicator={<LoadingOutlined spin />} size="large" />;
     }
 
     const processMap: { [key: string]: string } = {

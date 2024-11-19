@@ -1,4 +1,4 @@
-import { Avatar, Tag, Typography, Calendar, Card , Table, Badge, Tooltip} from 'antd';
+import { Avatar, Tag, Typography, Card , Table, Badge, Tooltip, Grid, Skeleton} from 'antd';
 import '../styles/pages/Dashboard.css'
 import { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
@@ -7,77 +7,13 @@ import interactionPlugin from '@fullcalendar/interaction'; // 반드시 추가�
 import '../styles/components/CalendarList.css'
 import StatusTag from "./StatusTag";
 import { useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
 import { getTaskByMonth } from "../api/task/getTaskByMonth";
+import React from 'react';
+const { useBreakpoint } = Grid;
 
 const { Text, Title } = Typography;
 
-// const tasks = [
-//     {
-//         taskId: "TASK_3ny9at6d",
-//         taskName: '업무 1',
-//         assignee: { assigneeName: '김철수', assigneeProfile: 'https://i.pravatar.cc/40?img=1' },
-//         status: 1,
-//         dueDate: '2024-11-15',
-//         commentCount: 3
-//     },
-//     {
-//         taskId: "TASK_d94lqnc7",
-//         taskName: '업무 2',
-//         assignee: { assigneeName: '이영희', assigneeProfile: 'https://i.pravatar.cc/40?img=2' },
-//         status: 2,
-//         dueDate: '2024-11-14',
-//         commentCount: 0
-//     },
-//     {
-//         taskId: "TASK_4ls7vh59",
-//         taskName: '업무 3',
-//         assignee: { assigneeName: '박민수', assigneeProfile: 'https://i.pravatar.cc/40?img=3' },
-//         status: 0,
-//         dueDate: '2024-11-18',
-//         commentCount: 1
-//     },
-//     {
-//         taskId: "TASK_2hkd78zg",
-//         taskName: '업무 4',
-//         assignee: { assigneeName: '최가영', assigneeProfile: 'https://i.pravatar.cc/40?img=4' },
-//         status: 3,
-//         dueDate: '2024-11-10',
-//         commentCount: 2
-//     },
-//     {
-//         taskId: "TASK_5a3kfz0h",
-//         taskName: '업무 5',
-//         assignee: { assigneeName: '홍길동', assigneeProfile: 'https://i.pravatar.cc/40?img=5' },
-//         status: 2,
-//         dueDate: '2024-11-20',
-//         commentCount: 0
-//     },
-//     {
-//         taskId: "TASK_6a0fc07s",
-//         taskName: '업무 6',
-//         assignee: { assigneeName: '박태민', assigneeProfile: 'https://i.pravatar.cc/40?img=6' },
-//         status: 0,
-//         dueDate: '2024-11-20',
-//         commentCount: 0
-//     },
-//     {
-//         taskId: "TASK_a0vu3apc",
-//         taskName: '업무 7',
-//         assignee: { assigneeName: '김영진', assigneeProfile: 'https://i.pravatar.cc/40?img=7' },
-//         status: 0,
-//         dueDate: '2024-11-20',
-//         commentCount: 7
-//     },
-//     {
-//         taskId: "TASK_x7a4kad9",
-//         taskName: '업무 8',
-//         assignee: { assigneeName: '이석주', assigneeProfile: 'https://i.pravatar.cc/40?img=8' },
-//         status: 1,
-//         dueDate: '2024-11-20',
-//         commentCount: 0
-//     },
-// ];
+
 interface Assignee {
     assigneeId: string;
     assigneeName: string;
@@ -98,7 +34,13 @@ interface Task {
     return date.toISOString().split('T')[0]// 'YYYY-MM-DD' 형식으로 변환
   };
 
-  const CalendarList = () => {
+  interface ListProps {
+
+    loading: boolean;
+
+  }
+  
+  const CalendarList: React.FC<ListProps> = ({ loading }) => {
 
     const navigate = useNavigate(); // navigate 함수 사용
   // useState의 타입을 명시적으로 지정
@@ -107,83 +49,167 @@ interface Task {
   const [eventList, setEventList] = useState<Task[]>([]);
   const [currentMonth, setCurrentMonth] = useState('');
 
+
+  const screens = useBreakpoint(); // 화면 크기 감지
+  
   const columns = [
+
+    //   {
+    //     title: '업무명',
+    //     dataIndex: 'taskName',
+    //     key: 'taskName',
+    //     align: 'center' as const,
+
+    //     render: (taskName: string) => (
+    //       loading ? (
+    //         <Skeleton.Input active />
+    //       ) : (
+    //         <Tooltip title={taskName}>
+    //           <div
+    //             style={{
+    //               whiteSpace: 'nowrap', // 줄바꿈 방지
+    //               textOverflow: 'ellipsis', // 텍스트 생략
+    //               overflow: 'hidden', // 넘치는 텍스트 숨김
+    //               maxWidth: '100%', // 열 크기에 맞게
+    //             }}
+    //           >
+    //             {taskName}
+    //           </div>
+    //         </Tooltip>
+    //       )
+    //     ),
+    //   },
+    //   {
+    //     title: '담당자',
+    //     dataIndex: 'assignees',
+    //     key: 'assignees',
+    //     align: 'center' as const,        
+    //     render: (assignees: Assignee[] = []) => {
+    //       if (loading) {
+    //         return <Skeleton.Avatar active size="small" />;
+    //       }
+    //       return assignees.length === 1 ? (
+    //         <div
+    //           style={{
+    //             display: 'flex',
+    //             alignItems: 'center',
+    //             justifyContent: 'center',
+    //             gap: '8px',
+    //             whiteSpace: 'nowrap', // 줄바꿈 방지
+    //           }}
+    //         >
+    //           <Avatar src={assignees[0]?.assigneeProfile} size="small" />
+    //           <Text>{assignees[0]?.assigneeName}</Text>
+    //         </div>
+    //       ) : (
+    //         <Avatar.Group maxCount={2} size="small">
+    //           {assignees.map((assignee, index) => (
+    //             <Tooltip key={index} title={assignee.assigneeName} placement="top">
+    //               <Avatar src={assignee.assigneeProfile} size="small" />
+    //             </Tooltip>
+    //           ))}
+    //         </Avatar.Group>
+    //       );
+    //     },
+    //   },
+    //   {
+    //     title: '진행상태',
+    //     dataIndex: 'status',
+    //     key: 'status',
+    //     align: 'center' as const,
+    //     render: (status: number) => (
+    //       loading ? (
+    //         <Skeleton.Button active />
+    //       ) : (
+    //         <div>{StatusTag(status, 'small')}</div>
+    //       )
+    //     ),
+    //   },
 
     {
       title: '업무명',
       dataIndex: 'taskName',
       align: 'center' as 'center',
       key: 'taskName',
-      render: (text: string) => (
-        <div
-          style={{
-            backgroundColor: '#f5f5f5',
-            width:'100%',
-            borderRadius: '8px',
-            padding: '4px 8px',
-            textAlign: 'center',
-            display: 'inline-block',
-            whiteSpace:'nowrap'
-          }}
-        >
-          {text}
-        </div>
-      ),
-    },
-    {
-      title: '담당자',
-      dataIndex: 'assignees',
-      key: 'assignees',
-      align: 'center' as 'center',
-      render: (assignees: Assignee[]) => {
-        if (assignees.length === 1) {
-          // 담당자가 1명일 경우 기존 방식
-          const { assigneeProfile, assigneeName } = assignees[0];
-          return (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-              <Avatar src={assigneeProfile} size="small" />
-              <Text style={{whiteSpace:'nowrap'}}>{assigneeName}</Text>
-            </div>
-          );
-        }
-
-        // 담당자가 2명 이상일 경우 Avatar.Group 사용
-        return (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
-            <Avatar.Group
-              maxCount={2}
-              size="small"
+      render: (taskName: string) => (
+        loading ? (
+          <Skeleton.Button active />
+        ) :
+          screens.xl?(
+            <Tooltip title={taskName}>
+            <div
+              style={{
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px',
+                padding: '4px 8px',
+                textAlign: 'center',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '100%'
+              }}
             >
-              {assignees.map((assignee, index) => (
-                <Tooltip key={index} title={assignee.assigneeName} placement="top">
-                  <Avatar src={assignee.assigneeProfile} size="small"/>
-                </Tooltip>
-              ))}
-            </Avatar.Group>
-            <div style={{ display: 'flex', alignItems: 'center', flexDirection:'column' }}>
-            {/* <Text>
-              {assignees[0]?.assigneeName} 외 
-              </Text>
-              <Text>
-              {assignees.length - 1}명
-            </Text> */}
+              {taskName}
             </div>
-          </div>
-        );
-      },
-    },
-    {
-      title: '진행상태',
-      dataIndex: 'status',
-      key: 'status',
-      align: 'center' as 'center',
-      render: (status: number) => (
-        <div>
-            {StatusTag(status,'small')}
-        </div>
+            </Tooltip>
+          ):(<Tooltip title={taskName}><div
+              style={{
+                backgroundColor: '#f5f5f5',
+                borderRadius: '8px',
+                padding: '4px 8px',
+                textAlign: 'center',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '150px', // 최대 너비 설정
+              }}
+            >
+              {taskName}
+            </div>
+            </Tooltip>
+          )
       ),
     },
-  ];
+    
+{
+  title: '담당자',
+  dataIndex: 'assignees',
+  key: 'assignees',
+  align: 'center' as 'center',
+  
+  render: (assignees: Assignee[] = []) => {
+    if (loading) {
+      return <Skeleton.Avatar active size="small" />;
+    }
+    return assignees.length === 1 ? (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
+        <Avatar src={assignees[0]?.assigneeProfile} size="small" />
+        <Text>{assignees[0]?.assigneeName}</Text>
+      </div>
+    ) : (
+      <Avatar.Group maxCount={2} size="small">
+        {assignees.map((assignee, index) => (
+          <Tooltip key={index} title={assignee.assigneeName} placement="top">
+            <Avatar src={assignee.assigneeProfile} size="small" />
+          </Tooltip>
+        ))}
+      </Avatar.Group>
+    );
+  },
+},
+{
+  title: '진행상태',
+  dataIndex: 'status',
+  key: 'status',
+  align: 'center' as 'center',
+  
+  render: (status: number) => (
+    loading ? <Skeleton.Button active  /> : <div>{StatusTag(status,"small")}</div>
+  ),
+},
+     ];
+    
+
   
   const handleDatesSet = async (dateInfo: any) => {
     const month = dateInfo.view.currentStart.getMonth() + 1;
@@ -301,7 +327,7 @@ const renderEventContent = () => {
 
   return (
     <Card style={{boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',padding: '8px' }}>
-     <div style={{ display: 'flex', gap: '40px', height: '100%' }}>
+     <div style={{ display: 'flex', gap: '40px', height: '100%' ,width: '100%'}}>
     
      <div style={{ flex: 1, 
   display: 'flex',
@@ -344,6 +370,8 @@ const renderEventContent = () => {
     <div
         style={{
         maxHeight: '400px', // 스크롤 가능한 최대 높이 설정
+        display: 'flex',
+        minWidth: '100%', // 최소 너비 설정
         overflowY: 'auto', // 세로 스크롤 활성화
         }}
     >
@@ -360,6 +388,9 @@ const renderEventContent = () => {
         onRow={(record) => ({
             onClick: () => handleRowClick(record), // 행 클릭 시 이벤트 호출
           })}
+          scroll={{ x: '100%' }} 
+        style={{ minWidth: '100%' }} // 테이블 최소 너비 보장
+        tableLayout="fixed" // 열 너비 고정
       /> 
 
     </div>

@@ -104,7 +104,7 @@ const Stat: React.FC = () => {
   ? {
       width: '250px',
       backgroundColor: '#F8F7F1',
-      height: '100vh',
+      minHeight: '100vh',
       position: 'sticky',
       top: 0,
       flexShrink: 0,
@@ -116,19 +116,28 @@ const Stat: React.FC = () => {
   : screens.md
   ? {
       width: '200px', // 중간 화면에서 줄어든 너비
-      backgroundColor: '#F8F7F1',
+
       padding: '16px 8px',
-      marginBottom: '16px',
       boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-      height: '100vh',
+      backgroundColor: '#F8F7F1',
+      minHeight: '100vh',
+      position: 'sticky',
+      top: 0,
+      flexShrink: 0,
+      display: 'flex',
+      flexDirection: 'column',
     }
   : {
       width: '100%',
-      backgroundColor: '#F8F7F1',
       padding: '16px 8px',
-      marginBottom: '16px',
       boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-      height: '100vh',
+      backgroundColor: '#F8F7F1',
+      minHeight: '100vh',
+      position: 'sticky',
+      top: 0,
+      flexShrink: 0,
+      display: 'flex',
+      flexDirection: 'column',
     };
 
 const cardStyle: React.CSSProperties = screens.xl

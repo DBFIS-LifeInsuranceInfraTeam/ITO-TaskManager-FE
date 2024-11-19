@@ -1,4 +1,4 @@
-import { Typography, Card ,Layout, Button} from 'antd';
+import { Typography, Card ,Layout, Button, Tooltip} from 'antd';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import '../styles/pages/Dashboard.css'
 import Stat from "../components/Stat";
@@ -29,7 +29,7 @@ interface Task {
   frequencyId: number;
   commentCount: number;
   status: number;
-  itoProcessId: number;
+  itoProcessId: string;
   assigneeConfirmation: string;
 }
 
@@ -119,12 +119,15 @@ const Dashboard = () => {
       
       {/* 상단 업무 리스트 */}
       <Card style={{ flex: 1, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'}}>
-        <Title level={4} style={{ margin:0 }}>업무 리스트</Title>
+        <Tooltip  title={"마감일 기준 상위 5개 업무입니다."}>
+            <Title level={4} style={{ margin:0 }}>업무 리스트</Title>
+          </Tooltip>
+        
         <List taskList={taskList} loading={loading} size={5}/>
       </Card>
 
       {/* 하단 캘린더와 업무 리스트 */}
-      <CalendarList/>
+      <CalendarList loading={loading}/>
       </Content>
     </Layout>
   </Layout>
