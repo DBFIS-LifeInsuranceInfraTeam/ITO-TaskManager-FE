@@ -332,7 +332,7 @@ const DetailTask: React.FC = () => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         {task.assignees.map((assignee, index) => (
           <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Avatar src={assignee.assigneeProfile} />
+            <Avatar src={`/${assignee.assigneeProfile}`} />
             <Text>{assignee.assigneeName}</Text>
           </div>
         ))}
@@ -346,7 +346,7 @@ const DetailTask: React.FC = () => {
         >
           {task.assignees.map((assignee, index) => (
             <Tooltip key={index} title={assignee.assigneeName} placement="top">
-              <Avatar src={assignee.assigneeProfile} />
+              <Avatar src={`/${assignee.assigneeProfile}`} />
             </Tooltip>
           ))}
         </Avatar.Group>
@@ -468,7 +468,7 @@ const DetailTask: React.FC = () => {
           renderItem={(comment) => (
             <List.Item style={{ display: 'flex', alignItems: 'flex-start' }}>
                 {/* 프로필 */}
-                <Avatar src={comment.commenter.commenterProfile} size={48} style={{ marginRight: '16px' }} />
+                <Avatar src={`/${comment.commenter.commenterProfile}`} size={48} style={{ marginRight: '16px' }} />
                 {/* 댓글 내용 */}
                 <div style={{ flex: 1 }}>
                     {/* 작성자와 날짜 */}
