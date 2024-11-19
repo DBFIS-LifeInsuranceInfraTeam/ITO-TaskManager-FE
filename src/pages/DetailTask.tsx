@@ -13,7 +13,9 @@ import {
     SyncOutlined, 
     FlagOutlined
 } from '@ant-design/icons';
+import { Spin } from "antd";
 
+import { LoadingOutlined } from '@ant-design/icons';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -183,7 +185,7 @@ const DetailTask: React.FC = () => {
 
     // 로딩 상태 처리
     if (!task) {
-        return <div>Loading...</div>;
+        return <Spin indicator={<LoadingOutlined spin />} size="large" />;
     }
 
     const processMap: { [key: string]: string } = {
@@ -332,7 +334,7 @@ const DetailTask: React.FC = () => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         {task.assignees.map((assignee, index) => (
           <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Avatar src={`http://localhost:8080/${assignee.assigneeProfile}`} />
+            <Avatar src={`/${assignee.assigneeProfile}`} />
             <Text>{assignee.assigneeName}</Text>
           </div>
         ))}
@@ -346,7 +348,7 @@ const DetailTask: React.FC = () => {
         >
           {task.assignees.map((assignee, index) => (
             <Tooltip key={index} title={assignee.assigneeName} placement="top">
-              <Avatar src={`http://localhost:8080/${assignee.assigneeProfile}`} />
+              <Avatar src={`/${assignee.assigneeProfile}`} />
             </Tooltip>
           ))}
         </Avatar.Group>
@@ -468,7 +470,7 @@ const DetailTask: React.FC = () => {
           renderItem={(comment) => (
             <List.Item style={{ display: 'flex', alignItems: 'flex-start' }}>
                 {/* 프로필 */}
-                <Avatar src={`http://localhost:8080/${comment.commenter.commenterProfile}`} size={48} style={{ marginRight: '16px' }} />
+                <Avatar src={`/${comment.commenter.commenterProfile}`} size={48} style={{ marginRight: '16px' }} />
                 {/* 댓글 내용 */}
                 <div style={{ flex: 1 }}>
                     {/* 작성자와 날짜 */}

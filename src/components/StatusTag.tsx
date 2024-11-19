@@ -11,6 +11,7 @@ const StatusTag= (status:number, size?: 'small' | undefined) => {
           icon={<ClockCircleOutlined />}
           color="#D1D1D1"
           style={{
+            margin:0,
             padding: '4px 12px',
             borderRadius: '50px'            
           }}
@@ -22,6 +23,7 @@ const StatusTag= (status:number, size?: 'small' | undefined) => {
         color="#D1D1D1"
         style={{
           padding: '4px 12px',
+          margin:0,
           borderRadius: '50px'            
         }}
       >
@@ -37,7 +39,7 @@ const StatusTag= (status:number, size?: 'small' | undefined) => {
           style={{
             padding: '4px 12px',
             borderRadius: '50px',
-            
+            margin:0,
           }}
         >
         </Tag>
@@ -48,7 +50,7 @@ const StatusTag= (status:number, size?: 'small' | undefined) => {
           style={{
             padding: '4px 12px',
             borderRadius: '50px',
-            
+            margin:0,
           }}
         >
           진행 중
@@ -63,7 +65,7 @@ const StatusTag= (status:number, size?: 'small' | undefined) => {
           style={{
             padding: '4px 12px',
             borderRadius: '50px',
-            
+            margin:0,
           }}
         >
           
@@ -74,7 +76,7 @@ const StatusTag= (status:number, size?: 'small' | undefined) => {
         style={{
           padding: '4px 12px',
           borderRadius: '50px',
-          
+          margin:0,
         }}
       >완료
       </Tag>
@@ -88,7 +90,7 @@ const StatusTag= (status:number, size?: 'small' | undefined) => {
           style={{
             padding: '4px 12px',
             borderRadius: '50px',
-            
+            margin:0,
           }}
         >
           
@@ -99,7 +101,7 @@ const StatusTag= (status:number, size?: 'small' | undefined) => {
         style={{
           padding: '4px 12px',
           borderRadius: '50px',
-          
+          margin:0,
         }}
       >
       </Tag>
