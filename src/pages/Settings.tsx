@@ -76,20 +76,20 @@ const [profileImage, setProfileImage] = useState<string | null>(null); // 미리
 
 //     if (response.code === 200) {
 
-//       const newUserInfo={
-//         userId: response.data.userId,
-//         name: response.data.name,
-//         email: response.data.email,
-//         phoneNumber: response.data.phoneNumber,
-//         photo: response.data.photo,
-//         position: response.data.position,
-//         unit: response.data.unit,
-//         projectId: response.data.projectId,
-//     }
+    //   const newUserInfo={
+    //     userId: response.data.userId,
+    //     name: response.data.name,
+    //     email: response.data.email,
+    //     phoneNumber: response.data.phoneNumber,
+    //     photo: response.data.photo,
+    //     position: response.data.position,
+    //     unit: response.data.unit,
+    //     projectId: response.data.projectId,
+    // }
 //     console.log(newUserInfo)
 
-//       sessionStorage.setItem("userInfo", JSON.stringify(newUserInfo));
-//       setUserInfo(newUserInfo);
+      // sessionStorage.setItem("userInfo", JSON.stringify(newUserInfo));
+      // setUserInfo(newUserInfo);
 //       toast.success("회원정보가 수정되었습니다.");
 //       setEditing(false); // Exit editing mode
 //     } else {
@@ -118,42 +118,70 @@ const handleFileChange = (file: File) => {
 
 const handleFinish = async (values: any) => {
   try {
-    let profileImagePath = userInfo.photo; // 기존 프로필 이미지 경로
+    let isSuccess = true; // 전체 작업 성공 여부
+    let message = ""; // 통합 메시지
 
-    // 1. 파일 업로드
+    // 1. 파일 업로드 (selectedFile이 있는 경우에만 실행)
     if (selectedFile) {
-      // const formData = new FormData();
-      // formData.append("file", selectedFile);
+      try {
+        const uploadResponse = await updateUserProfile(userInfo.userId, { file: selectedFile });
 
-      const uploadResponse = await updateUserProfile(userInfo.userId, {file:selectedFile});
-
-      console.log(uploadResponse.data)
-      
-      if (uploadResponse.data.code === 200) {
-        profileImagePath = uploadResponse.data.data; // 새로 업로드된 이미지 경로
-      } else {
-        throw new Error("프로필 이미지 업로드 실패");
+        if (uploadResponse.code === 200) {
+          console.log("프로필 이미지 업로드 성공");
+        } else {
+          throw new Error(uploadResponse.message || "프로필 이미지 업로드 실패");
+        }
+      } catch (error) {
+        console.error("Error uploading profile image:", error);
+        isSuccess = false;
+        message += "프로필 이미지 업로드 중 오류가 발생했습니다. ";
       }
     }
 
     // 2. 사용자 정보 업데이트
-    const updatedData = { ...values, photo: profileImagePath };
-    const response = await updateUserInfo(userInfo.userId, updatedData);
+    try {
+      const response = await updateUserInfo(userInfo.userId, values);
 
-    if (response.data.code === 200) {
-      toast.success("회원정보가 성공적으로 업데이트되었습니다.");
-      const updatedUserInfo = response.data.data;
-      sessionStorage.setItem("userInfo", JSON.stringify(updatedUserInfo));
-      setUserInfo(updatedUserInfo); // 상태 갱신
-      setEditing(false); // 편집 모드 종료
-    } else {
-      toast.error(response.data.message || "회원정보 업데이트에 실패했습니다.");
+      if (response.code === 200) {
+        const newUserInfo = {
+          userId: response.data.userId,
+          name: response.data.name,
+          email: response.data.email,
+          phoneNumber: response.data.phoneNumber,
+          photo: response.data.photo,
+          position: response.data.position,
+          unit: response.data.unit,
+          projectId: response.data.projectId,
+        };
+
+        sessionStorage.setItem("userInfo", JSON.stringify(newUserInfo));
+        setUserInfo(newUserInfo);
+
+        console.log("회원정보 업데이트 성공");
+      } else {
+        throw new Error(response.data.message || "회원정보 업데이트 실패");
+      }
+    } catch (error) {
+      console.error("Error updating user information:", error);
+      isSuccess = false;
+      message += "회원정보 저장 중 오류가 발생했습니다.";
     }
+
+    // 최종 결과에 따라 토스트 알림 표시
+    if (isSuccess) {
+      toast.success("프로필 이미지와 회원정보가 성공적으로 업데이트되었습니다.");
+    } else {
+      toast.error(message || "저장 중 오류가 발생했습니다.");
+    }
+
+    setEditing(false); // 편집 모드 종료
   } catch (error) {
-    console.error("Error saving user data:", error);
-    toast.error("저장 중 오류가 발생했습니다.");
+    console.error("Error handling finish:", error);
+    toast.error("저장 중 예기치 않은 오류가 발생했습니다.");
   }
 };
+
+
 
 
   const tagColors = ['blue', 'green', 'red', 'orange', 'purple']; // 사용할 색상 배열
