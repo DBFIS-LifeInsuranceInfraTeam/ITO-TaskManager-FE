@@ -375,6 +375,35 @@ const navigate = useNavigate(); // navigate 함수 사용
     placeholder="담당자를 선택하세요"
     size="large"
     optionLabelProp="label"
+    tagRender={({ label, value, onClose }) => {
+      const selectedUser = userList.find(user => user.userId === value);
+      return (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            background: 'rgba(0, 0, 0, 0.06)',
+            border: 'var(--ant-line-width) var(--ant-line-type) var(--ant-select-multiple-item-border-color)',
+            borderRadius: '5px',
+            padding: '4px 8px',
+            marginRight: '5px',
+          }}
+        >
+          <Avatar src={`/${selectedUser?.photo}`} size="small" />
+          <span style={{ marginLeft: '8px', marginRight: '8px' }}>{label}</span>
+          <span
+            style={{
+              cursor: 'pointer',
+              color: `rgba(0,0,0,0.45)`,
+              fontSize: '12px',
+            }}
+            onClick={onClose}
+          >
+            ✖
+          </span>
+        </div>
+      );
+    }}
   >
     {userList.map((user) => (
       <Option key={user.userId} value={user.userId} label={user.name}>
