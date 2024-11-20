@@ -27,47 +27,6 @@ import { toast } from "react-toastify";
 
 const { Option } = Select;
 
-// 예제 유저 데이터
-// const userListData = [
-//   {
-//     userId: '1',
-//     userName: 'John Doe',
-//     profileImage: 'https://via.placeholder.com/40', // 예제 프로필 이미지 URL
-//   },
-//   {
-//     userId: '2',
-//     userName: 'Jane Smith',
-//     profileImage: 'https://via.placeholder.com/40',
-//   },
-//   {
-//     userId: '3',
-//     userName: 'Alice Brown',
-//     profileImage: 'https://via.placeholder.com/40',
-//   },
-// ];
-
-// const projectListData = [
-//   {
-//     projectId: '10',
-//     name: '생명인프라팀',
-//     description: 'DB Inc. 생명인프라팀', // 예제 프로필 이미지 URL
-//   },
-//   {
-//     projectId: '20',
-//     name: '손보인프라팀',
-//     description: 'DB Inc. 손보인프라팀',
-//   },
-//   {
-//     projectId: '30',
-//     name: 'IDC 사업팀',
-//     description: 'DB Inc. IDC 사업팀',
-//   },
-//   {
-//     projectId: '40',
-//     name: '정보보안팀',
-//     description: 'DB Inc. 정보보안팀',
-//   },
-// ];
 
 
 interface Project {
@@ -713,18 +672,20 @@ const numberToDay: Record<number, string> = {
     const userInfo = sessionStorage.getItem("userInfo")
       ? JSON.parse(sessionStorage.getItem("userInfo") as string)
       : null;
-    try {
+
+      
       // 기본 필수 필드 추가
       let taskData: Record<string, any> = {
         ...values,
-        startDate: values.startDate.format('YYYY-MM-DD'),
-        dueDate: values.dueDate.format('YYYY-MM-DD'),
+        startDate: dayjs(values.startDate).format('YYYY-MM-DD'),
+        dueDate: dayjs(values.dueDate).format('YYYY-MM-DD'),
         hasEndDate: values.hasEndDate || false, // 기본적으로 포함
         createdBy: userInfo.userId,
         createdDate: dayjs().format('YYYY-MM-DD'),
         status: 0
       };
   
+      
       // 반복 여부 처리
       if (values.recurring) {
         taskData = {
@@ -761,22 +722,24 @@ const numberToDay: Record<number, string> = {
             taskData.yearlyDayOfWeek = dayMappingKoToEn[getDayOfWeek(dayjs(values.startDate))];
           }
         }
+        // 종료일 처리
+        if (values.hasEndDate) {
+          taskData.endDate = dayjs(endDate).format('YYYY-MM-DD');
+        }
       } else {
         taskData.recurring = false;
       }
   
-      // 종료일 처리
-      if (values.hasEndDate) {
-        taskData.endDate = values.endDate.format('YYYY-MM-DD');
-      }
+      
 
   
       console.log('Task Data:', taskData);
-  
+    try {
+
       // 업무 등록 API 호출
       const response = await addTask(taskData);
             
-      console.log(response)
+      console.log(response);
 
       if (response.code===201) {
           toast.success(`업무를 등록하였습니다!`);
