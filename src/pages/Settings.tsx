@@ -128,6 +128,7 @@ const handleFinish = async (values: any) => {
       const uploadResponse = await updateUserProfile(userInfo.userId, {file:selectedFile});
 
       console.log(uploadResponse.data)
+      
       if (uploadResponse.data.code === 200) {
         profileImagePath = uploadResponse.data.data; // 새로 업로드된 이미지 경로
       } else {
