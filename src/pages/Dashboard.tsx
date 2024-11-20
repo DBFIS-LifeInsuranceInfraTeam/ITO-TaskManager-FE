@@ -2,12 +2,16 @@ import { Typography, Card ,Layout, Button, Tooltip} from 'antd';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import '../styles/pages/Dashboard.css'
 import Stat from "../components/Stat";
-import TaskList from "../components/List";
+import {toast} from "react-toastify";
 import CalendarList from "../components/CalendarList";
 import { useNavigate } from "react-router-dom";
 import { getAllTask } from "../api/task/getAllTask";
 import { useEffect, useState } from "react";
 import List from "../components/List";
+import dayjs from 'dayjs';
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import {ExclamationCircleOutlined} from '@ant-design/icons';
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -33,6 +37,10 @@ interface Task {
   assigneeConfirmation: string;
 }
 
+// 플러그인 등록
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
+
 const Dashboard = () => {
     
   const navigation = useNavigate();
@@ -53,33 +61,48 @@ const Dashboard = () => {
       : null;
 
 
-    useEffect(() => {
+      useEffect(() => {
         const userInfo = sessionStorage.getItem("userInfo")
-      ? JSON.parse(sessionStorage.getItem("userInfo") as string)
-      : null;
-
+          ? JSON.parse(sessionStorage.getItem("userInfo") as string)
+          : null;
+    
         const fetchTasks = async () => {
-            if (userInfo && Array.isArray(userInfo.projectId)) {
+          if (userInfo && Array.isArray(userInfo.projectId)) {
             try {
-                const response = await getAllTask(userInfo.projectId, page, size);
-                setTaskList(response.content); // `content`는 응답 데이터의 항목 목록을 포함합니다.
-                setTotalPages(response.totalPages); // 전체 페이지 수 설정
-                // allTasks가 배열인지 확인
-                // const sortedTasks = Array.isArray(allTasks.content)
-                //     ? allTasks.sort((a: Task, b: Task) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()).slice(0, 5)
-                //     : []; // 배열이 아니면 빈 배열로 설정
+              const response = await getAllTask(userInfo.projectId, page, 40);
+    
+              
+              // 현재 달의 시작일과 종료일 계산
+              const today = dayjs();
+              const currentMonthStart = today.startOf('month');
+              const currentMonthEnd = today.endOf('month');
 
-                // setTaskList(sortedTasks);
+              
+              // 이번 달 필터링
+              const filteredTasks = response.content.filter((task: Task) => {
+                const dueDate = dayjs(task.dueDate);
+                return dueDate.isSameOrAfter(currentMonthStart) && dueDate.isSameOrBefore(currentMonthEnd);
+              });
+    
+              
+              // 마감일 기준 정렬 후 상위 5개 추출
+              const sortedTasks = filteredTasks
+                .sort((a, b) => dayjs(a.dueDate).diff(dayjs(b.dueDate)))
+                .slice(0, 5);
+    
+              setTaskList(sortedTasks);
+              setTotalPages(response.totalPages);
             } catch (error) {
-                console.error("Failed to fetch tasks:", error);
+              //console.error("Failed to fetch tasks:", error);
+              toast.error('업무를 불러오는데 실패했습니다.')
             } finally {
-                setLoading(false);
+              setLoading(false);
             }
-        }
+          }
         };
-
+    
         fetchTasks();
-    }, []);
+    }, [page, size]);
     
   //전체업무에서 사용자가 속한 프로젝트들의 업무 중 마감일 임박한 5개 업무 가져오기
 
@@ -119,9 +142,14 @@ const Dashboard = () => {
       
       {/* 상단 업무 리스트 */}
       <Card style={{ flex: 1, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'}}>
-        <Tooltip  title={"마감일 기준 상위 5개 업무입니다."}>
-            <Title level={4} style={{ margin:0 }}>업무 리스트</Title>
-          </Tooltip>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <Title level={4} style={{ margin: 0, display: 'flex', alignItems: 'center' }}>
+      업무 리스트
+      <Tooltip title="이번 달 마감일 기준 상위 5개 업무입니다.">
+        <ExclamationCircleOutlined  style={{ fontSize: '12px', marginLeft: '8px', color: '#999', cursor: 'pointer' }} />
+      </Tooltip>
+    </Title>
+  </div>
         
         <List taskList={taskList} loading={loading} size={5}/>
       </Card>

@@ -187,6 +187,7 @@ interface Task {
         <Text>{assignees[0]?.assigneeName}</Text>
       </div>
     ) : (
+      <div style={{display: 'flex',alignItems: 'center', justifyContent: 'center', alignContent:'center'}}>
       <Avatar.Group maxCount={2} size="small">
         {assignees.map((assignee, index) => (
           <Tooltip key={index} title={assignee.assigneeName} placement="top">
@@ -194,6 +195,7 @@ interface Task {
           </Tooltip>
         ))}
       </Avatar.Group>
+      </div>
     );
   },
 },

@@ -93,7 +93,6 @@ const StatusTag= (status:number, size?: 'small' | undefined) => {
             margin:0,
           }}
         >
-          
         </Tag>
         :<Tag
         icon={<ExclamationCircleOutlined />}
@@ -103,7 +102,7 @@ const StatusTag= (status:number, size?: 'small' | undefined) => {
           borderRadius: '50px',
           margin:0,
         }}
-      >
+      >지연
       </Tag>
       );
     default:

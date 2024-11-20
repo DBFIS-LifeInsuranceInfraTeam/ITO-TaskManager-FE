@@ -90,7 +90,8 @@ const screens = useBreakpoint(); // 화면 크기 감지
           key: 'taskName',
           render: (taskName: string) => (
             loading ? (
-              <Skeleton.Input active />
+              <Skeleton.Input active size='small'/>
+              
             ) :
               screens.xl||size===10?(
                 <div
@@ -107,21 +108,28 @@ const screens = useBreakpoint(); // 화면 크기 감지
                 >
                   {taskName}
                 </div>
-              ):(<Tooltip title={taskName}><div
-                  style={{
-                    backgroundColor: '#f5f5f5',
-                    borderRadius: '8px',
-                    padding: '4px 8px',
-                    textAlign: 'center',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    maxWidth: '150px', // 최대 너비 설정
-                  }}
-                >
-                  {taskName}
-                </div>
+              ):(<div
+                style={{
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '8px',
+                  padding: '4px 8px',
+                  textAlign: 'center',
+                  
+                  display: 'flex',
+                  justifyContent: 'center', // 가운데 정렬
+                  alignItems: 'center', // 세로 가운데 정렬
+                  margin: 'auto', // 부모 컨테이너 내에서 가운데 정렬
+                }}
+              >
+                <Tooltip title={taskName}>
+                  <span style={{overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '150px', // 최대 너비 설정
+                  }}>{taskName}</span>
                 </Tooltip>
+              </div>
+              
               )
           ),
         },
@@ -137,11 +145,12 @@ const screens = useBreakpoint(); // 화면 크기 감지
           return <Skeleton.Avatar active size="small" />;
         }
         return assignees.length === 1 ? (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', alignContent:'center' }}>
             <Avatar src={assignees[0]?.assigneeProfile} size="small" />
             <Text>{assignees[0]?.assigneeName}</Text>
           </div>
         ) : (
+          <div style={{display: 'flex',alignItems: 'center', justifyContent: 'center', alignContent:'center'}}>
           <Avatar.Group maxCount={2} size="small">
             {assignees.map((assignee, index) => (
               <Tooltip key={index} title={assignee.assigneeName} placement="top">
@@ -149,6 +158,7 @@ const screens = useBreakpoint(); // 화면 크기 감지
               </Tooltip>
             ))}
           </Avatar.Group>
+          </div>
         );
       },
     },
@@ -169,7 +179,7 @@ const screens = useBreakpoint(); // 화면 크기 감지
       align: 'center' as 'center',
       
       render: (date: string) => (
-        loading ? <Skeleton.Input active style={{ width: '100px', height: '20px' }} /> : <Text>{date}</Text>
+        loading ? <Skeleton.Button active/> : <Text>{date}</Text>
       ),
     },
   ];
