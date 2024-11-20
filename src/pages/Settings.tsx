@@ -7,6 +7,7 @@ import { Option } from 'antd/es/mentions';
 import { toast } from "react-toastify";
 import { getProjectsByProjectId } from '../api/user/getProjectsByProjectId';
 import { updateUserInfo } from '../api/user/updateUserInfo';
+import { updateUserProfile } from "../api/user/updateUserProfile";
 
 const { Title, Text } = Typography;
 
@@ -21,7 +22,8 @@ interface Project {
 const Settings = () => {
   const [form] = Form.useForm<FormInstance>(); // 명시적 타입 설정
   const [editing, setEditing] = useState(false);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // 선택된 파일 저장
+const [profileImage, setProfileImage] = useState<string | null>(null); // 미리 보기 이미지
 
   const unitCodeToName: Record<string, string> = {
     OS: "OS",
@@ -59,55 +61,99 @@ const Settings = () => {
 
 
 
-const handleFinish = async (values: any) => {
-  try {
-    // Combine form values and current user info
-    const updatedUserInfo = {
+// const handleFinish = async (values: any) => {
+//   try {
+//     // Combine form values and current user info
+//     const updatedUserInfo = {
       
-      ...values, // Merge updated fields
+//       ...values, // Merge updated fields
       
+//     };
+
+//     console.log(values)
+//     // Call the API to update user information
+//    const response = await updateUserInfo(userInfo.userId, values); // Replace `updateUserInfo` with your actual API function
+
+//     if (response.code === 200) {
+
+//       const newUserInfo={
+//         userId: response.data.userId,
+//         name: response.data.name,
+//         email: response.data.email,
+//         phoneNumber: response.data.phoneNumber,
+//         photo: response.data.photo,
+//         position: response.data.position,
+//         unit: response.data.unit,
+//         projectId: response.data.projectId,
+//     }
+//     console.log(newUserInfo)
+
+//       sessionStorage.setItem("userInfo", JSON.stringify(newUserInfo));
+//       setUserInfo(newUserInfo);
+//       toast.success("회원정보가 수정되었습니다.");
+//       setEditing(false); // Exit editing mode
+//     } else {
+//       toast.error(response.message || "회원정보 수정에 실패했습니다.");
+//     }
+//   } catch (error) {
+//     console.error("Error updating user information:", error);
+//     toast.error("서버와 통신 중 오류가 발생했습니다.");
+//   }
+// };
+
+
+const handleFileChange = (file: File) => {
+  if (file) {
+    setSelectedFile(file); // 파일 상태에 저장
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setProfileImage(reader.result as string); // 미리보기 이미지 설정
     };
-
-    console.log(values)
-    // Call the API to update user information
-   const response = await updateUserInfo(userInfo.userId, values); // Replace `updateUserInfo` with your actual API function
-
-    if (response.code === 200) {
-
-      const newUserInfo={
-        userId: response.data.userId,
-        name: response.data.name,
-        email: response.data.email,
-        phoneNumber: response.data.phoneNumber,
-        photo: response.data.photo,
-        position: response.data.position,
-        unit: response.data.unit,
-        projectId: response.data.projectId,
-    }
-    console.log(newUserInfo)
-
-      sessionStorage.setItem("userInfo", JSON.stringify(newUserInfo));
-      setUserInfo(newUserInfo);
-      toast.success("회원정보가 수정되었습니다.");
-      setEditing(false); // Exit editing mode
-    } else {
-      toast.error(response.message || "회원정보 수정에 실패했습니다.");
-    }
-  } catch (error) {
-    console.error("Error updating user information:", error);
-    toast.error("서버와 통신 중 오류가 발생했습니다.");
+    reader.readAsDataURL(file); // 파일을 Data URL로 읽음
+  } else {
+    console.error("파일이 없습니다.");
   }
 };
 
-  const handleUpload = (info: any) => {
-    if (info.file.status === 'done') {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(info.file.originFileObj);
+const handleFinish = async (values: any) => {
+  try {
+    let profileImagePath = userInfo.photo; // 기존 프로필 이미지 경로
+
+    // 1. 파일 업로드
+    if (selectedFile) {
+      // const formData = new FormData();
+      // formData.append("file", selectedFile);
+
+      const uploadResponse = await updateUserProfile(userInfo.userId, {file:selectedFile});
+
+      console.log(uploadResponse.data)
+      if (uploadResponse.data.code === 200) {
+        profileImagePath = uploadResponse.data.data; // 새로 업로드된 이미지 경로
+      } else {
+        throw new Error("프로필 이미지 업로드 실패");
+      }
     }
-  };
+
+    // 2. 사용자 정보 업데이트
+    const updatedData = { ...values, photo: profileImagePath };
+    const response = await updateUserInfo(userInfo.userId, updatedData);
+
+    if (response.data.code === 200) {
+      toast.success("회원정보가 성공적으로 업데이트되었습니다.");
+      const updatedUserInfo = response.data.data;
+      sessionStorage.setItem("userInfo", JSON.stringify(updatedUserInfo));
+      setUserInfo(updatedUserInfo); // 상태 갱신
+      setEditing(false); // 편집 모드 종료
+    } else {
+      toast.error(response.data.message || "회원정보 업데이트에 실패했습니다.");
+    }
+  } catch (error) {
+    console.error("Error saving user data:", error);
+    toast.error("저장 중 오류가 발생했습니다.");
+  }
+};
+
 
   const tagColors = ['blue', 'green', 'red', 'orange', 'purple']; // 사용할 색상 배열
 
@@ -123,18 +169,25 @@ const handleFinish = async (values: any) => {
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-          <Avatar
-            size={80}
-            src={`${userInfo.photo}` || 'https://via.placeholder.com/100'}
-            icon={!profileImage && <UserOutlined />}
-            style={{ marginRight: '20px' }}
-          />
+        <Avatar
+  size={80}
+  src={profileImage || userInfo.photo || 'https://via.placeholder.com/100'}
+  icon={!profileImage && <UserOutlined />}
+  style={{ marginRight: '20px' }}
+/>
           <div>
             <Title level={4} style={{ margin: 0 }}>
               {userInfo.name} {userInfo.position}님, 안녕하세요!
             </Title>
             {editing && (
-              <Upload showUploadList={false} onChange={handleUpload} accept="image/*">
+              <Upload
+              showUploadList={false}
+              beforeUpload={(file) => {
+                handleFileChange(file); // 파일을 상태에 저장
+                return false; // 서버로 업로드하지 않음
+              }}
+              accept="image/*"
+            >
                 <Button icon={<UploadOutlined />} size="small" style={{ marginTop: '10px' }}>
                   프로필 이미지 변경
                 </Button>
