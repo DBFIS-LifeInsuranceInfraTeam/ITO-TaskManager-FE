@@ -125,7 +125,7 @@ const handleFinish = async (values: any) => {
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
           <Avatar
             size={80}
-            src={userInfo.photo || 'https://via.placeholder.com/100'}
+            src={`${userInfo.photo}` || 'https://via.placeholder.com/100'}
             icon={!profileImage && <UserOutlined />}
             style={{ marginRight: '20px' }}
           />

@@ -11,7 +11,8 @@ import {
   Space,
   Avatar,
   FormInstance,
-  Card
+  Card,
+  Empty
 } from 'antd';
 import { addTask } from '../api/task/addTask';
 import { getUserByProjectId } from '../api/user/getUserByProjectId';
@@ -1004,7 +1005,7 @@ const numberToDay: Record<number, string> = {
       mode="multiple"
       style={{ width: '100%' }}
       placeholder="담당자를 선택하세요."
-
+      notFoundContent="프로젝트를 선택해주세요." // 데이터가 없을 때 표시할 메시지
     >
       {userList.map((user) => (
         <Option key={user.userId} value={user.userId}>

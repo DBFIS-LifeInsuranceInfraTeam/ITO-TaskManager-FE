@@ -379,7 +379,7 @@ const navigate = useNavigate(); // navigate 함수 사용
     {userList.map((user) => (
       <Option key={user.userId} value={user.userId} label={user.name}>
         <Space>
-          <Avatar src={`http://localhost:8080/${user.photo}`} />
+          <Avatar src={`/${user.photo}`} />
           {user.name}
         </Space>
       </Option>
