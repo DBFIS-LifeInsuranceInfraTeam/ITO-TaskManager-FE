@@ -167,14 +167,14 @@ const DetailTask: React.FC = () => {
             toast.error("업무를 정상적으로 삭제하지 못했습니다.");
         }
       }
-      navigate(-1); // 이전 페이지로 이동
+
     } catch (error) {
       toast.error("업무 삭제에 실패했습니다.");
     }
   };
 
   const confirmDelete = (taskId: string) => {
-    if (taskId.length > 10) {
+    if (task?.recurring) {
       // 반복 업무인 경우 추가 모달 표시
       setIsModalVisible(true);
     } else {
@@ -442,9 +442,22 @@ const DetailTask: React.FC = () => {
           handleDelete(task.taskId, true); // 모든 반복 업무 삭제
           setIsModalVisible(false);
         }}
-        onCancel={() => {
+        onCancel={(e) => {
+          const target = e?.nativeEvent?.target;
+      
+          if (target?.closest('.ant-modal-close')) {
+            // X 버튼 클릭 시 모달 닫기만 수행
+            setIsModalVisible(false);
+            return;
+          }
+      
+          if (target?.closest('.ant-btn')) {
+            // 취소 버튼 클릭 시 handleDelete 실행
             handleDelete(task.taskId, false);
-            setIsModalVisible(false)
+          }
+      
+          // 외부 클릭 시 모달 닫기만 수행
+          setIsModalVisible(false);
         }}
         okText="모두 삭제"
         cancelText="이 업무만 삭제"
