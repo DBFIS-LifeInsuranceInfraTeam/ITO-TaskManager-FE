@@ -36,6 +36,33 @@ interface StatisticsResponse {
 const Stat: React.FC = () => {
 
     const [statisticsData, setStatisticsData] = useState<StatisticsResponse | null>(null);
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    // 현재 시간 업데이트 함수
+    useEffect(() => {
+      const timer = setInterval(() => {
+        setCurrentTime(new Date());
+      }, 1000); // 1초마다 업데이트
+  
+      return () => clearInterval(timer); // 컴포넌트 언마운트 시 정리
+    }, []);
+  
+    // 요일 이름 배열
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+
+  // 시간 포맷팅 함수 (YYYY/MM/DD(요일) HH:mm:ss)
+  const formatDateTime = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dayOfWeek = days[date.getDay()]; // 요일
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}/${month}/${day}(${dayOfWeek}) ${hours}:${minutes}:${seconds}`;
+  };
+  
+  
 
     useEffect(() => {
         const fetchStatistics = async () => {
@@ -186,7 +213,7 @@ const doughnutContainerStyle: React.CSSProperties = screens.xl
       <Title level={2} style={{ margin: '0 0 4px 0' }}>
         오늘의 통계
       </Title>
-      <Text type="secondary" style={{fontSize:'larger'}}>2024/11/13 11:05:24</Text>
+      <Text type="secondary" style={{fontSize:'larger'}}>{formatDateTime(currentTime)}</Text>
 
       <Card style={cardStyle}>
         <div style={{ width: '100%', height: '200px', position: 'relative', marginBottom:'30px'}}>
