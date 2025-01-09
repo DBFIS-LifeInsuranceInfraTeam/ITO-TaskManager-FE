@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import {ExclamationCircleOutlined} from '@ant-design/icons';
+import { getTaskByMonth } from '../api/task/getTaskByMonth';
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -69,27 +70,34 @@ const Dashboard = () => {
         const fetchTasks = async () => {
           if (userInfo && Array.isArray(userInfo.projectId)) {
             try {
-              const response = await getAllTask(userInfo.projectId, page, 40);
+              // const response = await getAllTask(userInfo.projectId, page, 40);
     
               
-              // 현재 달의 시작일과 종료일 계산
-              const today = dayjs();
-              const currentMonthStart = today.startOf('month');
-              const currentMonthEnd = today.endOf('month');
+              // // 현재 달의 시작일과 종료일 계산
+              // const today = dayjs();
+              // const currentMonthStart = today.startOf('month');
+              // const currentMonthEnd = today.endOf('month');
 
-              
-              // 이번 달 필터링
-              const filteredTasks = response.content.filter((task: Task) => {
-                const dueDate = dayjs(task.dueDate);
-                return dueDate.isSameOrAfter(currentMonthStart) && dueDate.isSameOrBefore(currentMonthEnd);
-              });
+              // console.log(today)
+              // console.log(currentMonthStart)
+              // console.log(currentMonthEnd)
+              // // 이번 달 필터링
+              // const filteredTasks = response.content.filter((task: Task) => {
+              //   const dueDate = dayjs(task.dueDate);
+              //   console.log(task.dueDate)
+              //   return dueDate.isSameOrAfter(currentMonthStart) && dueDate.isSameOrBefore(currentMonthEnd);
+              // });
     
               
+              
+    
+              const response = await getTaskByMonth(dayjs().year(), dayjs().month()+1,userInfo.projectId);
               // 마감일 기준 정렬 후 상위 5개 추출
-              const sortedTasks = filteredTasks
+
+              console.log(response)
+              const sortedTasks = response
                 .sort((a, b) => dayjs(a.dueDate).diff(dayjs(b.dueDate)))
                 .slice(0, 5);
-    
               setTaskList(sortedTasks);
               setTotalPages(response.totalPages);
             } catch (error) {
