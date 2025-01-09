@@ -213,6 +213,7 @@ const SignUp: React.FC = () => {
                             <Option value="DB">DB</Option>
                             <Option value="NET">네트워크</Option>
                             <Option value="SEC">보안</Option>
+                            <Option value="PM">기획/관리</Option>
                         </Select>
                     </Form.Item>
 
