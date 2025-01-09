@@ -31,6 +31,7 @@ const [profileImage, setProfileImage] = useState<string | null>(null); // 미리
     DB: "DB",
     NET: "네트워크",
     SEC: "보안",
+    PM: "기획/관리",
   };
 
   const [userInfo, setUserInfo] = useState(sessionStorage.getItem("userInfo")
@@ -59,47 +60,6 @@ const [profileImage, setProfileImage] = useState<string | null>(null); // 미리
 
 },[userInfo]);
 
-
-
-// const handleFinish = async (values: any) => {
-//   try {
-//     // Combine form values and current user info
-//     const updatedUserInfo = {
-      
-//       ...values, // Merge updated fields
-      
-//     };
-
-//     console.log(values)
-//     // Call the API to update user information
-//    const response = await updateUserInfo(userInfo.userId, values); // Replace `updateUserInfo` with your actual API function
-
-//     if (response.code === 200) {
-
-    //   const newUserInfo={
-    //     userId: response.data.userId,
-    //     name: response.data.name,
-    //     email: response.data.email,
-    //     phoneNumber: response.data.phoneNumber,
-    //     photo: response.data.photo,
-    //     position: response.data.position,
-    //     unit: response.data.unit,
-    //     projectId: response.data.projectId,
-    // }
-//     console.log(newUserInfo)
-
-      // sessionStorage.setItem("userInfo", JSON.stringify(newUserInfo));
-      // setUserInfo(newUserInfo);
-//       toast.success("회원정보가 수정되었습니다.");
-//       setEditing(false); // Exit editing mode
-//     } else {
-//       toast.error(response.message || "회원정보 수정에 실패했습니다.");
-//     }
-//   } catch (error) {
-//     console.error("Error updating user information:", error);
-//     toast.error("서버와 통신 중 오류가 발생했습니다.");
-//   }
-// };
 
 
 const handleFileChange = (file: File) => {
@@ -278,6 +238,7 @@ const handleFinish = async (values: any) => {
                 <Option value="DB">DB</Option>
                 <Option value="NET">네트워크</Option>
                 <Option value="SEC">보안</Option>
+                <Option value="PM">기획/관리</Option>
               </Select>
             </Form.Item>
             <Form.Item
@@ -321,15 +282,6 @@ const handleFinish = async (values: any) => {
                 <span style={{ fontSize: '16px' }}>{project.name}</span>
               </Tag>
             ))}
-              {/* {userInfo.projectId.map((item:string,index:number) => (
-                <Tag 
-                  key={index} 
-                  color={tagColors[index % tagColors.length]} // 색상을 순환적으로 할당
-                  style={{ marginBottom: '5px' }}
-                >
-                  <span style={{ fontSize: '16px' }}>{item}</span>
-                </Tag>
-              ))} */}
             </div>
             <div>
               <Text strong style={{fontSize:'18px', marginRight:'10px'}}>파트:</Text> 

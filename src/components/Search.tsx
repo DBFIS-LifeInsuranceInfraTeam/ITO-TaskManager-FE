@@ -117,6 +117,7 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
         <Option value="DB">DB</Option>
         <Option value="NET">네트워크</Option>
         <Option value="SEC">보안</Option>
+        <Option value="PM">기획/관리</Option>
       </Select>
       <Select 
       onChange={(value:string) => setAssigneeId(value)} size="large" placeholder="담당자" style={{ flex: 1, minWidth: '150px' }} allowClear prefix={<UserOutlined style={{ color: '#c9c9c9' , verticalAlign: 'middle'}}/>} >
