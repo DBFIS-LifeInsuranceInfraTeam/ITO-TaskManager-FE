@@ -32,6 +32,7 @@ const [profileImage, setProfileImage] = useState<string | null>(null); // 미리
     NET: "네트워크",
     SEC: "보안",
     PM: "기획/관리",
+    TPM: "PM",
     SW_DEV: "응용SW개발",
     APP_OPS: "어플리케이션 개발/운영"
   };
